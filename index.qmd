@@ -1,0 +1,41 @@
+---
+title: "Introducció a l'estadística amb R"
+subtitle: "Escola d'Administració Pública de Catalunya · octubre – novembre de 2026"
+toc: false
+---
+
+Benvinguts i benvingudes a la web del curs. Aquí trobareu les **slides**, les **dades**, el **codi** i els **exercicis** de cada sessió.
+
+::: {.callout-tip}
+## Primer de tot
+
+Si treballareu amb el vostre ordinador, seguiu la guia **[Abans de començar](abans-de-comencar.qmd)** per instal·lar R i RStudio.
+:::
+
+## Sessions
+
+| Sessió | Data | Contingut |
+|:---:|---|---|
+| **[1](sessio-1/index.qmd)** | Dilluns 19 d'octubre | Introducció a l'estadística. **R i RStudio**: tipus de dades; importar, netejar i exportar dades |
+| **[2](sessio-2/index.qmd)** | Dimarts 27 d'octubre | Estadística **descriptiva** i **inferencial** univariada: intervals de confiança i contrastos d'hipòtesis |
+| **[3](sessio-3/index.qmd)** | Dilluns 2 de novembre | Estadística **bivariada**: taules de contingència, prova χ² i comparació de mitjanes |
+| **[4](sessio-4/index.qmd)** | Dilluns 9 de novembre | Relacions entre variables quantitatives: **correlació** i **regressió lineal** simple |
+
+**Horari**: de 9.30 a 13.30 h (16 hores lectives) · **Lloc**: Escola d'Administració Pública de Catalunya, c/ Girona, 20, Barcelona
+
+## Objectius
+
+- Identificar les funcionalitats bàsiques de l'entorn **R i RStudio**.
+- Conèixer els conceptes fonamentals de l'**estadística descriptiva i inferencial** bàsica.
+- Conèixer la **sintaxi d'R** per aplicar-la a bases de dades i elaborar anàlisis estadístiques i representacions gràfiques bàsiques.
+- **Interpretar** els resultats estadístics per donar suport a la presa de decisions.
+
+## Metodologia i avaluació
+
+- Cada sessió combina explicacions teòriques amb **pràctica amb R i RStudio**, sempre amb **dades reals**.
+- L'avaluació és **continuada**: al final de cada sessió hi ha un **exercici pràctic** que cal lliurar per **correu electrònic** a [joelardiacaarnau@gencat.cat](mailto:joelardiacaarnau@gencat.cat).
+- Per obtenir el certificat cal assistir, com a mínim, al **75 % de les hores** i superar l'avaluació.
+
+## Professor
+
+**Joel Ardiaca Arnau** · Analista de dades al [Centre d'Estudis d'Opinió](https://ceo.gencat.cat) · [joelardiaca.github.io](https://joelardiaca.github.io) · [joelardiacaarnau@gencat.cat](mailto:joelardiacaarnau@gencat.cat)

@@ -1,0 +1,88 @@
+---
+title: "Abans de començar: instal·lar R i RStudio"
+number-sections: true
+---
+
+::: {.callout-note}
+## Abans de començar
+
+- Cal instal·lar **dos programes, en aquest ordre**: primer **R** (el motor que fa els càlculs) i després **RStudio** (l'entorn on treballarem).
+- Si l'ordinador és de feina i no teniu permisos d'administrador, mireu la [secció de problemes habituals](#problemes-habituals).
+- Si no és possible instal·lar res, podeu treballar al navegador amb **Posit Cloud** (el professor us donarà l'enllaç a classe).
+:::
+
+## Instal·lar R
+
+1. Aneu a **<https://cran.r-project.org>**.
+2. Cliqueu **Download R for Windows** i després **base**.
+3. Cliqueu **Download R-4.x.x for Windows** (la versió més recent) i deseu l'instal·lador.
+4. Executeu el fitxer descarregat i accepteu les opcions per defecte (*Següent*, *Següent*...).
+
+::: {.callout-tip}
+Si l'instal·lador no té permisos d'administrador, ofereix instal·lar R a la carpeta de l'usuari. Accepteu-ho: funciona igual.
+:::
+
+## Instal·lar RStudio
+
+1. Aneu a **<https://posit.co/download/rstudio-desktop/>**.
+2. El pas 1 de la pàgina (instal·lar R) ja el teniu fet. Al pas 2, cliqueu **Download RStudio Desktop for Windows**.
+3. Executeu l'instal·lador i accepteu les opcions per defecte.
+4. Obriu **RStudio** (no R!) des del menú d'inici.
+
+## Configurar RStudio (només la primera vegada)
+
+Anem a **Tools → Global Options...**
+
+| Apartat | Opció | Valor recomanat |
+|---|---|---|
+| **General** | *Restore .RData into workspace at startup* | Desmarcat |
+| **General** | *Save workspace to .RData on exit* | **Never** |
+| **Code** | *Use native pipe operator, \|> (requires R 4.1+)* | Marcat |
+
+::: {.callout-note}
+Amb aquesta configuració, cada vegada que obrim RStudio comencem "de zero" i tot el que necessitem surt del codi dels scripts. I la drecera <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> escriu el pipe `|>`.
+:::
+
+## Instal·lar el paquet tidyverse
+
+A la **consola** de RStudio (el panell de baix a l'esquerra), escriviu i premeu <kbd>Enter</kbd>:
+
+```r
+install.packages("tidyverse")
+```
+
+Tarda uns minuts. Quan acabi, comproveu que funciona:
+
+```r
+library(tidyverse)
+```
+
+Si apareix un missatge com `── Attaching core tidyverse packages ──` amb una llista de paquets, **tot és correcte**. (Els avisos de *Conflicts* són normals.)
+
+## Obrir els materials del curs
+
+1. Descarregueu el fitxer **`materials-sessio-N.zip`** de la pàgina de la sessió i **descomprimiu-lo** (botó dret → *Extreure-ho tot*).
+2. Feu doble clic al fitxer **`sessio_1.Rproj`**: s'obrirà RStudio amb el projecte.
+3. Al panell **Files** (baix a la dreta), obriu la carpeta `codi/` i el primer script.
+
+## Problemes habituals {#problemes-habituals}
+
+**No tinc permisos d'administrador**
+
+: R es pot instal·lar a la carpeta de l'usuari (vegeu el pas 1). Per a RStudio, a la pàgina de descàrrega hi ha una versió en **zip** (apartat *Zip/Tarballs*) que només cal descomprimir: dins la carpeta, executeu `rstudio.exe`. Si tampoc és possible, feu servir **Posit Cloud**.
+
+**`install.packages()` dona un error de connexió** (*cannot open URL*, *unable to access index for repository*...)
+
+: Sovint és el **proxy** o el tallafocs de la xarxa corporativa. Proveu-ho des d'una altra xarxa o consulteu el servei informàtic. Com a alternativa immediata, **Posit Cloud**.
+
+**Problemes amb carpetes d'OneDrive o amb rutes amb accents**
+
+: Si la carpeta *Documents* està sincronitzada amb OneDrive, R hi guarda els paquets i a vegades dona problemes. Si podeu, treballeu en una **carpeta local** (p. ex. `C:/curs_R`), millor **sense accents ni espais** al nom.
+
+**He obert R en lloc de RStudio**
+
+: Si veieu una sola finestra amb fons blanc i el títol *RGui*, és R "sol". Tanqueu-lo i obriu **RStudio**.
+
+**"Error: could not find function..."**
+
+: Normalment vol dir que no hem carregat el paquet: executeu `library(tidyverse)` al principi de l'script.

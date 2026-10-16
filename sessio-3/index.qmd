@@ -1,0 +1,11 @@
+---
+title: "Sessió 3 · Estadística bivariada"
+subtitle: "Dilluns 2 de novembre de 2026 · 9.30 – 13.30 h"
+toc: false
+---
+
+Relacions entre dues variables qualitatives i entre una variable quantitativa i una qualitativa: **taules de contingència**, **prova χ²** i **comparació de mitjanes** amb R.
+
+::: {.callout-note}
+Els materials d'aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.
+:::

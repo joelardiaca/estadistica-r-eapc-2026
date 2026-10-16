@@ -1,0 +1,57 @@
+---
+title: "Sessió 1 · Introducció a R i RStudio"
+subtitle: "Dilluns 19 d'octubre de 2026 · 9.30 – 13.30 h"
+---
+
+Introducció a l'estadística (conceptes bàsics i tipus de variables) i primers passos amb **R i RStudio**: objectes, funcions, tipus de dades i les funcions principals del **tidyverse** per importar, netejar i exportar dades.
+
+## Slides
+
+- **[Slides de la sessió 1](slides/sessio_1.qmd){target="_blank"}** · Introducció a l'estadística, R, RStudio i tidyverse
+- **[Slides d'estadística descriptiva](slides/descriptiva.qmd){target="_blank"}** · Les començarem si tenim temps; si no, a la sessió 2
+
+## Materials
+
+::: {.callout-tip}
+## [⬇ Descarregar els materials de la sessió 1 (zip)](materials-sessio-1.zip)
+:::
+
+Un cop descomprimit, trobareu:
+
+```
+sessio-1/
+├── sessio_1.Rproj              ← obriu aquest fitxer amb RStudio
+├── dades/
+│   ├── enquesta_ceo.csv            Enquesta del CEO (400 respostes) per a la demo
+│   └── competencies_basiques.csv   Competències bàsiques de 6è (500 alumnes) per a l'exercici
+└── codi/
+    ├── 01_primers_passos.R         R bàsic i funcions principals del tidyverse
+    └── exercici_sessio_1.R         Plantilla de l'exercici
+```
+
+## Exercici: importar, netejar i exportar unes dades
+
+Amb les dades `dades/competencies_basiques.csv` i la plantilla `codi/exercici_sessio_1.R`:
+
+1. Carregar el `tidyverse` i **importar** les dades amb `read_csv2()`.
+2. **Mirar** les dades amb `glimpse()` i respondre en un comentari: quantes files i columnes hi ha? De quin tipus és cada variable?
+3. `select()`: quedar-se amb `CODI_ALUMNE`, `GENERE`, `NATURALESA`, `HABITAT`, `PCAT`, `PMAT` i `PANG`.
+4. `rename()`: posar noms clars en minúscules (`id`, `genere`, `titularitat`, `habitat`, `nota_cat`, `nota_mat`, `nota_ang`).
+5. `mutate()` + `case_when()`: recodificar `genere` (`D` → `"Dona"`, `H` → `"Home"`).
+6. `mutate()` + `factor()`: ordenar les categories de `habitat` de menys a més habitants.
+7. `mutate()`: crear `nota_mitjana` (mitjana de les tres notes) i, amb `case_when()`, `nivell_mat`: Baix (< 50), Mitjà (de 50 a menys de 75) i Alt (≥ 75).
+8. `filter()`: eliminar els alumnes sense nota de matemàtiques.
+9. Escriure en un **comentari** una limitació d'aquestes dades.
+10. **Exportar** les dades netes amb `write_csv2()` a `dades/competencies_basiques_net.csv`.
+
+**Què cal lliurar**: l'script `exercici_sessio_1.R` complet i comentat i el fitxer `competencies_basiques_net.csv`, per **correu electrònic** a [joelardiacaarnau@gencat.cat](mailto:joelardiacaarnau@gencat.cat).
+
+::: {.callout-note}
+## Solució
+La solució de l'exercici es publicarà aquí després de la sessió.
+:::
+
+## Fonts de les dades
+
+- **Enquesta del CEO**: subselecció de variables i casos d'una enquesta del [Centre d'Estudis d'Opinió](https://ceo.gencat.cat).
+- **Competències bàsiques**: mostra de l'avaluació de competències bàsiques de 6è de primària (2023) del Departament d'Educació, publicada al [portal de dades obertes de la Generalitat](https://analisi.transparenciacatalunya.cat).

@@ -1,0 +1,11 @@
+---
+title: "Sessió 2 · Descriptiva i inferència"
+subtitle: "Dimarts 27 d'octubre de 2026 · 9.30 – 13.30 h"
+toc: false
+---
+
+Estadística descriptiva i fonaments de la **inferència estadística**: distribució de mostreig, intervals de confiança i contrastos d'hipòtesis univariats amb R.
+
+::: {.callout-note}
+Els materials d'aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.
+:::

@@ -1,0 +1,60 @@
+project:
+  type: website
+  output-dir: docs
+  # Només es publica el que hi ha en aquesta llista (la resta de .qmd són d'ús intern)
+  render:
+    - index.qmd
+    - abans-de-comencar.qmd
+    - recursos.qmd
+    - sessio-*/index.qmd
+    - sessio-1/slides/sessio_1.qmd
+    - sessio-1/slides/descriptiva.qmd
+  resources:
+    - sessio-*/materials-sessio-*.zip
+
+lang: ca
+
+website:
+  title: "Introducció a l'estadística amb R"
+  description: "Materials del curs «Introducció a l'estadística amb R» de l'Escola d'Administració Pública de Catalunya (2026)."
+  site-url: https://joelardiaca.github.io/estadistica-r-eapc-2026/
+  repo-url: https://github.com/joelardiaca/estadistica-r-eapc-2026
+  page-navigation: true
+  navbar:
+    background: light
+    logo: assets/logo_eapc.png
+    logo-alt: "Escola d'Administració Pública de Catalunya"
+    left:
+      - href: index.qmd
+        text: Inici
+      - href: abans-de-comencar.qmd
+        text: Abans de començar
+      - text: Sessions
+        menu:
+          - href: sessio-1/index.qmd
+            text: "Sessió 1 · Introducció a R i RStudio"
+          - href: sessio-2/index.qmd
+            text: "Sessió 2 · Descriptiva i inferència"
+          - href: sessio-3/index.qmd
+            text: "Sessió 3 · Estadística bivariada"
+          - href: sessio-4/index.qmd
+            text: "Sessió 4 · Correlació i regressió"
+      - href: recursos.qmd
+        text: Recursos
+    right:
+      - icon: github
+        href: https://github.com/joelardiaca/estadistica-r-eapc-2026
+        aria-label: Repositori a GitHub
+  page-footer:
+    left: "Joel Ardiaca · Centre d'Estudis d'Opinió · EAPC 2026"
+    right: "Materials amb llicència [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.ca) · Codi amb llicència MIT"
+
+format:
+  html:
+    theme: [cosmo, assets/guia.scss]
+    toc: true
+    toc-title: Continguts
+
+execute:
+  # El codi R només es torna a executar quan canvia el fitxer (resultats desats a _freeze/)
+  freeze: auto

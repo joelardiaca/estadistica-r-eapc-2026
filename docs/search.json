@@ -1,0 +1,170 @@
+[
+  {
+    "objectID": "sessio-4/index.html",
+    "href": "sessio-4/index.html",
+    "title": "Sessió 4 · Correlació i regressió",
+    "section": "",
+    "text": "Relacions entre dues variables quantitatives: correlació i regressió lineal simple amb R, i interpretació dels coeficients i dels principals resultats del model.\n\n\n\n\n\n\nNota\n\n\n\nEls materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió."
+  },
+  {
+    "objectID": "sessio-2/index.html",
+    "href": "sessio-2/index.html",
+    "title": "Sessió 2 · Descriptiva i inferència",
+    "section": "",
+    "text": "Estadística descriptiva i fonaments de la inferència estadística: distribució de mostreig, intervals de confiança i contrastos d’hipòtesis univariats amb R.\n\n\n\n\n\n\nNota\n\n\n\nEls materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió."
+  },
+  {
+    "objectID": "recursos.html",
+    "href": "recursos.html",
+    "title": "Recursos",
+    "section": "",
+    "text": "R for Data Science (2a ed.), de Wickham, Çetinkaya-Rundel i Grolemund. La referència per treballar amb dades amb el tidyverse. Gratuït en línia.\nR para Ciencia de Datos: traducció al castellà de la primera edició.\nCheatsheets de Posit: xuletes d’una pàgina de RStudio, dplyr, ggplot2, readr…\nDins de RStudio: ?nom_funcio (o F1) mostra l’ajuda de qualsevol funció."
+  },
+  {
+    "objectID": "recursos.html#aprendre-r",
+    "href": "recursos.html#aprendre-r",
+    "title": "Recursos",
+    "section": "",
+    "text": "R for Data Science (2a ed.), de Wickham, Çetinkaya-Rundel i Grolemund. La referència per treballar amb dades amb el tidyverse. Gratuït en línia.\nR para Ciencia de Datos: traducció al castellà de la primera edició.\nCheatsheets de Posit: xuletes d’una pàgina de RStudio, dplyr, ggplot2, readr…\nDins de RStudio: ?nom_funcio (o F1) mostra l’ajuda de qualsevol funció."
+  },
+  {
+    "objectID": "recursos.html#eines",
+    "href": "recursos.html#eines",
+    "title": "Recursos",
+    "section": "Eines",
+    "text": "Eines\n\nR i RStudio Desktop: vegeu Abans de començar.\nPosit Cloud: RStudio al navegador, sense instal·lar res.\nQuarto: per fer informes, presentacions i webs amb codi R (com aquesta web i les slides del curs)."
+  },
+  {
+    "objectID": "recursos.html#dades-per-practicar",
+    "href": "recursos.html#dades-per-practicar",
+    "title": "Recursos",
+    "section": "Dades per practicar",
+    "text": "Dades per practicar\n\nCentre d’Estudis d’Opinió: microdades de les enquestes i baròmetres.\nDades obertes de Catalunya: conjunts de dades de la Generalitat.\nIdescat: estadística oficial de Catalunya."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Introducció a l’estadística amb R",
+    "section": "",
+    "text": "Benvinguts i benvingudes a la web del curs. Aquí trobareu les slides, les dades, el codi i els exercicis de cada sessió."
+  },
+  {
+    "objectID": "index.html#sessions",
+    "href": "index.html#sessions",
+    "title": "Introducció a l’estadística amb R",
+    "section": "Sessions",
+    "text": "Sessions\n\n\n\nSessió\nData\nContingut\n\n\n\n\n1\nDilluns 19 d’octubre\nIntroducció a l’estadística. R i RStudio: tipus de dades; importar, netejar i exportar dades\n\n\n2\nDimarts 27 d’octubre\nEstadística descriptiva i inferencial univariada: intervals de confiança i contrastos d’hipòtesis\n\n\n3\nDilluns 2 de novembre\nEstadística bivariada: taules de contingència, prova χ² i comparació de mitjanes\n\n\n4\nDilluns 9 de novembre\nRelacions entre variables quantitatives: correlació i regressió lineal simple\n\n\n\nHorari: de 9.30 a 13.30 h (16 hores lectives) · Lloc: Escola d’Administració Pública de Catalunya, c/ Girona, 20, Barcelona"
+  },
+  {
+    "objectID": "index.html#objectius",
+    "href": "index.html#objectius",
+    "title": "Introducció a l’estadística amb R",
+    "section": "Objectius",
+    "text": "Objectius\n\nIdentificar les funcionalitats bàsiques de l’entorn R i RStudio.\nConèixer els conceptes fonamentals de l’estadística descriptiva i inferencial bàsica.\nConèixer la sintaxi d’R per aplicar-la a bases de dades i elaborar anàlisis estadístiques i representacions gràfiques bàsiques.\nInterpretar els resultats estadístics per donar suport a la presa de decisions."
+  },
+  {
+    "objectID": "index.html#metodologia-i-avaluació",
+    "href": "index.html#metodologia-i-avaluació",
+    "title": "Introducció a l’estadística amb R",
+    "section": "Metodologia i avaluació",
+    "text": "Metodologia i avaluació\n\nCada sessió combina explicacions teòriques amb pràctica amb R i RStudio, sempre amb dades reals.\nL’avaluació és continuada: al final de cada sessió hi ha un exercici pràctic que cal lliurar per correu electrònic a joelardiacaarnau@gencat.cat.\nPer obtenir el certificat cal assistir, com a mínim, al 75 % de les hores i superar l’avaluació."
+  },
+  {
+    "objectID": "index.html#professor",
+    "href": "index.html#professor",
+    "title": "Introducció a l’estadística amb R",
+    "section": "Professor",
+    "text": "Professor\nJoel Ardiaca Arnau · Analista de dades al Centre d’Estudis d’Opinió · joelardiaca.github.io · joelardiacaarnau@gencat.cat"
+  },
+  {
+    "objectID": "abans-de-comencar.html",
+    "href": "abans-de-comencar.html",
+    "title": "Abans de començar: instal·lar R i RStudio",
+    "section": "",
+    "text": "NotaAbans de començar\n\n\n\n\nCal instal·lar dos programes, en aquest ordre: primer R (el motor que fa els càlculs) i després RStudio (l’entorn on treballarem).\nSi l’ordinador és de feina i no teniu permisos d’administrador, mireu la secció de problemes habituals.\nSi no és possible instal·lar res, podeu treballar al navegador amb Posit Cloud (el professor us donarà l’enllaç a classe)."
+  },
+  {
+    "objectID": "abans-de-comencar.html#installar-r",
+    "href": "abans-de-comencar.html#installar-r",
+    "title": "Abans de començar: instal·lar R i RStudio",
+    "section": "1 Instal·lar R",
+    "text": "1 Instal·lar R\n\nAneu a https://cran.r-project.org.\nCliqueu Download R for Windows i després base.\nCliqueu Download R-4.x.x for Windows (la versió més recent) i deseu l’instal·lador.\nExecuteu el fitxer descarregat i accepteu les opcions per defecte (Següent, Següent…).\n\n\n\n\n\n\n\nConsell\n\n\n\nSi l’instal·lador no té permisos d’administrador, ofereix instal·lar R a la carpeta de l’usuari. Accepteu-ho: funciona igual."
+  },
+  {
+    "objectID": "abans-de-comencar.html#installar-rstudio",
+    "href": "abans-de-comencar.html#installar-rstudio",
+    "title": "Abans de començar: instal·lar R i RStudio",
+    "section": "2 Instal·lar RStudio",
+    "text": "2 Instal·lar RStudio\n\nAneu a https://posit.co/download/rstudio-desktop/.\nEl pas 1 de la pàgina (instal·lar R) ja el teniu fet. Al pas 2, cliqueu Download RStudio Desktop for Windows.\nExecuteu l’instal·lador i accepteu les opcions per defecte.\nObriu RStudio (no R!) des del menú d’inici."
+  },
+  {
+    "objectID": "abans-de-comencar.html#configurar-rstudio-només-la-primera-vegada",
+    "href": "abans-de-comencar.html#configurar-rstudio-només-la-primera-vegada",
+    "title": "Abans de començar: instal·lar R i RStudio",
+    "section": "3 Configurar RStudio (només la primera vegada)",
+    "text": "3 Configurar RStudio (només la primera vegada)\nAnem a Tools → Global Options…\n\n\n\n\n\n\n\n\nApartat\nOpció\nValor recomanat\n\n\n\n\nGeneral\nRestore .RData into workspace at startup\nDesmarcat\n\n\nGeneral\nSave workspace to .RData on exit\nNever\n\n\nCode\nUse native pipe operator, |&gt; (requires R 4.1+)\nMarcat\n\n\n\n\n\n\n\n\n\nNota\n\n\n\nAmb aquesta configuració, cada vegada que obrim RStudio comencem “de zero” i tot el que necessitem surt del codi dels scripts. I la drecera Ctrl + Shift + M escriu el pipe |&gt;."
+  },
+  {
+    "objectID": "abans-de-comencar.html#installar-el-paquet-tidyverse",
+    "href": "abans-de-comencar.html#installar-el-paquet-tidyverse",
+    "title": "Abans de començar: instal·lar R i RStudio",
+    "section": "4 Instal·lar el paquet tidyverse",
+    "text": "4 Instal·lar el paquet tidyverse\nA la consola de RStudio (el panell de baix a l’esquerra), escriviu i premeu Enter:\ninstall.packages(\"tidyverse\")\nTarda uns minuts. Quan acabi, comproveu que funciona:\nlibrary(tidyverse)\nSi apareix un missatge com ── Attaching core tidyverse packages ── amb una llista de paquets, tot és correcte. (Els avisos de Conflicts són normals.)"
+  },
+  {
+    "objectID": "abans-de-comencar.html#obrir-els-materials-del-curs",
+    "href": "abans-de-comencar.html#obrir-els-materials-del-curs",
+    "title": "Abans de començar: instal·lar R i RStudio",
+    "section": "5 Obrir els materials del curs",
+    "text": "5 Obrir els materials del curs\n\nDescarregueu el fitxer materials-sessio-N.zip de la pàgina de la sessió i descomprimiu-lo (botó dret → Extreure-ho tot).\nFeu doble clic al fitxer sessio_1.Rproj: s’obrirà RStudio amb el projecte.\nAl panell Files (baix a la dreta), obriu la carpeta codi/ i el primer script."
+  },
+  {
+    "objectID": "abans-de-comencar.html#problemes-habituals",
+    "href": "abans-de-comencar.html#problemes-habituals",
+    "title": "Abans de començar: instal·lar R i RStudio",
+    "section": "6 Problemes habituals",
+    "text": "6 Problemes habituals\n\nNo tinc permisos d’administrador\n\nR es pot instal·lar a la carpeta de l’usuari (vegeu el pas 1). Per a RStudio, a la pàgina de descàrrega hi ha una versió en zip (apartat Zip/Tarballs) que només cal descomprimir: dins la carpeta, executeu rstudio.exe. Si tampoc és possible, feu servir Posit Cloud.\n\ninstall.packages() dona un error de connexió (cannot open URL, unable to access index for repository…)\n\nSovint és el proxy o el tallafocs de la xarxa corporativa. Proveu-ho des d’una altra xarxa o consulteu el servei informàtic. Com a alternativa immediata, Posit Cloud.\n\nProblemes amb carpetes d’OneDrive o amb rutes amb accents\n\nSi la carpeta Documents està sincronitzada amb OneDrive, R hi guarda els paquets i a vegades dona problemes. Si podeu, treballeu en una carpeta local (p. ex. C:/curs_R), millor sense accents ni espais al nom.\n\nHe obert R en lloc de RStudio\n\nSi veieu una sola finestra amb fons blanc i el títol RGui, és R “sol”. Tanqueu-lo i obriu RStudio.\n\n“Error: could not find function…”\n\nNormalment vol dir que no hem carregat el paquet: executeu library(tidyverse) al principi de l’script."
+  },
+  {
+    "objectID": "sessio-1/index.html",
+    "href": "sessio-1/index.html",
+    "title": "Sessió 1 · Introducció a R i RStudio",
+    "section": "",
+    "text": "Introducció a l’estadística (conceptes bàsics i tipus de variables) i primers passos amb R i RStudio: objectes, funcions, tipus de dades i les funcions principals del tidyverse per importar, netejar i exportar dades."
+  },
+  {
+    "objectID": "sessio-1/index.html#slides",
+    "href": "sessio-1/index.html#slides",
+    "title": "Sessió 1 · Introducció a R i RStudio",
+    "section": "Slides",
+    "text": "Slides\n\nSlides de la sessió 1 · Introducció a l’estadística, R, RStudio i tidyverse\nSlides d’estadística descriptiva · Les començarem si tenim temps; si no, a la sessió 2"
+  },
+  {
+    "objectID": "sessio-1/index.html#materials",
+    "href": "sessio-1/index.html#materials",
+    "title": "Sessió 1 · Introducció a R i RStudio",
+    "section": "Materials",
+    "text": "Materials\n\n\n\n\n\n\nConsell⬇ Descarregar els materials de la sessió 1 (zip)\n\n\n\n\n\n\nUn cop descomprimit, trobareu:\nsessio-1/\n├── sessio_1.Rproj              ← obriu aquest fitxer amb RStudio\n├── dades/\n│   ├── enquesta_ceo.csv            Enquesta del CEO (400 respostes) per a la demo\n│   └── competencies_basiques.csv   Competències bàsiques de 6è (500 alumnes) per a l'exercici\n└── codi/\n    ├── 01_primers_passos.R         R bàsic i funcions principals del tidyverse\n    └── exercici_sessio_1.R         Plantilla de l'exercici"
+  },
+  {
+    "objectID": "sessio-1/index.html#exercici-importar-netejar-i-exportar-unes-dades",
+    "href": "sessio-1/index.html#exercici-importar-netejar-i-exportar-unes-dades",
+    "title": "Sessió 1 · Introducció a R i RStudio",
+    "section": "Exercici: importar, netejar i exportar unes dades",
+    "text": "Exercici: importar, netejar i exportar unes dades\nAmb les dades dades/competencies_basiques.csv i la plantilla codi/exercici_sessio_1.R:\n\nCarregar el tidyverse i importar les dades amb read_csv2().\nMirar les dades amb glimpse() i respondre en un comentari: quantes files i columnes hi ha? De quin tipus és cada variable?\nselect(): quedar-se amb CODI_ALUMNE, GENERE, NATURALESA, HABITAT, PCAT, PMAT i PANG.\nrename(): posar noms clars en minúscules (id, genere, titularitat, habitat, nota_cat, nota_mat, nota_ang).\nmutate() + case_when(): recodificar genere (D → \"Dona\", H → \"Home\").\nmutate() + factor(): ordenar les categories de habitat de menys a més habitants.\nmutate(): crear nota_mitjana (mitjana de les tres notes) i, amb case_when(), nivell_mat: Baix (&lt; 50), Mitjà (de 50 a menys de 75) i Alt (≥ 75).\nfilter(): eliminar els alumnes sense nota de matemàtiques.\nEscriure en un comentari una limitació d’aquestes dades.\nExportar les dades netes amb write_csv2() a dades/competencies_basiques_net.csv.\n\nQuè cal lliurar: l’script exercici_sessio_1.R complet i comentat i el fitxer competencies_basiques_net.csv, per correu electrònic a joelardiacaarnau@gencat.cat.\n\n\n\n\n\n\nNotaSolució\n\n\n\nLa solució de l’exercici es publicarà aquí després de la sessió."
+  },
+  {
+    "objectID": "sessio-1/index.html#fonts-de-les-dades",
+    "href": "sessio-1/index.html#fonts-de-les-dades",
+    "title": "Sessió 1 · Introducció a R i RStudio",
+    "section": "Fonts de les dades",
+    "text": "Fonts de les dades\n\nEnquesta del CEO: subselecció de variables i casos d’una enquesta del Centre d’Estudis d’Opinió.\nCompetències bàsiques: mostra de l’avaluació de competències bàsiques de 6è de primària (2023) del Departament d’Educació, publicada al portal de dades obertes de la Generalitat."
+  },
+  {
+    "objectID": "sessio-3/index.html",
+    "href": "sessio-3/index.html",
+    "title": "Sessió 3 · Estadística bivariada",
+    "section": "",
+    "text": "Relacions entre dues variables qualitatives i entre una variable quantitativa i una qualitativa: taules de contingència, prova χ² i comparació de mitjanes amb R.\n\n\n\n\n\n\nNota\n\n\n\nEls materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió."
+  }
+]

@@ -1,0 +1,22 @@
+---
+title: "Recursos"
+---
+
+## Aprendre R
+
+- **[R for Data Science](https://r4ds.hadley.nz/)** (2a ed.), de Wickham, Çetinkaya-Rundel i Grolemund. La referència per treballar amb dades amb el tidyverse. Gratuït en línia.
+- **[R para Ciencia de Datos](https://es.r4ds.hadley.nz/)**: traducció al castellà de la primera edició.
+- **[Cheatsheets de Posit](https://posit.co/resources/cheatsheets/)**: xuletes d'una pàgina de RStudio, `dplyr`, `ggplot2`, `readr`...
+- Dins de RStudio: `?nom_funcio` (o <kbd>F1</kbd>) mostra l'ajuda de qualsevol funció.
+
+## Eines
+
+- **[R](https://cran.r-project.org)** i **[RStudio Desktop](https://posit.co/download/rstudio-desktop/)**: vegeu [Abans de començar](abans-de-comencar.qmd).
+- **[Posit Cloud](https://posit.cloud)**: RStudio al navegador, sense instal·lar res.
+- **[Quarto](https://quarto.org)**: per fer informes, presentacions i webs amb codi R (com aquesta web i les slides del curs).
+
+## Dades per practicar
+
+- **[Centre d'Estudis d'Opinió](https://ceo.gencat.cat)**: microdades de les enquestes i baròmetres.
+- **[Dades obertes de Catalunya](https://analisi.transparenciacatalunya.cat)**: conjunts de dades de la Generalitat.
+- **[Idescat](https://www.idescat.cat)**: estadística oficial de Catalunya.

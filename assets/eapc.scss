@@ -1,0 +1,182 @@
+/*-- scss:defaults --*/
+
+// Tema de les slides del curs "Introducció a l'estadística amb R" (EAPC)
+// Color principal: bordeus RGB(109, 7, 26), el mateix de les slides Beamer del 2025.
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+$bordeus:        #6D071A;
+$bordeus-clar:   #F4E8EA;
+$gris-fosc:      #2B2B2B;
+$gris-mig:       #6B6B6B;
+$verd:           #1E6B3A;
+$verd-clar:      #E6F2EA;
+
+// unquote(): si no, Sass treu les cometes i "Source Sans 3" deixa de ser CSS vàlid
+$font-family-sans-serif: unquote('"Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif');
+$font-family-monospace:  unquote('"JetBrains Mono", Consolas, "Courier New", monospace');
+
+$body-color:                 $gris-fosc;
+$link-color:                 $bordeus;
+$presentation-heading-color: $bordeus;
+$presentation-heading-font-weight: 700;
+$presentation-font-size-root: 34px;
+$presentation-h2-font-size:  1.45em;
+$code-block-font-size:       0.62em;
+$code-color:                 $bordeus;
+$code-block-bg:              #F7F7F7;
+$code-block-border-color:    #E2E2E2;
+
+
+/*-- scss:rules --*/
+
+// ---- Títols ---------------------------------------------------------------
+.reveal h2 {
+  border-bottom: 3px solid $bordeus;
+  padding-bottom: 0.15em;
+  margin-bottom: 0.6em;
+}
+
+// Diapositives de secció (# Títol): fons bordeus i text blanc
+.reveal .slide.seccio h1,
+.reveal .slide.seccio h2,
+.reveal .slide.seccio p {
+  color: #fff;
+  border-bottom: none;
+}
+.reveal .slide.seccio h1 { font-size: 2.2em; }
+
+// Diapositiva de títol
+#title-slide {
+  .title    { color: $bordeus; font-size: 1.9em; }
+  .subtitle { color: $gris-fosc; font-size: 1.1em; }
+  .quarto-title-author-name,
+  .quarto-title-affiliation,
+  .date     { color: $gris-mig; }
+}
+
+// ---- Text ---------------------------------------------------------------------
+.reveal strong { color: $bordeus; }
+.reveal .petit  { font-size: 0.75em; }
+.reveal .molt-petit { font-size: 0.6em; }
+.reveal .gris   { color: $gris-mig; }
+.reveal .centre { text-align: center; }
+
+.reveal .missatge {
+  font-size: 1.15em;
+  font-weight: 600;
+  color: $bordeus;
+  text-align: center;
+  margin-top: 1em;
+}
+
+// ---- Caixes ----------------------------------------------------------------------
+.reveal .caixa {
+  background: $bordeus-clar;
+  border-left: 6px solid $bordeus;
+  border-radius: 6px;
+  padding: 0.5em 0.8em;
+  margin: 0.5em 0;
+}
+.reveal .caixa-verda {
+  background: $verd-clar;
+  border-left: 6px solid $verd;
+  border-radius: 6px;
+  padding: 0.5em 0.8em;
+  margin: 0.5em 0;
+}
+
+// Les tres columnes dels "3 grans blocs"
+.reveal .bloc {
+  background: $bordeus-clar;
+  border-top: 6px solid $bordeus;
+  border-radius: 8px;
+  padding: 0.5em 0.7em;
+  height: 100%;
+  font-size: 0.75em;
+  h3 { margin-top: 0; color: $bordeus; font-size: 1.25em; }
+}
+
+// "El teu torn": exercicis curts a classe
+.reveal .slide.el-teu-torn h2 {
+  color: $verd;
+  border-bottom-color: $verd;
+}
+.reveal .slide.el-teu-torn h2::before { content: "✍️ "; }
+
+// Respostes que apareixen amb fragment
+.reveal .resposta {
+  color: $verd;
+  font-weight: 600;
+}
+
+// ---- Esquema dels 4 panells de RStudio ---------------------------------------------
+.reveal .panells {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 14px;
+  height: 470px;
+  font-size: 0.68em;
+  .panell {
+    border: 2px solid $bordeus;
+    border-radius: 8px;
+    padding: 0.4em 0.7em;
+    background: #fff;
+    p { margin: 0.2em 0; }
+  }
+  .panell-titol {
+    font-weight: 700;
+    color: #fff;
+    background: $bordeus;
+    border-radius: 4px;
+    padding: 0.1em 0.5em;
+    display: inline-block;
+    margin-bottom: 0.3em;
+  }
+}
+
+// ---- Taules ------------------------------------------------------------------------------
+.reveal .taula-petita table { font-size: 0.6em; }
+.reveal table {
+  font-size: 0.72em;
+  th { border-bottom: 2px solid $bordeus; color: $bordeus; }
+  td, th { padding: 0.25em 0.6em; }
+}
+
+// ---- Codi --------------------------------------------------------------------------------
+// Sense lligadures: que <- i |> es vegin tal com s'escriuen (i no com a fletxes)
+.reveal code, .reveal pre {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+.reveal pre code { line-height: 1.35; }
+.reveal div.sourceCode { margin: 0.4em 0; }
+.reveal .cell-output pre code { background: #fff; }
+.reveal .cell-output-stdout pre,
+.reveal .cell-output pre {
+  border-left: 4px solid $gris-mig;
+}
+
+// Tecles
+.reveal kbd {
+  background: #EEE;
+  border: 1px solid #BBB;
+  border-radius: 4px;
+  padding: 0.05em 0.35em;
+  font-family: $font-family-monospace;
+  font-size: 0.85em;
+}
+
+// ---- Peu i logo -----------------------------------------------------------------------------
+.reveal .footer { color: $gris-mig; font-size: 0.45em; }
+.reveal .slide-logo { max-height: 2.2em !important; }
+
+// Sobre fons bordeus (diapositives de secció): logo sobre una placa blanca i peu en blanc
+.reveal.has-dark-background .slide-logo {
+  background: #fff;
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+.reveal.has-dark-background .footer,
+.reveal.has-dark-background .slide-number { color: rgba(255, 255, 255, 0.75); }

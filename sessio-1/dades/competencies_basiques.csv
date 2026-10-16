@@ -1,0 +1,501 @@
+CODI_ALUMNE;PCAT;PMAT;PANG;GENERE;ANY_NAIXEMENT;NATURALESA;HABITAT;AREA_TERRITORIAL
+3039061722;86,8;86,9;88,67;D;2011;Privat;De 10001 a 100000;Vallès Occidental
+4159117078;33,9;59,2;82,58;H;2010;Públic;Més de 100000;Barcelona Comarques
+21002286604;NA;NA;42,00;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+8139769361;78,5;81,6;95,58;D;2011;Privat;Més de 100000;Lleida
+4512109196;74,8;77,3;59,00;D;2011;Públic;Fins a 10000;Catalunya Central
+4846710797;89,9;97,9;100,00;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+5604820020;88,5;83,7;81,92;D;2011;Públic;Més de 100000;Vallès Occidental
+6135652374;55,5;28,0;82,83;H;2011;Públic;De 10001 a 100000;Catalunya Central
+6890849248;85,2;77,3;75,75;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+2960692768;75,5;70,9;64,75;D;2011;Privat;Més de 100000;Maresme - Vallès Oriental
+15299198370;64,9;59,3;88,08;D;2011;Privat;De 10001 a 100000;Girona
+8471693817;80,5;73,3;95,58;D;2011;Públic;De 10001 a 100000;Terres de l'Ebre
+8637227199;42,7;52,9;56,42;H;2011;Públic;De 10001 a 100000;Tarragona
+6488003339;69,8;83,7;48,33;H;2011;Públic;De 10001 a 100000;Catalunya Central
+2485461235;79,5;59,6;79,92;H;2011;Privat;Més de 100000;Barcelona Comarques
+4173617466;95,8;92,5;91,42;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+8404989668;85,7;87,6;90,58;D;2011;Públic;Més de 100000;Tarragona
+1872930278;79,8;84,8;92,83;H;2011;Privat;Més de 100000;Vallès Occidental
+7359398182;40,4;26,2;64,33;D;2011;Públic;De 10001 a 100000;Girona
+13375934669;72,5;NA;NA;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+13495248533;88,0;64,8;85,58;D;2011;Privat;Fins a 10000;Maresme - Vallès Oriental
+13429140529;83,5;49,2;44,33;D;2011;Públic;De 10001 a 100000;Barcelona Comarques
+13545011336;78,7;61,0;90,75;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+5037880664;51,8;52,1;59,75;D;2011;Públic;Més de 100000;Vallès Occidental
+5442435292;82,9;65,9;79,67;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+15275059556;52,9;34,5;65,67;D;2011;Privat;De 10001 a 100000;Catalunya Central
+5150523144;66,1;97,9;48,08;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+7547463399;89,3;63,5;95,58;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+7647846796;76,1;81,2;66,08;D;2011;Públic;Fins a 10000;Girona
+3793504027;74,1;54,6;75,75;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+8314516279;50,2;48,9;47,17;H;2011;Públic;Fins a 10000;Terres de l'Ebre
+7500208090;75,9;92,5;80,58;H;2011;Públic;De 10001 a 100000;Girona
+2005259684;64,1;NA;NA;H;2011;Privat;De 10001 a 100000;Girona
+5903268643;77,0;55,0;91,00;D;2011;Privat;Més de 100000;Barcelona Comarques
+5398015559;86,0;63,9;64,33;D;2011;Públic;Més de 100000;Vallès Occidental
+7778318301;63,6;55,0;73,58;D;2011;Públic;De 10001 a 100000;Girona
+3273122499;62,2;74,1;91,42;H;2011;Públic;Fins a 10000;Tarragona
+12364100214;77,3;73,4;90,58;D;2011;Públic;Més de 100000;Maresme - Vallès Oriental
+143841382;87,3;58,2;89,33;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+6526890683;44,7;55,7;57,33;H;2011;Públic;Més de 100000;Barcelona Comarques
+70264336;85,4;67,0;84,33;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+13614989789;94,4;84,4;87,25;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+20063556804;78,1;65,0;82,00;D;2010;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+410163128;78,6;88,6;91,42;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+5094134857;51,2;42,9;NA;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+6702334075;98,9;100,0;100,00;D;2011;Públic;Fins a 10000;Catalunya Central
+2486530782;77,4;45,7;78,25;D;2011;Privat;Més de 100000;Barcelona Comarques
+4778386828;81,8;82,0;91,00;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+6130321529;77,6;78,4;62,25;H;2011;Públic;Més de 100000;Maresme - Vallès Oriental
+16116971252;68,7;86,2;93,00;D;2010;Públic;Fins a 10000;Catalunya Central
+15194124707;61,7;44,0;37,17;H;2010;Públic;Fins a 10000;Terres de l'Ebre
+108622077;70,4;94,7;69,25;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+12826440886;57,1;37,5;49,33;D;2011;Públic;Fins a 10000;Lleida
+4679117081;56,7;75,2;60,83;H;2011;Públic;Més de 100000;Barcelona Comarques
+1656879500;63,1;51,8;64,33;H;2011;Privat;Més de 100000;Vallès Occidental
+4184989760;94,9;71,3;91,42;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+1057711841;32,4;37,6;42,08;H;2010;Privat;Més de 100000;Maresme - Vallès Oriental
+5191502707;82,7;61,1;91,17;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+13527385739;70,0;63,5;66,75;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+11111558842;NA;25,2;21,08;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+1771580420;93,8;92,5;100,00;D;2011;Privat;De 10001 a 100000;Barcelona Comarques
+2705281253;81,1;91,5;95,33;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+7298791697;51,3;NA;NA;H;2011;Públic;Fins a 10000;Vallès Occidental
+5589072000;62,0;45,0;93,25;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+7097565609;69,2;80,5;100,00;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+1722807513;79,0;80,5;75,50;D;2011;Privat;De 10001 a 100000;Catalunya Central
+2024944719;85,4;77,7;100,00;D;2011;Privat;De 10001 a 100000;Girona
+6995517387;70,2;65,9;75,33;D;2011;Públic;De 10001 a 100000;Barcelona Comarques
+2519522006;95,5;93,6;95,33;D;2011;Privat;Més de 100000;Barcelona Comarques
+4678251845;85,4;70,2;78,17;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+4908352164;84,6;75,1;93,25;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+5494224762;73,5;73,0;81,83;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+4659252067;34,6;30,1;NA;H;2011;Públic;Més de 100000;Barcelona Comarques
+16319311247;76,1;83,3;67,58;H;2010;Públic;Més de 100000;Consorci d'Educació de Barcelona
+5536462282;88,8;87,6;79,17;D;2011;Públic;Més de 100000;Barcelona Comarques
+3527947190;86,5;89,0;91,42;H;2011;Privat;Fins a 10000;Maresme - Vallès Oriental
+2202480329;85,4;96,8;100,00;D;2011;Privat;Més de 100000;Lleida
+3040467789;60,7;73,1;79,42;D;2011;Privat;De 10001 a 100000;Girona
+6527385628;34,8;NA;NA;H;2010;Públic;Més de 100000;Consorci d'Educació de Barcelona
+4556282397;53,8;63,8;48,58;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+12968903390;65,7;59,7;51,58;H;2011;Privat;Més de 100000;Barcelona Comarques
+7547823359;41,0;33,7;17,42;H;2011;Públic;Fins a 10000;Girona
+8281569159;95,8;64,2;84,67;D;2011;Privat;De 10001 a 100000;Tarragona
+4684978538;66,0;43,3;81,83;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+5024258619;65,9;61,7;64,58;D;2011;Públic;Més de 100000;Vallès Occidental
+4549072088;45,8;40,7;70,42;D;2010;Públic;De 10001 a 100000;Baix Llobregat
+6202120321;48,5;73,8;86,42;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+6919961569;81,0;73,4;52,75;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+2991558007;93,8;96,8;100,00;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+2550624328;81,8;88,3;88,25;H;2011;Privat;Més de 100000;Barcelona Comarques
+3058881743;66,4;86,6;75,50;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+8170827693;47,3;62,8;53,08;H;2011;Públic;Més de 100000;Lleida
+1269083250;84,0;64,9;91,00;D;2011;Privat;Més de 100000;Vallès Occidental
+981198016;79,5;84,4;73,42;D;2011;Privat;De 10001 a 100000;Catalunya Central
+1357047251;76,3;84,0;86,17;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+3193898629;90,7;71,6;93,50;D;2011;Privat;Fins a 10000;Girona
+7712109105;76,2;63,1;90,58;H;2011;Públic;De 10001 a 100000;Girona
+104539753;62,2;58,9;89,33;D;2011;Públic;De 10001 a 100000;Girona
+7647812141;72,2;79,4;49,75;H;2011;Públic;Fins a 10000;Girona
+6597295636;73,8;74,5;82,42;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+7824809696;59,2;93,6;62,25;H;2011;Públic;De 10001 a 100000;Girona
+2259511658;76,4;84,4;84,92;H;2011;Privat;Fins a 10000;Tarragona
+8698397074;75,1;92,9;76,08;H;2011;Públic;De 10001 a 100000;Terres de l'Ebre
+2504865082;NA;NA;NA;D;2011;Privat;Més de 100000;Barcelona Comarques
+6928960449;54,4;68,1;58,67;H;2011;Públic;Més de 100000;Barcelona Comarques
+19007953847;19,9;16,3;25,92;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+773167460;60,0;76,9;91,17;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+13095416345;66,9;83,7;80,25;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+4642165414;83,7;79,4;75,00;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+3015034729;NA;NA;NA;H;2011;Privat;Més de 100000;Vallès Occidental
+848318335;76,7;89,4;70,58;H;2011;Privat;De 10001 a 100000;Maresme - Vallès Oriental
+4439207068;90,4;94,7;95,33;H;2011;Públic;Fins a 10000;Baix Llobregat
+5509128217;73,4;59,9;68,33;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+157328439;85,4;78,4;88,67;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+7846204535;74,8;49,6;73,25;H;2011;Públic;De 10001 a 100000;Girona
+2647419458;81,5;74,8;91,00;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+16548896595;48,6;53,1;64,92;D;2011;Públic;Més de 100000;Tarragona
+7142649040;76,7;70,9;88,50;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+4854494818;96,9;72,4;95,58;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+7080512729;67,1;48,2;57,67;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+526136133;78,9;90,8;100,00;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+12923729076;81,3;73,1;78,25;D;2011;Públic;Més de 100000;Vallès Occidental
+1962998707;79,5;66,0;95,33;H;2011;Privat;Més de 100000;Barcelona Comarques
+14633573084;82,4;92,9;93,50;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+12328127214;88,0;82,3;95,58;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+1319646629;46,2;47,1;61,83;D;2010;Privat;Més de 100000;Vallès Occidental
+5643808579;63,2;37,6;86,42;H;2011;Públic;Més de 100000;Barcelona Comarques
+4108836777;63,9;91,5;53,92;H;2011;Públic;Fins a 10000;Maresme - Vallès Oriental
+4944370161;74,2;79,4;81,58;H;2011;Públic;Fins a 10000;Catalunya Central
+1171288888;76,5;84,8;95,17;H;2011;Privat;Fins a 10000;Girona
+6787182211;72,6;100,0;83,50;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+6973459841;98,1;96,1;100,00;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+1306721061;85,7;100,0;93,08;H;2011;Privat;Més de 100000;Vallès Occidental
+4881434270;88,3;NA;86,58;D;2011;Públic;Fins a 10000;Catalunya Central
+8157688377;91,9;97,9;100,00;H;2011;Públic;Fins a 10000;Lleida
+3308015628;74,9;67,4;85,92;H;2011;Privat;Més de 100000;Barcelona Comarques
+2353751408;78,2;69,2;81,75;D;2011;Privat;Més de 100000;Tarragona
+13304989774;62,2;63,5;75,50;H;2011;Públic;De 10001 a 100000;Tarragona
+105304671;57,6;61,1;68,83;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+1177362215;83,9;92,2;86,17;D;2011;Privat;De 10001 a 100000;Baix Llobregat
+7075101215;91,0;61,7;91,42;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+7890276525;80,9;73,1;82,00;H;2011;Públic;Fins a 10000;Lleida
+1024730061;91,6;94,0;88,25;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+5433684821;96,4;93,6;90,92;D;2011;Públic;Fins a 10000;Maresme - Vallès Oriental
+12928757180;89,6;72,7;81,92;D;2011;Públic;De 10001 a 100000;Girona
+8685169650;77,0;80,8;91,00;D;2011;Públic;Més de 100000;Tarragona
+8223020226;80,7;91,5;84,33;H;2011;Públic;De 10001 a 100000;Terres de l'Ebre
+8762559055;50,8;89,7;71,08;D;2011;Públic;De 10001 a 100000;Tarragona
+7824696258;52,5;56,4;31,83;H;2011;Públic;Fins a 10000;Girona
+1606744522;73,7;87,9;93,25;H;2011;Privat;De 10001 a 100000;Barcelona Comarques
+6497171875;95,8;96,1;93,08;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+8530264313;90,2;90,8;100,00;D;2011;Públic;De 10001 a 100000;Tarragona
+4785585031;85,7;96,1;93,25;H;2011;Públic;Fins a 10000;Catalunya Central
+7623898573;91,9;77,0;86,17;D;2011;Públic;De 10001 a 100000;Girona
+4556181185;81,9;76,6;91,17;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+7603279867;66,6;71,7;52,08;H;2011;Públic;Fins a 10000;Girona
+4564820115;69,5;58,2;82,42;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+5681985341;67,8;90,8;81,67;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+730996477;64,7;90,1;95,33;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+6077778360;42,3;NA;NA;H;2010;Públic;De 10001 a 100000;Baix Llobregat
+1994809737;61,7;72,7;84,25;H;2011;Privat;De 10001 a 100000;Girona
+8025551162;52,8;40,1;73,25;D;2011;Públic;Fins a 10000;Lleida
+1495394663;69,7;75,9;80,58;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+22538001788;60,4;68,8;84,08;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+3586575791;72,2;67,4;58,08;H;2011;Privat;De 10001 a 100000;Girona
+3055518453;89,4;100,0;95,58;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+12609815489;76,8;81,6;90,75;D;2011;Privat;Més de 100000;Barcelona Comarques
+6604798470;87,3;55,4;84,33;H;2011;Públic;Més de 100000;Vallès Occidental
+721547641;56,8;49,6;81,58;H;2011;Privat;Fins a 10000;Catalunya Central
+7054449734;84,9;93,6;93,50;D;2011;Públic;Fins a 10000;Catalunya Central
+17673339534;57,0;35,4;46,83;D;2011;Públic;Més de 100000;Tarragona
+16545588374;84,0;92,5;100,00;H;2011;Públic;De 10001 a 100000;Girona
+6404629714;71,7;84,8;88,08;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+6692750252;73,9;NA;NA;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+6702379070;98,9;100,0;95,17;H;2011;Públic;Fins a 10000;Catalunya Central
+8330366517;67,7;78,8;93,08;H;2011;Públic;Fins a 10000;Tarragona
+2202368784;96,4;91,8;95,17;D;2011;Privat;Més de 100000;Lleida
+8403785136;79,9;81,6;95,58;D;2011;Públic;Fins a 10000;Tarragona
+6131322639;72,2;72,0;56,00;H;2011;Públic;Més de 100000;Maresme - Vallès Oriental
+4515225069;NA;59,6;36,00;H;2010;Públic;Fins a 10000;Catalunya Central
+4185630027;93,8;85,9;95,17;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+7904910019;84,3;77,3;88,83;H;2011;Públic;Fins a 10000;Lleida
+5583009888;29,0;42,5;34,58;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+5191254287;76,4;NA;NA;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+4949814444;77,3;69,2;82,42;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+13703212660;92,7;100,0;95,17;H;2011;Públic;De 10001 a 100000;Tarragona
+7676339526;61,1;77,7;90,92;D;2011;Públic;Fins a 10000;Girona
+12392930343;83,7;94,0;72,67;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+4263009089;85,7;83,7;90,75;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+8461074222;80,3;83,7;79,42;H;2011;Públic;Fins a 10000;Terres de l'Ebre
+11079927803;84,1;82,3;95,58;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+6354876245;60,8;79,8;95,58;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+5211142747;92,2;84,0;95,17;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+22687675790;NA;NA;NA;H;2010;Públic;Fins a 10000;Maresme - Vallès Oriental
+8295979566;78,1;46,5;69,58;H;2011;Públic;Fins a 10000;Terres de l'Ebre
+4180658135;86,8;77,9;91,00;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+5036620808;43,0;61,0;55,25;D;2011;Públic;Més de 100000;Vallès Occidental
+5970872689;51,7;75,5;55,75;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+7480219314;49,0;60,9;52,17;D;2011;Públic;De 10001 a 100000;Girona
+4351153081;59,9;45,0;64,50;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+7795832356;72,8;78,3;72,42;D;2011;Públic;De 10001 a 100000;Girona
+9242267538;81,5;88,6;82,00;D;2011;Públic;Fins a 10000;Catalunya Central
+2214528546;88,8;88,6;93,08;H;2011;Privat;Més de 100000;Lleida
+7183448624;63,3;53,2;72,25;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+3836114631;77,7;83,3;72,58;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+7258926678;85,7;53,9;76,50;H;2011;Públic;De 10001 a 100000;Catalunya Central
+949477874;92,7;96,8;100,00;D;2011;Privat;Més de 100000;Barcelona Comarques
+12530197884;86,3;94,7;75,00;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+15626622349;77,2;90,4;100,00;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+2569803193;74,2;71,3;66,58;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+6769094440;94,2;96,1;88,42;D;2010;Públic;Fins a 10000;Maresme - Vallès Oriental
+7234865016;79,4;78,4;81,83;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+12440737811;83,8;94,0;74,75;H;2011;Públic;Fins a 10000;Girona
+12364089881;87,2;68,5;88,83;D;2011;Públic;Més de 100000;Maresme - Vallès Oriental
+13737802155;NA;76,2;62,33;D;2011;Públic;De 10001 a 100000;Girona
+6503628598;NA;93,6;91,42;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+2380973047;91,6;72,4;93,08;D;2011;Privat;De 10001 a 100000;Tarragona
+5107891883;72,8;82,3;64,50;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+6586946007;51,0;67,7;47,33;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+5511479178;68,3;67,4;76,17;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+9754303538;73,0;75,2;73,42;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+868656738;62,2;63,1;70,33;H;2011;Privat;Més de 100000;Barcelona Comarques
+1374696295;82,7;58,4;62,08;D;2011;Privat;De 10001 a 100000;Barcelona Comarques
+9372559060;67,7;86,2;88,42;H;2011;Privat;Més de 100000;Vallès Occidental
+504201342;79,9;68,5;82,00;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+6628172093;54,2;61,3;41,92;D;2011;Públic;Més de 100000;Barcelona Comarques
+12875529764;88,2;82,3;80,33;D;2011;Públic;Fins a 10000;Vallès Occidental
+8684944678;84,8;52,5;83,58;D;2011;Públic;Més de 100000;Tarragona
+587295668;98,9;100,0;100,00;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+5712064112;25,5;46,5;41,00;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+5027970657;56,2;60,6;48,67;D;2011;Públic;Més de 100000;Vallès Occidental
+1499668196;87,6;97,9;89,33;H;2011;Privat;De 10001 a 100000;Maresme - Vallès Oriental
+5905945787;76,0;70,9;79,67;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+1023245227;77,8;86,2;84,33;D;2011;Privat;De 10001 a 100000;Baix Llobregat
+7253493621;73,4;79,4;95,17;D;2011;Públic;Més de 100000;Maresme - Vallès Oriental
+3465101282;91,9;100,0;95,58;D;2011;Privat;De 10001 a 100000;Vallès Occidental
+1431502643;59,5;42,9;54,17;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+7752615271;18,2;47,8;31,33;D;2011;Públic;De 10001 a 100000;Girona
+7592919016;100,0;97,9;93,25;D;2011;Públic;Fins a 10000;Girona
+6965427403;82,4;97,9;95,58;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+4934280176;71,7;84,4;71,08;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+461637629;63,1;NA;NA;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+7814055110;86,3;73,4;77,50;D;2011;Públic;De 10001 a 100000;Girona
+22847495822;NA;36,1;87,83;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+9796125780;61,7;53,6;53,33;H;2011;Públic;Més de 100000;Barcelona Comarques
+3909871655;45,5;94,7;60,42;H;2011;Privat;Més de 100000;Vallès Occidental
+3710568131;74,8;82,6;71,33;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+6912165321;76,4;69,2;58,17;H;2011;Públic;Més de 100000;Vallès Occidental
+12296777364;73,2;57,0;79,17;D;2011;Públic;Fins a 10000;Terres de l'Ebre
+13414471383;66,3;64,6;71,42;H;2010;Privat;Més de 100000;Vallès Occidental
+791592636;63,3;44,7;75,25;H;2011;Privat;De 10001 a 100000;Maresme - Vallès Oriental
+8436552280;40,8;55,6;54,67;D;2011;Públic;Fins a 10000;Tarragona
+6164753475;68,6;70,5;75,67;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+2155191249;89,9;90,4;100,00;D;2011;Privat;Fins a 10000;Girona
+14343191564;57,9;89,7;75,58;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+5990467733;58,6;87,2;75,17;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+6634516283;63,1;29,8;43,83;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+2224291349;59,8;67,0;80,50;D;2011;Públic;De 10001 a 100000;Lleida
+2119522873;32,6;51,1;42,25;H;2010;Privat;De 10001 a 100000;Girona
+5167779451;60,0;53,9;51,92;D;2010;Públic;Fins a 10000;Maresme - Vallès Oriental
+7859826582;47,6;23,0;28,33;D;2011;Públic;Fins a 10000;Girona
+5672492504;83,1;67,0;89,08;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+7617441847;84,9;45,4;86,33;D;2011;Públic;Fins a 10000;Girona
+3204741318;84,7;93,6;95,58;H;2011;Privat;De 10001 a 100000;Girona
+5713706371;64,5;73,0;66,67;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+8019342852;94,4;86,9;93,25;D;2011;Privat;Més de 100000;Lleida
+6678116765;NA;64,6;57,92;D;2010;Públic;Més de 100000;Maresme - Vallès Oriental
+6826732254;66,2;71,3;75,42;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+6806642262;96,1;100,0;95,58;D;2011;Públic;Fins a 10000;Catalunya Central
+4262503816;70,1;74,5;89,33;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+767553414;68,7;64,9;85,92;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+1589646642;87,1;75,9;84,75;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+6203088660;81,0;73,5;74,75;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+847014473;83,6;65,3;84,50;D;2011;Privat;De 10001 a 100000;Maresme - Vallès Oriental
+6812829028;93,8;80,5;95,58;D;2011;Públic;Fins a 10000;Vallès Occidental
+334719735;78,6;65,3;86,42;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+8584066333;80,9;93,6;93,08;H;2011;Públic;Fins a 10000;Tarragona
+4490309389;46,3;NA;NA;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+156316110;87,0;100,0;90,33;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+1650433106;86,0;100,0;89,08;H;2011;Privat;Més de 100000;Vallès Occidental
+1236541086;81,2;87,2;79,83;D;2011;Privat;De 10001 a 100000;Vallès Occidental
+757182234;69,1;73,8;83,67;H;2011;Privat;Fins a 10000;Baix Llobregat
+12331952679;70,0;67,0;36,92;H;2010;Públic;De 10001 a 100000;Catalunya Central
+691176456;69,5;49,3;54,42;D;2011;Privat;De 10001 a 100000;Catalunya Central
+4219083308;73,1;91,5;75,67;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+4945281281;88,3;51,5;84,92;D;2011;Públic;Fins a 10000;Vallès Occidental
+13211941533;51,7;88,6;60,58;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+8425911129;83,0;NA;NA;D;2011;Públic;Més de 100000;Tarragona
+5024696350;35,2;42,9;36,33;H;2011;Privat;De 10001 a 100000;Barcelona Comarques
+6424966229;54,1;61,6;63,33;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+2013380221;95,8;96,1;95,58;D;2011;Privat;De 10001 a 100000;Girona
+12492165438;78,1;64,2;71,67;D;2011;Públic;Fins a 10000;Girona
+8003459847;90,7;82,3;91,17;H;2011;Públic;Més de 100000;Lleida
+1386462312;63,1;53,9;95,17;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+3055709649;79,8;96,8;92,83;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+8381839130;72,6;81,9;86,83;D;2011;Públic;Fins a 10000;Terres de l'Ebre
+5503223644;76,0;92,9;88,42;H;2011;Públic;Fins a 10000;Catalunya Central
+1851727627;94,3;96,8;89,08;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+6411952563;89,1;66,7;86,42;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+6366361078;79,3;91,5;82,00;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+5191806447;39,0;43,6;32,83;H;2010;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+12758870608;82,7;69,1;77,92;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+20032666039;NA;49,7;89,33;H;2011;Públic;Més de 100000;Barcelona Comarques
+6058071772;67,8;84,0;69,17;H;2011;Públic;De 10001 a 100000;Catalunya Central
+12331479281;NA;46,9;62,33;D;2011;Públic;De 10001 a 100000;Catalunya Central
+2138093364;68,3;64,9;86,00;D;2011;Privat;De 10001 a 100000;Girona
+4784944765;59,8;49,2;53,67;D;2010;Públic;Fins a 10000;Maresme - Vallès Oriental
+438037143;77,6;82,3;79,67;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+6258993229;82,0;84,8;93,08;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+1178690516;94,3;96,1;95,17;D;2011;Privat;De 10001 a 100000;Baix Llobregat
+7922120327;90,0;81,3;95,17;D;2011;Públic;Fins a 10000;Lleida
+3259623219;89,9;97,9;93,50;D;2011;Privat;Fins a 10000;Tarragona
+334561306;NA;46,1;68,83;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+3040028176;88,5;83,0;100,00;D;2011;Privat;De 10001 a 100000;Baix Llobregat
+8674663487;89,9;82,9;86,17;D;2011;Públic;De 10001 a 100000;Tarragona
+718105578;NA;62,8;41,08;H;2011;Privat;Fins a 10000;Catalunya Central
+7608453291;91,9;83,7;100,00;D;2011;Públic;Fins a 10000;Girona
+5908465509;87,7;90,5;79,92;H;2011;Públic;Fins a 10000;Barcelona Comarques
+16481200202;53,4;NA;NA;H;2011;Públic;Més de 100000;Barcelona Comarques
+7500321523;34,3;30,8;60,00;H;2011;Públic;De 10001 a 100000;Girona
+11215686159;46,2;36,5;53,33;D;2011;Públic;De 10001 a 100000;Girona
+13270849433;71,9;NA;NA;D;2011;Públic;Més de 100000;Vallès Occidental
+7904685042;68,7;62,8;95,33;H;2010;Públic;Fins a 10000;Lleida
+8414505059;78,1;62,4;80,08;D;2011;Públic;Fins a 10000;Tarragona
+11553155219;80,0;81,9;88,08;D;2011;Públic;Fins a 10000;Girona
+4785034758;72,0;42,6;57,83;D;2010;Públic;Fins a 10000;Maresme - Vallès Oriental
+1955754629;85,1;62,7;91,00;D;2011;Privat;De 10001 a 100000;Vallès Occidental
+7695619604;85,4;84,4;93,08;D;2011;Públic;De 10001 a 100000;Girona
+537227228;81,0;72,0;91,42;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+6226474504;49,9;43,9;36,08;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+1168442097;82,1;81,6;91,42;H;2011;Privat;De 10001 a 100000;Catalunya Central
+6015742370;64,2;50,8;86,58;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+2970354356;53,5;90,1;88,67;D;2011;Privat;De 10001 a 100000;Baix Llobregat
+1284426325;61,8;83,0;42,50;H;2011;Privat;Més de 100000;Vallès Occidental
+1929983153;62,2;85,5;100,00;D;2011;Privat;De 10001 a 100000;Maresme - Vallès Oriental
+3443425253;82,4;85,9;90,58;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+6828262090;79,5;88,3;70,83;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+1418577079;95,5;94,0;100,00;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+614156350;85,2;78,4;83,08;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+12284235095;52,5;39,7;71,17;D;2011;Públic;Més de 100000;Tarragona
+20027121447;46,9;53,2;66,00;D;2010;Públic;Fins a 10000;Terres de l'Ebre
+6723234870;86,8;82,3;89,33;D;2011;Públic;Fins a 10000;Maresme - Vallès Oriental
+4203515261;81,0;89,4;88,50;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+7244010118;72,0;72,0;77,58;D;2011;Públic;Més de 100000;Vallès Occidental
+8374100109;91,6;96,8;82,17;H;2011;Públic;Fins a 10000;Tarragona
+1959792844;64,9;82,6;93,25;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+2224685079;88,0;86,5;93,08;D;2011;Privat;De 10001 a 100000;Lleida
+15067826517;91,0;76,2;100,00;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+5869904344;83,5;89,4;81,50;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+7691592606;91,2;95,7;95,33;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+7701547609;50,8;74,5;53,00;H;2011;Públic;De 10001 a 100000;Girona
+6722289083;83,9;63,1;91,42;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+211457646;84,9;83,7;89,33;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+1993279016;57,9;71,3;73,42;D;2011;Privat;Fins a 10000;Girona
+2288712075;70,1;83,0;76,67;H;2011;Privat;Més de 100000;Tarragona
+5591232643;69,7;80,1;60,00;D;2010;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+549792839;72,2;64,6;83,67;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+6955574605;45,5;49,7;42,00;H;2011;Públic;Més de 100000;Vallès Occidental
+5558318302;78,6;61,7;88,08;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+6666440734;82,8;70,5;91,00;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+16345476546;79,0;84,0;91,17;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+8104246309;75,0;90,8;86,17;H;2011;Públic;Fins a 10000;Lleida
+5649274420;85,5;65,6;91,17;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+8018892014;88,0;85,1;90,58;H;2011;Privat;Més de 100000;Lleida
+4960759345;78,1;87,6;76,08;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+3641648005;83,1;70,3;79,50;D;2011;Privat;De 10001 a 100000;Terres de l'Ebre
+834280111;74,4;58,2;57,17;D;2011;Privat;De 10001 a 100000;Baix Llobregat
+6612705262;79,5;61,7;71,00;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+8117261860;91,1;82,6;64,75;D;2011;Públic;Fins a 10000;Lleida
+4110197847;88,2;70,9;91,00;D;2011;Públic;Fins a 10000;Catalunya Central
+21077257598;NA;NA;60,75;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+1057362220;69,0;78,0;66,67;H;2011;Privat;Més de 100000;Maresme - Vallès Oriental
+7289826575;87,1;72,4;90,58;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+6762402518;70,8;75,6;86,58;H;2011;Privat;Fins a 10000;Maresme - Vallès Oriental
+2450422796;98,1;91,5;100,00;D;2011;Privat;Més de 100000;Barcelona Comarques
+6119927787;70,4;61,4;82,33;D;2011;Públic;Més de 100000;Barcelona Comarques
+13729883200;89,1;91,5;91,00;H;2011;Públic;Més de 100000;Barcelona Comarques
+8634674710;80,5;73,7;69,00;D;2011;Públic;Més de 100000;Tarragona
+4720287836;80,5;93,6;95,17;H;2011;Públic;De 10001 a 100000;Catalunya Central
+5524021332;65,8;84,8;81,33;D;2011;Públic;De 10001 a 100000;Barcelona Comarques
+699634405;76,9;64,9;84,67;D;2011;Privat;De 10001 a 100000;Maresme - Vallès Oriental
+1955068484;72,8;92,9;74,83;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+4822683800;96,1;94,7;95,58;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+12415068548;85,4;81,2;93,00;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+1703178692;85,8;39,0;82,67;D;2011;Privat;Fins a 10000;Catalunya Central
+9372660274;93,3;94,7;95,58;D;2011;Privat;Més de 100000;Vallès Occidental
+5877306855;68,6;77,0;44,67;H;2011;Públic;Més de 100000;Barcelona Comarques
+5229646687;83,1;68,5;82,58;D;2011;Públic;Més de 100000;Barcelona Comarques
+8795585829;81,3;79,1;93,08;H;2011;Públic;Fins a 10000;Tarragona
+2397801841;89,0;94,7;95,58;D;2011;Privat;De 10001 a 100000;Tarragona
+4179252063;73,1;92,5;89,08;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+11043875142;83,8;50,0;89,33;D;2011;Públic;Més de 100000;Maresme - Vallès Oriental
+4918971765;83,0;90,8;86,00;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+12841468102;85,7;91,5;100,00;D;2011;Públic;Fins a 10000;Lleida
+8808611710;90,4;96,8;95,58;H;2011;Públic;Fins a 10000;Maresme - Vallès Oriental
+1772300349;83,1;63,9;86,75;D;2010;Privat;De 10001 a 100000;Barcelona Comarques
+10027767151;98,1;88,6;84,50;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+8556170768;56,6;60,7;55,58;D;2011;Públic;Fins a 10000;Terres de l'Ebre
+3204843524;62,9;63,1;58,58;H;2011;Privat;De 10001 a 100000;Girona
+21499507435;NA;47,5;NA;D;2011;Públic;Més de 100000;Lleida
+517553422;97,7;96,1;100,00;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+1129083250;79,6;90,8;88,08;H;2011;Privat;De 10001 a 100000;Vallès Occidental
+3357778428;76,9;68,8;93,50;D;2011;Privat;De 10001 a 100000;Maresme - Vallès Oriental
+12910771622;61,8;50,0;66,83;D;2011;Públic;Més de 100000;Barcelona Comarques
+4550939326;49,9;60,6;58,17;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+8568330523;77,0;68,5;81,58;H;2011;Públic;Fins a 10000;Terres de l'Ebre
+8207272200;76,5;85,1;90,75;D;2011;Públic;Més de 100000;Lleida
+5115000096;71,9;91,5;40,33;H;2011;Públic;Fins a 10000;Baix Llobregat
+12753752504;75,4;74,1;77,42;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+15216441103;71,8;51,5;70,42;D;2011;Públic;Més de 100000;Barcelona Comarques
+7289050448;89,1;92,9;93,50;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+5718307083;83,7;80,1;95,17;D;2011;Públic;De 10001 a 100000;Barcelona Comarques
+756991038;100,0;100,0;95,33;D;2011;Privat;De 10001 a 100000;Baix Llobregat
+4842503815;28,1;83,0;48,58;D;2011;Públic;De 10001 a 100000;Vallès Occidental
+5551434180;59,5;74,5;64,42;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+757677182;54,5;74,4;50,00;H;2011;Privat;De 10001 a 100000;Baix Llobregat
+5484573492;85,4;96,1;93,50;H;2011;Públic;Fins a 10000;Vallès Occidental
+4571299285;82,4;71,7;88,67;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+3605506245;73,7;86,5;81,58;H;2011;Privat;De 10001 a 100000;Lleida
+7851547615;95,8;94,7;100,00;D;2011;Públic;Fins a 10000;Girona
+9822165328;65,8;71,3;55,25;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+6937171875;88,3;80,1;93,50;H;2011;Públic;Fins a 10000;Vallès Occidental
+6796294531;59,1;51,7;53,92;D;2011;Privat;Més de 100000;Vallès Occidental
+3794843546;90,1;97,9;91,17;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+1819342004;NA;56,7;60,00;D;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+14494057699;74,2;62,0;72,75;H;2011;Públic;Fins a 10000;Catalunya Central
+7342998667;49,0;45,8;51,42;H;2011;Públic;Fins a 10000;Girona
+8603076438;85,5;74,5;86,50;H;2011;Públic;Més de 100000;Tarragona
+5951007666;73,9;69,2;69,00;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+9242255317;83,1;54,6;70,92;D;2011;Públic;Fins a 10000;Catalunya Central
+12346710812;85,1;80,1;85,75;D;2011;Privat;De 10001 a 100000;Vallès Occidental
+16494699624;89,1;90,1;100,00;D;2011;Privat;Fins a 10000;Baix Llobregat
+7957610600;39,8;62,8;82,00;H;2011;Públic;Fins a 10000;Lleida
+5036654582;56,3;79,8;57,50;H;2011;Públic;Més de 100000;Vallès Occidental
+12428903345;75,2;83,3;88,92;H;2011;Privat;Fins a 10000;Girona
+4861806451;61,4;66,3;71,83;H;2011;Públic;Fins a 10000;Maresme - Vallès Oriental
+2527688430;76,0;65,6;95,58;D;2011;Privat;Més de 100000;Barcelona Comarques
+3088813305;91,1;82,0;90,75;H;2011;Privat;Més de 100000;Vallès Occidental
+8165979562;36,9;63,5;48,50;H;2011;Públic;Més de 100000;Lleida
+18926748051;88,5;92,9;93,08;H;2011;Privat;Fins a 10000;Catalunya Central
+6527823354;76,2;79,8;70,67;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+12402267642;58,7;84,4;60,00;H;2011;Públic;Més de 100000;Maresme - Vallès Oriental
+3279286702;68,8;76,3;75,92;H;2011;Privat;Més de 100000;Tarragona
+11067036009;95,8;47,9;95,58;D;2011;Públic;Fins a 10000;Maresme - Vallès Oriental
+13449196750;72,2;89,0;93,50;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+7298960449;79,0;91,5;92,67;H;2011;Públic;Fins a 10000;Vallès Occidental
+6610298078;82,3;68,1;90,75;D;2011;Públic;De 10001 a 100000;Baix Llobregat
+4778442157;86,5;76,6;93,50;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+7135112433;63,2;55,4;30,92;H;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+13616237428;41,2;47,5;52,17;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+414595083;24,7;36,1;54,33;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+8177936790;64,3;74,8;75,67;D;2011;Públic;Més de 100000;Lleida
+4100006649;65,1;79,5;73,58;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+13531963009;91,9;84,8;95,58;D;2011;Públic;Fins a 10000;Vallès Occidental
+6758532052;69,1;85,5;66,92;D;2011;Públic;De 10001 a 100000;Catalunya Central
+260647738;56,7;64,9;62,42;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+4778431824;92,4;92,9;93,50;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+7259094438;45,3;41,5;90,17;D;2011;Públic;De 10001 a 100000;Catalunya Central
+8588645487;98,1;94,0;90,75;D;2011;Públic;Més de 100000;Tarragona
+6742672486;57,5;94,7;60,00;H;2011;Públic;Més de 100000;Barcelona Comarques
+5915135883;NA;81,6;95,33;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+3115866190;95,8;92,9;95,33;D;2011;Privat;De 10001 a 100000;Catalunya Central
+2323167475;64,3;62,0;72,58;H;2011;Privat;Més de 100000;Tarragona
+7525202423;92,7;82,3;93,25;H;2011;Privat;Fins a 10000;Tarragona
+6713166433;95,8;NA;NA;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+8170456505;86,5;94,0;85,75;H;2011;Públic;Més de 100000;Lleida
+6135394631;85,1;NA;NA;H;2011;Públic;De 10001 a 100000;Catalunya Central
+8426552274;87,3;63,5;84,25;D;2011;Públic;Més de 100000;Tarragona
+6612638712;81,3;89,7;79,92;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+6714618492;42,5;60,7;38,00;H;2010;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+712447544;87,7;93,6;93,50;D;2011;Privat;De 10001 a 100000;Girona
+13858275862;63,3;94,7;81,50;H;2011;Públic;De 10001 a 100000;Girona
+5891355414;NA;89,7;93,25;H;2011;Públic;Més de 100000;Barcelona Comarques
+16473180019;79,4;85,8;95,17;H;2010;Públic;Fins a 10000;Maresme - Vallès Oriental
+8306789471;84,8;85,2;82,33;H;2011;Públic;Fins a 10000;Terres de l'Ebre
+5054584803;46,0;65,9;49,75;H;2011;Privat;Més de 100000;Vallès Occidental
+7052098775;73,8;81,2;86,17;H;2011;Públic;De 10001 a 100000;Catalunya Central
+4525113528;89,6;81,2;91,00;H;2011;Públic;De 10001 a 100000;Baix Llobregat
+2834404796;87,5;81,9;71,92;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+7927778364;NA;74,4;70,42;H;2011;Públic;De 10001 a 100000;Lleida
+8667902131;57,2;56,7;45,42;H;2011;Públic;De 10001 a 100000;Tarragona
+3194651324;86,9;59,9;100,00;D;2011;Privat;De 10001 a 100000;Girona
+2790512783;78,7;45,0;100,00;D;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+8258150546;64,5;34,3;60,50;D;2011;Públic;Fins a 10000;Tarragona
+5447598385;72,3;67,8;74,83;H;2011;Públic;De 10001 a 100000;Catalunya Central
+6308521722;NA;39,0;46,50;H;2011;Públic;Més de 100000;Consorci d'Educació de Barcelona
+5204561364;83,5;60,6;88,92;D;2011;Públic;Fins a 10000;Barcelona Comarques
+6881288858;83,0;90,8;89,08;H;2011;Públic;De 10001 a 100000;Barcelona Comarques
+6126969450;85,7;83,3;73,25;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+2777351023;86,2;81,6;93,08;H;2011;Privat;Més de 100000;Consorci d'Educació de Barcelona
+1667632192;83,0;47,1;86,83;H;2011;Públic;Més de 100000;Vallès Occidental
+13100838180;78,1;90,8;87,25;D;2011;Públic;Fins a 10000;Catalunya Central
+6581535387;87,1;85,5;93,50;D;2011;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+718555529;98,1;96,8;95,58;D;2011;Privat;Fins a 10000;Catalunya Central
+12808791849;93,6;87,9;86,17;D;2011;Privat;De 10001 a 100000;Vallès Occidental
+13698386070;80,7;69,5;71,42;H;2010;Públic;De 10001 a 100000;Maresme - Vallès Oriental
+4903043761;97,7;84,0;93,25;D;2011;Públic;Fins a 10000;Maresme - Vallès Oriental
+8126676036;67,0;88,3;72,83;H;2011;Públic;Més de 100000;Lleida
+18808594772;71,0;84,4;77,08;H;2011;Públic;De 10001 a 100000;Vallès Occidental
+1533538654;86,0;66,0;100,00;H;2011;Privat;De 10001 a 100000;Barcelona Comarques

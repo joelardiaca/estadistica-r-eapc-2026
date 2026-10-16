@@ -1,0 +1,29 @@
+/*-- scss:defaults --*/
+
+// Tema per a documents HTML del curs (guies, enunciats...). Mateixa paleta que les slides.
+
+$bordeus:        #6D071A;
+$primary:        $bordeus;
+$link-color:     $bordeus;
+$headings-color: $bordeus;
+$code-color:     $bordeus;
+$font-family-sans-serif: unquote('"Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif');
+
+
+/*-- scss:rules --*/
+
+h1.title { color: $bordeus; }
+h2 { border-bottom: 2px solid $bordeus; padding-bottom: 0.2em; }
+
+code, pre {
+  font-variant-ligatures: none;
+}
+
+kbd {
+  background: #EEE;
+  color: #222;
+  border: 1px solid #BBB;
+  border-radius: 4px;
+  padding: 0.05em 0.35em;
+  box-shadow: none;
+}

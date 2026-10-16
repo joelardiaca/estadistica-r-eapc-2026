@@ -1,0 +1,41 @@
+# ---- Privat: no s'ha de publicar MAI ----------------------------------------
+Documents inicials EAPC/
+programacio_detallada.xlsx
+*.xlsx
+*.docx
+*.pdf
+# Lliuraments de l'alumnat (dades personals)
+**/[Ll]liuraments*/
+**/[Ee]ntregues*/
+
+# ---- Només per al professor -------------------------------------------------
+**/codi/00_preparacio_dades.R
+# Guió de la demo: es fa a classe (imprès), no es publica de moment
+**/codi/02_importar_netejar.R
+**/guies/
+# Solucions: es publiquen després de cada sessió (git add -f)
+**/codi/solucio_*.R
+
+# ---- Fitxers generats en local ----------------------------------------------
+# Dades netes que es generen en executar els scripts
+**/dades/*_net*.csv
+# HTML renderitzats fora de docs/
+sessio-*/**/*.html
+
+# ---- R / RStudio ------------------------------------------------------------
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# ---- Quarto -----------------------------------------------------------------
+/.quarto/
+*_files/
+*.knit.md
+
+# ---- Windows / OneDrive -----------------------------------------------------
+desktop.ini
+Thumbs.db
+~$*
+
+**/*.quarto_ipynb

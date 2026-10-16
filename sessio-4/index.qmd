@@ -1,0 +1,11 @@
+---
+title: "Sessió 4 · Correlació i regressió"
+subtitle: "Dilluns 9 de novembre de 2026 · 9.30 – 13.30 h"
+toc: false
+---
+
+Relacions entre dues variables quantitatives: **correlació** i **regressió lineal simple** amb R, i interpretació dels coeficients i dels principals resultats del model.
+
+::: {.callout-note}
+Els materials d'aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.
+:::
