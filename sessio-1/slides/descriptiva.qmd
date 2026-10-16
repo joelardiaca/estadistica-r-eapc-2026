@@ -805,7 +805,7 @@ El **violí** mostra la **densitat**; el boxplot del mig, el resum numèric.
 ## Exercici de descripció de dades
 
 ::: {.caixa}
-**Objectiu**: fer una descripció completa de dues variables de `competencies_basiques_net.csv` (les dades que vau netejar a la sessió 1).
+**Objectiu**: fer una descripció completa de dues variables de `dades/competencies.csv`, les dades de la sessió 1 ja netes (part A de `codi/exercici_sessio_2.R`).
 :::
 
 :::: {.columns}

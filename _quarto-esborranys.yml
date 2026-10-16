@@ -1,0 +1,14 @@
+# Perfil per previsualitzar les sessions encara no publicades, sense tocar docs/.
+#   quarto preview --profile esborranys
+#   quarto render  --profile esborranys
+# El resultat va a _esborranys/ (no es puja a GitHub).
+project:
+  output-dir: _esborranys
+  render:
+    - index.qmd
+    - abans-de-comencar.qmd
+    - recursos.qmd
+    - sessio-*/index.qmd
+    - sessio-*/index_esborrany.qmd
+    - sessio-*/slides/*.qmd
+    - sessio-*/explicacions/*.qmd

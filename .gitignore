@@ -39,3 +39,17 @@ Thumbs.db
 ~$*
 
 **/*.quarto_ipynb
+
+# ---- Esborranys de sessions encara no publicades ----------------------------
+# Quan es publiqui una sessió, esborreu-ne les dues línies corresponents.
+sessio-2/*
+!sessio-2/index.qmd
+sessio-3/*
+!sessio-3/index.qmd
+sessio-4/*
+!sessio-4/index.qmd
+# Previsualització d'esborranys (quarto render --profile esborranys)
+_esborranys/
+_freeze/sessio-2/
+_freeze/sessio-3/
+_freeze/sessio-4/
