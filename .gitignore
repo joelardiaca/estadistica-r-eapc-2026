@@ -1,5 +1,7 @@
 # ---- Privat: no s'ha de publicar MAI ----------------------------------------
 Documents inicials EAPC/
+# Diari de sessions i notes del professor
+_privat/
 programacio_detallada.xlsx
 *.xlsx
 *.docx
