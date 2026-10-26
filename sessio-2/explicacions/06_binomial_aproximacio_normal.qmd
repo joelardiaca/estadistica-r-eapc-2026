@@ -1,0 +1,172 @@
+---
+title: "Proporcions i distribució binomial"
+subtitle: "Sessió 2 · Per aprofundir"
+code-fold: true
+code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+gris_fosc    <- "#2B2B2B"
+theme_set(theme_minimal(base_size = 14) +
+            theme(panel.grid.minor = element_blank(),
+                  strip.text = element_text(face = "bold", hjust = 0)))
+
+num <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",", big.mark = ".")
+
+competencies <- read_csv2("../dades/competencies.csv", show_col_types = FALSE)
+publics <- sum(competencies$titularitat == "Públic")
+n <- nrow(competencies)
+p_hat <- publics / n
+se_p <- sqrt(p_hat * (1 - p_hat) / n)
+```
+
+::: {.callout-note}
+## De què va aquest document?
+A les slides hem estimat el **percentatge** d'alumnes que van a un centre públic, amb `prop.test()`. Les proporcions són molt habituals a l'administració i a les enquestes: % de persones que aproven una política, % de tràmits resolts a temps, % d'atur... Aquí veurem com funciona la inferència amb proporcions i d'on surt el famós **marge d'error** de les enquestes.
+
+El codi R de cada gràfic és plegat: cliqueu a **Code** per veure'l.
+:::
+
+## Variables de sí o no
+
+Quan la variable només té dues respostes (públic / privat, sí / no, aprova / no aprova), el que ens interessa és la **proporció** de «sí». Amb el tidyverse la calculem com qualsevol taula de freqüències:
+
+```{r}
+#| code-fold: false
+competencies |>
+  count(titularitat) |>                 # quants alumnes hi ha de cada tipus
+  mutate(proporcio = n / sum(n))        # proporció de cada tipus sobre el total
+```
+
+Un `r num(p_hat * 100)` % dels alumnes de la mostra van a un centre públic: `r publics` de `r n`. Guardem aquests dos números, que els farem servir als càlculs següents:
+
+```{r}
+#| code-fold: false
+publics <- 317   # alumnes de centres públics (els "sí")
+n <- 480         # total d'alumnes
+```
+
+## La distribució binomial: comptar «sís»
+
+Imaginem que llancem una moneda 10 vegades. Quantes cares sortiran? Normalment unes 5, però podrien ser 4, 6, o fins i tot 2. La distribució que diu la probabilitat de cada resultat és la **distribució binomial**, i depèn de dos números: el nombre d'intents ($n = 10$) i la probabilitat de «sí» a cada intent ($p = 0{,}5$).
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3.6
+tibble(cares = 0:10, probabilitat = dbinom(0:10, size = 10, prob = 0.5)) |>
+  ggplot(aes(x = factor(cares), y = probabilitat)) +
+  geom_col(fill = bordeus, width = 0.7) +
+  scale_y_continuous(labels = scales::label_percent(decimal.mark = ",")) +
+  labs(x = "Nombre de cares en 10 llançaments", y = "Probabilitat")
+```
+
+Una mostra és el mateix que llançar la moneda moltes vegades: cada alumne que entra a la mostra és un «intent», i el «sí» és que vagi a un centre públic.
+
+## Amb mostres grans, la binomial s'assembla a una normal
+
+Suposem que a tot Catalunya el 66 % dels alumnes va a un centre públic, i traiem moltes mostres de 30, 100 i 480 alumnes. Quina proporció de públics sortiria a cada mostra?
+
+```{r}
+#| fig-width: 10
+#| fig-height: 3.8
+binomials <- map_dfr(c(30, 100, 480), \(mida) {
+  tibble(exits = 0:mida) |>
+    mutate(proporcio    = exits / mida,
+           probabilitat = dbinom(exits, size = mida, prob = 0.66),
+           mida         = paste("Mostres de", mida, "alumnes"))
+}) |>
+  mutate(mida = factor(mida, levels = unique(mida)))
+
+ggplot(binomials, aes(x = proporcio, y = probabilitat)) +
+  geom_col(fill = bordeus_clar, color = bordeus_clar) +
+  geom_vline(xintercept = 0.66, linetype = "dashed", color = bordeus, linewidth = 1) +
+  facet_wrap(~ mida, scales = "free_y") +
+  scale_x_continuous(labels = scales::label_percent(), limits = c(0.35, 0.95)) +
+  labs(x = "Proporció de públics a la mostra", y = NULL) +
+  theme(axis.text.y = element_blank())
+```
+
+Dues coses que ja coneixem de les mitjanes:
+
+- Com més gran és la mostra, més **concentrats** queden els resultats al voltant del 66 % real.
+- Amb mostres grans, la forma és la d'una **campana** (normal).
+
+Per això podem calcular intervals de confiança per a proporcions igual que per a mitjanes. Com a regla pràctica, l'aproximació normal funciona bé si hi ha almenys **10 «sís» i 10 «nos»** a la mostra.
+
+## L'interval de confiança d'una proporció
+
+L'error estàndard d'una proporció té una fórmula pròpia:
+
+$$SE = \sqrt{\frac{p\,(1 - p)}{n}}$$
+
+I l'interval es construeix com sempre: $p \pm 1{,}96 \cdot SE$. Amb les nostres dades:
+
+```{r}
+#| code-fold: false
+p  <- publics / n
+se <- sqrt(p * (1 - p) / n)
+c(p - 1.96 * se, p + 1.96 * se)
+```
+
+Ho comparem amb `prop.test()`:
+
+```{r}
+#| code-fold: false
+prop.test(publics, n)$conf.int
+```
+
+Pràcticament el mateix: entre un `r num(prop.test(publics, n)$conf.int[1] * 100)` % i un `r num(prop.test(publics, n)$conf.int[2] * 100)` %. Les petites diferències són perquè `prop.test()` aplica una correcció que millora una mica el càlcul (la **correcció de continuïtat**). A la pràctica, feu servir `prop.test()`.
+
+## El marge d'error de les enquestes
+
+Quan una enquesta diu «marge d'error de ±3,1 punts», es refereix a aquest $1{,}96 \cdot SE$, calculat en el **pitjor cas**: quan la proporció és del 50 %, que és quan l'error estàndard és més gran. Així el marge val per a qualsevol pregunta de l'enquesta.
+
+```{r}
+#| code-fold: false
+marge <- function(n) 1.96 * sqrt(0.5 * 0.5 / n) * 100   # en punts percentuals
+marge(c(500, 1000, 2000, 4000))
+```
+
+| Entrevistes | Marge d'error (95 %) |
+|:---:|:---:|
+| 500 | ±`r num(marge(500))` punts |
+| 1.000 | ±`r num(marge(1000))` punts |
+| 2.000 | ±`r num(marge(2000))` punts |
+| 4.000 | ±`r num(marge(4000))` punts |
+
+Doblar les entrevistes **no** redueix el marge a la meitat: per fer-ho, cal multiplicar-les per quatre. Per això moltes enquestes treballen amb mostres d'entre 1.000 i 2.000 persones: més enllà, el cost creix molt més que la precisió.
+
+::: {.callout-important}
+## El marge d'error només inclou l'atzar
+El marge d'error mesura l'error degut a treballar amb una **mostra aleatòria**. No inclou altres problemes: gent que no respon, preguntes mal formulades, mostres no aleatòries... Recordeu el cas del *Literary Digest* (1936) de les slides: 2,3 milions de respostes i un marge d'error minúscul, però un resultat completament equivocat.
+:::
+
+## Contrast d'una proporció
+
+`prop.test()` també fa contrastos d'hipòtesis, com `t.test()`. Per exemple: la proporció d'alumnes en centres públics, és diferent del 70 %?
+
+```{r}
+#| code-fold: false
+prop.test(publics, n, p = 0.70)$p.value
+```
+
+El p-valor és més gran que 0,05: no podem rebutjar que la proporció sigui del 70 %. És coherent amb l'interval de confiança, que inclou el 70 %.
+
+::: {.callout-tip}
+## Idees clau
+- En variables de sí o no, estimem la **proporció** de «sí»: `count(variable) |> mutate(proporcio = n / sum(n))`.
+- El nombre de «sís» en una mostra segueix una **distribució binomial**, que amb mostres grans s'assembla a una **normal**.
+- Error estàndard d'una proporció: $\sqrt{p(1-p)/n}$. Interval de confiança: `prop.test(casos, total)$conf.int`.
+- El **marge d'error** d'una enquesta és $1{,}96 \cdot SE$ amb $p = 50\,\%$. Només inclou l'error de mostreig, no els altres biaixos.
+:::
+
+**Anterior**: [Què vol dir «95 % de confiança»?](05_simulacio_intervals_confianca.qmd) · **Tornar a la [pàgina de la sessió 2](../index.qmd)**

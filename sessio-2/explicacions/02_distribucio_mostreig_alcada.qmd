@@ -1,0 +1,165 @@
+---
+title: "Distribució de mostreig: per què cada mostra dona un resultat diferent"
+subtitle: "Sessió 2 · Per aprofundir"
+code-fold: true
+code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+gris_fosc    <- "#2B2B2B"
+theme_set(theme_minimal(base_size = 14) +
+            theme(panel.grid.minor = element_blank(),
+                  strip.text = element_text(face = "bold", hjust = 0)))
+
+num <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",", big.mark = ".")
+set.seed(1234)
+```
+
+::: {.callout-note}
+## De què va aquest document?
+A les slides hem dit que, si repetíssim la mostra moltes vegades, cada cop obtindríem una mitjana diferent, i que aquesta variació és l'**error estàndard**. Aquí ho comprovarem amb una **simulació**: ens inventarem una població de la qual sabem la resposta, en traurem moltes mostres i mirarem què passa.
+
+El codi R de cada gràfic és plegat: cliqueu a **Code** per veure'l.
+:::
+
+## El problema: mai no veiem la població
+
+A la vida real tenim **una sola mostra** (per exemple, 480 alumnes) i volem saber alguna cosa de **tota la població** (tots els alumnes de 6è de Catalunya). No sabem la resposta correcta: per això fem estadística.
+
+Però amb R podem fer trampa: **inventar-nos una població** sencera, de manera que sí que sabem la resposta, i veure com es comporten les mostres que en traiem.
+
+## La població inventada: l'alçada d'un milió d'adults
+
+Simulem l'alçada d'un milió d'adults, amb una mitjana de **172 cm** i una desviació típica de **10 cm**:
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3.6
+poblacio <- rnorm(1000000, mean = 172, sd = 10)
+
+ggplot(tibble(alcada = poblacio), aes(x = alcada)) +
+  geom_histogram(binwidth = 2, fill = bordeus_clar, color = "white") +
+  geom_vline(xintercept = 172, linetype = "dashed", color = bordeus, linewidth = 1) +
+  scale_y_continuous(labels = scales::label_number(big.mark = ".")) +
+  coord_cartesian(xlim = c(135, 210)) +
+  labs(x = "Alçada (cm)", y = "Nombre de persones")
+```
+
+Aquesta és la «veritat»: la mitjana real és 172 cm. Ara fem com si no la sabéssim.
+
+## Traiem una mostra... i una altra... i una altra
+
+Agafem **10 persones a l'atzar** i en calculem l'alçada mitjana. Després ho repetim amb 10 persones diferents, i així fins a 5 vegades:
+
+```{r}
+mostres <- tibble(mostra = paste("Mostra", LETTERS[1:5]),
+                  mitjana = replicate(5, mean(sample(poblacio, 10))))
+mostres |>
+  mutate(mitjana = num(mitjana))
+```
+
+Cada mostra dona una mitjana **diferent**, i cap no és exactament 172. No és cap error: és l'atzar de qui ens ha tocat a la mostra. És el que anomenem **error de mostreig**.
+
+## I si ho fem moltes vegades?
+
+Repetim el procés 20, 200 i 2.000 vegades. Cada barra dels gràfics compta **quantes mostres** han donat una mitjana d'aquell valor:
+
+```{r}
+#| fig-width: 10
+#| fig-height: 3.6
+repeticions <- c(20, 200, 2000)
+
+mitjanes <- map_dfr(repeticions, \(r) {
+  tibble(mitjana = replicate(r, mean(sample(poblacio, 10))),
+         repeticions = paste(format(r, big.mark = "."), "mostres de 10 persones"))
+}) |>
+  mutate(repeticions = factor(repeticions, levels = unique(repeticions)))
+
+ggplot(mitjanes, aes(x = mitjana)) +
+  geom_histogram(bins = 30, fill = bordeus_clar, color = "white") +
+  geom_vline(xintercept = 172, linetype = "dashed", color = bordeus, linewidth = 1) +
+  facet_wrap(~ repeticions, scales = "free_y") +
+  labs(x = "Alçada mitjana de cada mostra (cm)", y = "Nombre de mostres")
+```
+
+Com més mostres fem, més clara és la forma que apareix:
+
+- Les mitjanes s'agrupen al voltant de la **mitjana real** (la línia discontínua): les mostres aleatòries no s'equivoquen sistemàticament cap a un costat.
+- Tenen forma de **campana** (una distribució normal).
+- Hi ha mostres que s'allunyen bastant de 172, però són poques.
+
+Aquesta distribució de totes les mitjanes possibles s'anomena **distribució de mostreig**. La seva desviació típica és l'**error estàndard**: com d'allunyada de la real sol quedar la mitjana d'una mostra.
+
+## La mida de la mostra: com més gran, més precisió
+
+Ara comparem mostres de **10**, **100** i **1.000** persones (2.000 mostres de cada mida):
+
+```{r}
+#| fig-width: 10
+#| fig-height: 3.6
+mides <- c(10, 100, 1000)
+
+per_mida <- map_dfr(mides, \(n) {
+  tibble(mitjana = replicate(2000, mean(sample(poblacio, n))),
+         mida = paste("Mostres de", format(n, big.mark = "."), "persones"))
+}) |>
+  mutate(mida = factor(mida, levels = unique(mida)))
+
+ggplot(per_mida, aes(x = mitjana)) +
+  geom_histogram(bins = 40, fill = bordeus_clar, color = "white") +
+  geom_vline(xintercept = 172, linetype = "dashed", color = bordeus, linewidth = 1) +
+  facet_wrap(~ mida) +
+  labs(x = "Alçada mitjana de cada mostra (cm)", y = "Nombre de mostres")
+```
+
+```{r}
+#| include: false
+se <- per_mida |>
+  group_by(mida) |>
+  summarise(se = sd(mitjana))
+```
+
+Amb mostres de 10 persones, les mitjanes van aproximadament de 165 a 179 cm. Amb mostres de 1.000, gairebé totes queden entre 171 i 173. Com més gran és la mostra, **més a prop** de la mitjana real queden les estimacions.
+
+## L'error estàndard es pot calcular sense repetir res
+
+A la vida real no podem repetir l'enquesta 2.000 vegades. La bona notícia és que l'error estàndard es pot calcular amb **una sola mostra**:
+
+$$SE = \frac{\text{desviació típica}}{\sqrt{n}}$$
+
+Comprovem-ho amb la simulació:
+
+| Mida de la mostra | Fórmula: $10 / \sqrt{n}$ | Desviació típica de les 2.000 mitjanes simulades |
+|:---:|:---:|:---:|
+| 10 | `r num(10 / sqrt(10), 2)` | `r num(se$se[1], 2)` |
+| 100 | `r num(10 / sqrt(100), 2)` | `r num(se$se[2], 2)` |
+| 1.000 | `r num(10 / sqrt(1000), 2)` | `r num(se$se[3], 2)` |
+
+La fórmula encerta. Fixeu-vos també en l'**arrel quadrada**: per reduir l'error a la meitat, cal una mostra **quatre vegades** més gran. Per això les enquestes no fan servir mostres enormes: a partir d'un punt, guanyar precisió surt molt car.
+
+## I a les nostres dades?
+
+A les dades del curs tenim 480 alumnes, i la desviació típica de la nota de matemàtiques és de 17,5 punts. Per tant:
+
+$$SE = \frac{17{,}5}{\sqrt{480}} \approx 0{,}8 \text{ punts}$$
+
+És a dir, la nota mitjana de la nostra mostra sol quedar a menys d'un punt de la mitjana real de tots els alumnes de Catalunya. Amb aquest número construïm l'interval de confiança: $\text{mitjana} \pm 1{,}96 \cdot 0{,}8$.
+
+::: {.callout-tip}
+## Idees clau
+- Cada mostra dona un resultat una mica diferent: és l'**error de mostreig**.
+- Si poguéssim repetir la mostra moltes vegades, les mitjanes formarien una **campana** centrada en la mitjana real: la **distribució de mostreig**.
+- La seva desviació típica és l'**error estàndard**: $SE = s / \sqrt{n}$. El podem calcular amb una sola mostra.
+- Com **més gran** és la mostra, **més petit** és l'error estàndard. Però per reduir-lo a la meitat cal multiplicar la mostra per quatre.
+:::
+
+**Anterior**: [Distribució normal i valor z](01_normal_valor_z.qmd) · **Següent**: [I si la població no és normal? El teorema del límit central](03_distribucio_mostreig_renda.qmd)

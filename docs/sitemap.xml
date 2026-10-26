@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/tutorial_ggplot2.html</loc>
+    <lastmod>2026-10-26T14:31:39.357Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/05_simulacio_intervals_confianca.html</loc>
+    <lastmod>2026-10-26T14:31:55.176Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/03_distribucio_mostreig_renda.html</loc>
+    <lastmod>2026-10-26T14:31:54.753Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/01_normal_valor_z.html</loc>
+    <lastmod>2026-10-26T14:31:54.342Z</lastmod>
+  </url>
+  <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-1/slides/descriptiva.html</loc>
-    <lastmod>2026-10-16T10:34:16.712Z</lastmod>
+    <lastmod>2026-10-16T11:36:14.872Z</lastmod>
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/index.html</loc>
@@ -10,7 +26,7 @@
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/index.html</loc>
-    <lastmod>2026-10-16T10:35:44.081Z</lastmod>
+    <lastmod>2026-10-26T15:21:43.643Z</lastmod>
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/recursos.html</loc>
@@ -26,7 +42,7 @@
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-1/index.html</loc>
-    <lastmod>2026-10-16T11:01:13.985Z</lastmod>
+    <lastmod>2026-10-26T15:21:09.940Z</lastmod>
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/index.html</loc>
@@ -35,5 +51,21 @@
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-1/slides/sessio_1.html</loc>
     <lastmod>2026-10-16T10:52:50.510Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/slides/sessio_2.html</loc>
+    <lastmod>2026-10-26T15:20:59.179Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/02_distribucio_mostreig_alcada.html</loc>
+    <lastmod>2026-10-26T14:31:54.540Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/04_introduccio_ttest.html</loc>
+    <lastmod>2026-10-26T14:31:54.971Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/06_binomial_aproximacio_normal.html</loc>
+    <lastmod>2026-10-26T14:32:18.494Z</lastmod>
   </url>
 </urlset>

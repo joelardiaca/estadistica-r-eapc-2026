@@ -12,9 +12,9 @@
 library(zip)
 
 # Sessions que es publiquen (les altres són esborranys i no generen zip)
-sessions_publicades <- c(1)
+sessions_publicades <- c(1, 2)
 
-sessions_amb_solucio <- c()   # p. ex. c(1) un cop feta la sessió 1
+sessions_amb_solucio <- c(1)   # p. ex. c(1, 2) un cop feta la sessió 2
 
 # Fitxers que (de moment) no es publiquen
 no_publicar <- c("02_importar_netejar.R")

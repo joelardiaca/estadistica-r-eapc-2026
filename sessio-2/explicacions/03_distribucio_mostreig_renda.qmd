@@ -1,0 +1,142 @@
+---
+title: "I si la població no és normal? El teorema del límit central"
+subtitle: "Sessió 2 · Per aprofundir"
+code-fold: true
+code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+gris_fosc    <- "#2B2B2B"
+theme_set(theme_minimal(base_size = 14) +
+            theme(panel.grid.minor = element_blank(),
+                  strip.text = element_text(face = "bold", hjust = 0)))
+
+num <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",", big.mark = ".")
+set.seed(4321)
+```
+
+::: {.callout-note}
+## De què va aquest document?
+A l'[explicació anterior](02_distribucio_mostreig_alcada.qmd) hem vist que les mitjanes de moltes mostres formen una campana. Però allà la població (l'alçada) ja tenia forma de campana. **Què passa si la població no és normal?** Per exemple, la renda, que és molt asimètrica. Aquí veurem que les mitjanes **també** acaben formant una campana. És el **teorema del límit central**, i és el motiu pel qual els intervals de confiança i els contrastos funcionen gairebé sempre.
+
+El codi R de cada gràfic és plegat: cliqueu a **Code** per veure'l.
+:::
+
+## Una població molt asimètrica: la renda
+
+Simulem la renda mensual d'un milió de persones, amb una mitjana d'uns 2.000 €. Com passa a la realitat, la majoria de gent cobra relativament poc, i uns quants cobren molt:
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3.8
+poblacio <- rgamma(1000000, shape = 2, scale = 1000)
+
+ggplot(tibble(renda = poblacio), aes(x = renda)) +
+  geom_histogram(binwidth = 200, boundary = 0, fill = bordeus_clar, color = "white") +
+  geom_vline(xintercept = mean(poblacio), linetype = "dashed", color = bordeus, linewidth = 1) +
+  geom_vline(xintercept = median(poblacio), linetype = "dotted", color = gris_fosc, linewidth = 1) +
+  annotate("text", x = mean(poblacio) + 150, y = Inf, vjust = 1.5, hjust = 0, color = bordeus,
+           label = paste("Mitjana:", num(mean(poblacio), 0), "€")) +
+  annotate("text", x = median(poblacio) - 150, y = Inf, vjust = 1.5, hjust = 1, color = gris_fosc,
+           label = paste("Mediana:", num(median(poblacio), 0), "€")) +
+  scale_y_continuous(labels = scales::label_number(big.mark = ".")) +
+  coord_cartesian(xlim = c(0, 10000)) +
+  labs(x = "Renda mensual (€)", y = "Nombre de persones")
+```
+
+No té res de campana: té una **cua llarga cap a la dreta**. Com vam veure a la part de descriptiva, quan hi ha una cua a la dreta la **mitjana és més alta que la mediana**: unes poques rendes molt altes «estiren» la mitjana cap amunt.
+
+## Mitjanes de mostres petites (3 persones)
+
+Traiem 2.000 mostres de només **3 persones** i en calculem la renda mitjana:
+
+```{r}
+#| include: false
+mides <- c(3, 10, 50)
+
+mitjanes <- map_dfr(mides, \(n) {
+  tibble(mitjana = replicate(2000, mean(sample(poblacio, n))),
+         mida = paste("Mostres de", n, "persones"))
+}) |>
+  mutate(mida = factor(mida, levels = unique(mida)))
+
+grafic_mitjanes <- function(dades) {
+  ggplot(dades, aes(x = mitjana)) +
+    geom_histogram(bins = 40, fill = bordeus_clar, color = "white") +
+    geom_vline(xintercept = mean(poblacio), linetype = "dashed", color = bordeus, linewidth = 1) +
+    coord_cartesian(xlim = c(0, 6000)) +
+    labs(x = "Renda mitjana de cada mostra (€)", y = "Nombre de mostres")
+}
+```
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3.6
+grafic_mitjanes(filter(mitjanes, mida == "Mostres de 3 persones"))
+```
+
+Les mitjanes ja s'han apropat més al centre que les rendes individuals, però la distribució encara és **asimètrica**: de tant en tant ens toca algú amb una renda molt alta i la mitjana de la mostra es dispara.
+
+## Mitjanes de mostres més grans
+
+Ara fem el mateix amb mostres de 3, 10 i 50 persones:
+
+```{r}
+#| fig-width: 10
+#| fig-height: 3.6
+grafic_mitjanes(mitjanes) +
+  facet_wrap(~ mida)
+```
+
+A mesura que la mostra creix:
+
+1. Les mitjanes es concentren al voltant de la **mitjana real** (la línia discontínua).
+2. La distribució perd l'asimetria i agafa forma de **campana**.
+
+Amb mostres de 50 persones, la distribució de les mitjanes ja és pràcticament **normal**, tot i que la població de partida és molt asimètrica.
+
+## El teorema del límit central
+
+Això que acabem de veure té nom:
+
+::: {.callout-important}
+## Teorema del límit central
+Si la mostra és **prou gran**, la distribució de les mitjanes mostrals és aproximadament **normal**, sigui quina sigui la forma de la població.
+:::
+
+**Per què és tan important?** Perquè tots els càlculs de les slides (l'interval de confiança amb $\pm 1{,}96 \cdot SE$, el p-valor de `t.test()`...) suposen que les mitjanes es distribueixen com una normal. Gràcies al teorema del límit central, ho podem fer encara que les dades originals no siguin normals.
+
+**I què vol dir «prou gran»?** Com a regla pràctica, a partir d'unes **30 observacions** sol ser suficient. Si la població és molt asimètrica (com la renda), en calen més; si ja és gairebé simètrica, n'hi ha prou amb menys.
+
+## I a les nostres dades?
+
+A la part de descriptiva vam veure que les notes d'anglès tenen una **cua a l'esquerra** (la mitjana és més baixa que la mediana): no són normals. Però com que tenim **480 alumnes**, la mitjana de la mostra sí que es comporta com una normal, i per això podem calcular-ne l'interval de confiança amb `t.test()` sense problemes.
+
+```{r}
+#| include: false
+competencies <- read_csv2("../dades/competencies.csv", show_col_types = FALSE)
+```
+
+```{r}
+#| code-fold: false
+t.test(competencies$nota_ang)$conf.int
+```
+
+::: {.callout-tip}
+## Idees clau
+- Moltes variables reals **no són normals** (renda, temps d'espera, notes...).
+- Tot i això, les **mitjanes** de mostres prou grans sí que tenen forma de **campana**: és el **teorema del límit central**.
+- Per això podem calcular intervals de confiança i fer contrastos amb mostres grans, encara que les dades no siguin normals.
+- Regla pràctica: amb 30 o més observacions sol ser suficient; amb dades molt asimètriques, en calen més.
+:::
+
+**Anterior**: [Distribució de mostreig](02_distribucio_mostreig_alcada.qmd) · **Següent**: [Què fa per dins `t.test()`?](04_introduccio_ttest.qmd)

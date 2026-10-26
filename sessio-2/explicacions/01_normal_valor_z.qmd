@@ -1,0 +1,182 @@
+---
+title: "Distribució normal i valor z"
+subtitle: "Sessió 2 · Per aprofundir"
+code-fold: true
+code-tools: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+gris_fosc    <- "#2B2B2B"
+theme_set(theme_minimal(base_size = 14) + theme(panel.grid.minor = element_blank()))
+
+num <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",", big.mark = ".")
+```
+
+::: {.callout-note}
+## De què va aquest document?
+A les slides hem fet servir el número **1,96** per calcular intervals de confiança, i hem dit que «el 95 % dels valors queden a menys de 1,96 desviacions típiques del centre». Aquí veurem d'on surt: de la **distribució normal** i del **valor z**.
+
+No cal saber-ho per fer l'exercici. El codi R de cada gràfic és plegat: cliqueu a **Code** per veure'l.
+:::
+
+## La distribució normal
+
+Moltes variables tenen una forma semblant quan en fem l'histograma: la majoria de valors s'agrupen al voltant del centre, i com més ens allunyem del centre, menys valors hi ha. És la forma de **campana** de la **distribució normal**.
+
+Per exemple, si mesuréssim l'alçada de tots els adults de Catalunya, obtindríem una distribució semblant a aquesta (suposem que la mitjana és 172 cm i la desviació típica, 10 cm):
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3.8
+alcada <- tibble(x = seq(132, 212, length.out = 500),
+                 densitat = dnorm(x, mean = 172, sd = 10))
+
+ggplot(alcada, aes(x = x, y = densitat)) +
+  geom_area(fill = bordeus_clar, alpha = 0.6) +
+  geom_line(color = bordeus, linewidth = 1) +
+  geom_vline(xintercept = 172, linetype = "dashed", color = gris_fosc) +
+  annotate("text", x = 173, y = 0.041, label = "Mitjana: 172 cm", hjust = 0) +
+  labs(x = "Alçada (cm)", y = NULL) +
+  theme(axis.text.y = element_blank())
+```
+
+Una normal queda completament definida per **dos números**:
+
+- La **mitjana** ($\mu$): on és el centre de la campana.
+- La **desviació típica** ($\sigma$): com d'ampla és la campana.
+
+## La regla del 68 – 95 – 99,7
+
+En **qualsevol** distribució normal, sigui quina sigui la mitjana i la desviació típica, es compleix sempre que:
+
+- Entre la mitjana i **±1 desviació típica** hi ha el **68 %** dels valors.
+- Entre la mitjana i **±2 desviacions típiques** hi ha el **95 %** dels valors (més exactament, ±1,96).
+- Entre la mitjana i **±3 desviacions típiques** hi ha el **99,7 %** dels valors.
+
+```{r}
+#| fig-width: 8
+#| fig-height: 4
+corba <- tibble(z = seq(-3.5, 3.5, length.out = 500), densitat = dnorm(z))
+
+ggplot(corba, aes(x = z, y = densitat)) +
+  geom_area(data = filter(corba, abs(z) <= 3), fill = bordeus_clar, alpha = 0.35) +
+  geom_area(data = filter(corba, abs(z) <= 2), fill = bordeus_clar, alpha = 0.6) +
+  geom_area(data = filter(corba, abs(z) <= 1), fill = bordeus, alpha = 0.6) +
+  geom_line(color = bordeus, linewidth = 1) +
+  annotate("text", x = 0, y = 0.17, label = "68 %", color = "white", size = 6, fontface = "bold") +
+  annotate("text", x = 1.5, y = 0.06, label = "95 %", size = 5) +
+  annotate("text", x = 2.5, y = 0.025, label = "99,7 %", size = 4) +
+  scale_x_continuous(breaks = -3:3,
+                     labels = c("142", "152", "162", "172", "182", "192", "202")) +
+  labs(x = "Alçada (cm): mitjana ± 1, 2 i 3 desviacions típiques", y = NULL) +
+  theme(axis.text.y = element_blank(), panel.grid = element_blank())
+```
+
+Aplicat a l'alçada: el 68 % dels adults fa entre 162 i 182 cm, i el 95 %, entre 152 i 192 cm.
+
+## El valor z: quantes desviacions típiques?
+
+El **valor z** ens diu a **quantes desviacions típiques** de la mitjana hi ha un valor concret:
+
+$$z = \frac{x - \mu}{\sigma} = \frac{\text{valor} - \text{mitjana}}{\text{desviació típica}}$$
+
+**Exemple**: una persona que fa 190 cm té un valor z de
+
+$$z = \frac{190 - 172}{10} = 1{,}8$$
+
+És a dir, és 1,8 desviacions típiques més alta que la mitjana. Un valor z positiu vol dir «per sobre de la mitjana»; un de negatiu, «per sota»; i z = 0 vol dir «exactament a la mitjana».
+
+### Quina proporció de gent és més alta que 190 cm?
+
+És l'àrea de la campana que queda a la dreta dels 190 cm. Amb R la calculem amb `pnorm()`, que dona la proporció de valors que queden **per sota** d'un valor (per això fem `1 - ...`):
+
+```{r}
+#| code-fold: false
+1 - pnorm(190, mean = 172, sd = 10)
+```
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3.6
+ggplot(alcada, aes(x = x, y = densitat)) +
+  geom_area(data = filter(alcada, x >= 190), fill = bordeus, alpha = 0.7) +
+  geom_line(color = bordeus, linewidth = 1) +
+  geom_vline(xintercept = 190, color = bordeus, linewidth = 1) +
+  annotate("text", x = 192, y = 0.02, hjust = 0, color = bordeus,
+           label = paste0("190 cm (z = 1,8)\n", num((1 - pnorm(1.8)) * 100), " % de la gent")) +
+  labs(x = "Alçada (cm)", y = NULL) +
+  theme(axis.text.y = element_blank())
+```
+
+Només un `r num((1 - pnorm(1.8)) * 100)` % dels adults fa més de 190 cm.
+
+### I al revés: a partir de quina alçada hi ha el 5 % més alt?
+
+Ara sabem la proporció (el 5 % de dalt, és a dir, el 95 % per sota) i volem el valor. Ho fem amb `qnorm()`:
+
+```{r}
+#| code-fold: false
+qnorm(0.95, mean = 172, sd = 10)
+```
+
+El 5 % més alt de la població fa més de `r num(qnorm(0.95, 172, 10))` cm.
+
+## Per a què serveix el valor z? Comparar coses diferents
+
+El valor z permet comparar valors de variables que tenen escales o dispersions diferents. Per exemple, amb les dades de competències bàsiques del curs: un alumne treu un **90 en català** i un **90 en matemàtiques**. En quina assignatura ha destacat més?
+
+```{r}
+#| include: false
+competencies <- read_csv2("../dades/competencies.csv", show_col_types = FALSE)
+```
+
+```{r}
+#| code-fold: false
+competencies |>
+  summarise(mitjana_cat = mean(nota_cat, na.rm = TRUE),
+            sd_cat      = sd(nota_cat, na.rm = TRUE),
+            mitjana_mat = mean(nota_mat),
+            sd_mat      = sd(nota_mat)) |>
+  mutate(z_cat = (90 - mitjana_cat) / sd_cat,
+         z_mat = (90 - mitjana_mat) / sd_mat)
+```
+
+Els dos valors z són semblants, però el 90 de matemàtiques destaca una mica més, perquè la mitjana de matemàtiques és més baixa. (En aquestes dades les notes no són exactament normals, però el valor z segueix indicant quantes desviacions típiques ens separen de la mitjana.)
+
+## D'on surt l'1,96 dels intervals de confiança
+
+Si volem el **95 % central** d'una normal, deixem un 2,5 % a cada costat. El valor z que deixa el 97,5 % per sota és:
+
+```{r}
+#| code-fold: false
+qnorm(0.975)
+```
+
+Aquest és l'**1,96** que fem servir a l'interval de confiança: $\text{mitjana} \pm 1{,}96 \cdot SE$. Amb altres nivells de confiança, el número canvia:
+
+| Nivell de confiança | Deixem a cada costat | Valor z | Amb R |
+|:---:|:---:|:---:|---|
+| 90 % | 5 % | 1,645 | `qnorm(0.95)` |
+| 95 % | 2,5 % | 1,96 | `qnorm(0.975)` |
+| 99 % | 0,5 % | 2,576 | `qnorm(0.995)` |
+
+Com més confiança volem, més gran és el número i, per tant, **més ample** és l'interval. És el que vam veure a les slides amb `t.test(..., conf.level = 0.99)`.
+
+::: {.callout-tip}
+## Idees clau
+- La distribució **normal** té forma de campana i es defineix per la **mitjana** i la **desviació típica**.
+- En una normal, el **95 %** dels valors queden a menys de **1,96 desviacions típiques** de la mitjana.
+- El **valor z** diu a quantes desviacions típiques de la mitjana és un valor: $z = (x - \mu) / \sigma$.
+- A R: `pnorm()` passa d'un valor a una proporció, i `qnorm()` d'una proporció a un valor.
+:::
+
+**Següent**: [Distribució de mostreig: per què cada mostra dona un resultat diferent](02_distribucio_mostreig_alcada.qmd)

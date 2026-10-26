@@ -1,5 +1,208 @@
 [
   {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "",
+    "text": "NotaPer a qui és aquest tutorial?\n\n\n\nPer a qui ja ha acabat la pràctica de la sessió 1 i vol començar a fer gràfics amb R. No cal saber res de gràfics: anirem pas a pas.\nCom s’ha de fer: obriu un script nou a RStudio (File → New File → R Script), copieu-hi el codi de cada pas (amb el botó 📋 de la dreta de cada bloc), executeu-lo amb Ctrl + Enter i mireu què surt al panell Plots (a baix a la dreta). Cada línia de codi té un comentari (#) que explica què fa. Al final de cada apartat hi ha un «Prova-ho» per practicar, amb la solució amagada."
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#preparació",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#preparació",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "0. Preparació",
+    "text": "0. Preparació\nFarem servir les dades de competències bàsiques ja netes. Trieu l’opció que us vagi bé:\nOpció A. Si treballeu al projecte de la sessió 1 (sessio_1.Rproj) i ja heu exportat les dades netes al pas 10 de la pràctica:\n\nlibrary(tidyverse)                                                   # carrega el tidyverse (inclou ggplot2)\ncompetencies &lt;- read_csv2(\"dades/competencies_basiques_net.csv\")     # importa les dades netes\n\nOpció B. Si treballeu al projecte de la sessió 2 (sessio_2.Rproj):\n\nlibrary(tidyverse)                                    # carrega el tidyverse (inclou ggplot2)\ncompetencies &lt;- read_csv2(\"dades/competencies.csv\")   # importa les dades netes\n\nEn tots dos casos, cal tornar a ordenar habitat (el CSV no guarda l’ordre de les categories):\n\ncompetencies &lt;- competencies |&gt;\n  mutate(habitat = factor(habitat,                    # converteix habitat en factor...\n                          levels = c(\"Fins a 10000\",  # ...amb les categories en aquest ordre\n                                     \"De 10001 a 100000\",\n                                     \"Més de 100000\")))\n\n\n\n\n\n\n\nConsell\n\n\n\nNo cal instal·lar res: ggplot2 és un dels paquets que es carreguen amb library(tidyverse)."
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#la-idea-un-gràfic-es-construeix-per-capes",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#la-idea-un-gràfic-es-construeix-per-capes",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "1. La idea: un gràfic es construeix per capes",
+    "text": "1. La idea: un gràfic es construeix per capes\nAmb ggplot2, un gràfic és una suma de capes, unides amb el signe +:\n\nggplot(dades, aes(x = variable)) +   # 1. Quines dades i quina variable va a cada eix\n  geom_bar() +                       # 2. Quin tipus de gràfic (la \"geometria\")\n  labs(x = \"Títol de l'eix X\")       # 3. Etiquetes, colors, estil...\n\n\nggplot() prepara el «llenç»: quines dades fem servir.\naes() (de aesthetics) diu quina variable va a cada eix: x =, y =.\nLes funcions geom_...() diuen quin tipus de gràfic volem: barres, histograma, caixa…\nAmb labs(), theme_...() i altres capes, anem millorant l’aspecte.\n\n\n\n\n\n\n\nAlertaAtenció: +, no |&gt;\n\n\n\nEntre les capes d’un gràfic es fa servir +, no el pipe |&gt;. És l’error més habitual quan es comença. I el + sempre va al final de la línia, no al principi de la següent."
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#el-primer-gràfic-barres",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#el-primer-gràfic-barres",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "2. El primer gràfic: barres",
+    "text": "2. El primer gràfic: barres\nConstruïm el gràfic pas a pas. Primer, només el llenç:\n\nggplot(competencies, aes(x = habitat))   # dades: competencies; eix X: habitat\n\n\n\n\n\n\n\n\nSurt buit: hem dit quina variable va a l’eix X, però no quin tipus de gràfic volem. Afegim les barres amb geom_bar(), que compta quants alumnes hi ha a cada categoria (com count()):\n\nggplot(competencies, aes(x = habitat)) +   # dades i variable de l'eix X\n  geom_bar()                               # una barra per categoria, amb l'alçada = nombre d'alumnes\n\n\n\n\n\n\n\n\nAra ho fem més entenedor: títols dels eixos amb labs() i un estil més net amb theme_minimal():\n\nggplot(competencies, aes(x = habitat)) +                # dades i variable de l'eix X\n  geom_bar() +                                          # gràfic de barres\n  labs(x = \"Mida del municipi\",                         # títol de l'eix X\n       y = \"Nombre d'alumnes\",                          # títol de l'eix Y\n       title = \"Alumnes de 6è segons la mida del municipi\") +   # títol del gràfic\n  theme_minimal()                                       # estil net: fons blanc i poques línies\n\n\n\n\n\n\n\n\nI, finalment, un color. El color de farciment de les barres es canvia amb fill:\n\nggplot(competencies, aes(x = habitat)) +                # dades i variable de l'eix X\n  geom_bar(fill = \"#6D071A\",                            # color de les barres\n           width = 0.6) +                               # amplada de les barres (de 0 a 1)\n  labs(x = \"Mida del municipi\",                         # títol de l'eix X\n       y = \"Nombre d'alumnes\",                          # títol de l'eix Y\n       title = \"Alumnes de 6è segons la mida del municipi\") +   # títol del gràfic\n  theme_minimal()                                       # estil net\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConsell\n\n\n\nEls colors es poden posar amb codi hexadecimal (com \"#6D071A\") o amb nom en anglès: \"steelblue\", \"darkred\", \"grey40\"…\n\n\n\n\n\n\n\n\nNota✍️ Prova-ho: gràfic de barres de titularitat (cliqueu per veure la solució)\n\n\n\n\n\nFeu un gràfic de barres de la variable titularitat, amb els eixos ben etiquetats i el color que vulgueu.\n\nggplot(competencies, aes(x = titularitat)) +      # dades i variable de l'eix X\n  geom_bar(fill = \"steelblue\", width = 0.5) +     # barres blaves i estretes\n  labs(x = \"Titularitat del centre\",              # títol de l'eix X\n       y = \"Nombre d'alumnes\") +                  # títol de l'eix Y\n  theme_minimal()                                 # estil net"
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#histograma-variables-numèriques",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#histograma-variables-numèriques",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "3. Histograma: variables numèriques",
+    "text": "3. Histograma: variables numèriques\nPer a una variable numèrica (com una nota), no podem fer una barra per a cada valor: n’hi ha massa. L’histograma agrupa els valors en intervals i compta quants n’hi ha a cadascun. Amb binwidth triem l’amplada de cada interval (aquí, de 5 en 5 punts):\n\nggplot(competencies, aes(x = nota_cat)) +          # dades i variable de l'eix X\n  geom_histogram(binwidth = 5,                     # intervals de 5 punts\n                 fill = \"#D8A9B1\",                 # color de dins de les barres\n                 color = \"white\") +                # color de la vora de les barres\n  labs(x = \"Puntuació de català (0-100)\",          # títol de l'eix X\n       y = \"Nombre d'alumnes\") +                   # títol de l'eix Y\n  theme_minimal()                                  # estil net\n\n\n\n\n\n\n\n\nProveu de canviar binwidth = 5 per 2 o per 20. Veureu que la forma canvia molt: si els intervals són massa estrets o massa amples, costa veure la forma real.\n\n\n\n\n\n\nNotaI aquest avís?\n\n\n\nQuan ho executeu a RStudio, veureu un avís a la consola: Removed 16 rows containing non-finite outside the scale range. No és cap error: hi ha 16 alumnes sense nota de català (NA), i ggplot2 ens diu que no els ha pogut dibuixar. És el mateix problema que resolíem amb na.rm = TRUE.\n\n\n\n\n\n\n\n\nNota✍️ Prova-ho: histograma de la nota de matemàtiques (cliqueu per veure la solució)\n\n\n\n\n\nFeu un histograma de nota_mat. Té la mateixa forma que el de català?\n\nggplot(competencies, aes(x = nota_mat)) +                          # dades i variable de l'eix X\n  geom_histogram(binwidth = 5, fill = \"steelblue\", color = \"white\") +   # intervals de 5 punts\n  labs(x = \"Puntuació de matemàtiques (0-100)\",                    # títol de l'eix X\n       y = \"Nombre d'alumnes\") +                                   # títol de l'eix Y\n  theme_minimal()                                                  # estil net\n\n\n\n\n\n\n\n\nTotes dues tenen una cua cap a l’esquerra (una minoria d’alumnes amb notes molt baixes), però les notes de matemàtiques estan més escampades."
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#diagrama-de-caixa-boxplot",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#diagrama-de-caixa-boxplot",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "4. Diagrama de caixa (boxplot)",
+    "text": "4. Diagrama de caixa (boxplot)\nEl boxplot resumeix una variable numèrica amb els quartils (els que calculàvem amb quantile()). Ara la variable va a l’eix Y:\n\nggplot(competencies, aes(y = nota_cat)) +          # dades i variable de l'eix Y\n  geom_boxplot(fill = \"#D8A9B1\",                   # color de la caixa\n               width = 0.4) +                      # amplada de la caixa\n  labs(y = \"Puntuació de català\") +                # títol de l'eix Y\n  theme_minimal()                                  # estil net\n\n\n\n\n\n\n\n\nOn es fa realment útil el boxplot és per comparar grups: si posem una variable categòrica a l’eix X, en surt una caixa per a cada grup.\n\nggplot(competencies, aes(x = titularitat,          # eix X: els grups (públic / privat)\n                         y = nota_cat)) +          # eix Y: la nota\n  geom_boxplot(fill = \"#D8A9B1\", width = 0.5) +    # una caixa per a cada grup\n  labs(x = \"Titularitat del centre\",               # títol de l'eix X\n       y = \"Puntuació de català\") +                # títol de l'eix Y\n  theme_minimal()                                  # estil net\n\n\n\n\n\n\n\n\nA la mostra, els alumnes dels centres privats tenen la caixa una mica més amunt. Si aquesta diferència és prou gran per generalitzar-la a tot Catalunya ho veurem a la sessió 3.\n\n\n\n\n\n\nNota✍️ Prova-ho: notes de matemàtiques per gènere (cliqueu per veure la solució)\n\n\n\n\n\nFeu un boxplot de nota_mat per a dones i homes (genere).\n\nggplot(competencies, aes(x = genere, y = nota_mat)) +   # grups a l'eix X, nota a l'eix Y\n  geom_boxplot(fill = \"steelblue\", width = 0.5) +       # una caixa per grup\n  labs(x = NULL,                                        # sense títol a l'eix X\n       y = \"Puntuació de matemàtiques\") +               # títol de l'eix Y\n  theme_minimal()                                       # estil net"
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#colors-segons-una-variable",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#colors-segons-una-variable",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "5. Colors segons una variable",
+    "text": "5. Colors segons una variable\nFins ara hem posat un color fix a totes les barres. Però també podem fer que el color depengui d’una variable: en aquest cas, el fill va dins de l’aes().\n\nggplot(competencies, aes(x = habitat,                  # eix X: mida del municipi\n                         fill = titularitat)) +        # color de les barres segons la titularitat\n  geom_bar(position = \"dodge\") +                       # barres una al costat de l'altra\n  labs(x = \"Mida del municipi\",                        # títol de l'eix X\n       y = \"Nombre d'alumnes\",                         # títol de l'eix Y\n       fill = \"Titularitat\") +                         # títol de la llegenda\n  theme_minimal()                                      # estil net\n\n\n\n\n\n\n\n\n\nfill = titularitat dins d’aes(): un color per a cada valor de la variable, i R hi afegeix la llegenda.\nposition = \"dodge\" posa les barres una al costat de l’altra. Proveu de treure-ho: les barres es posen una a sobre de l’altra.\n\n\n\n\n\n\n\nImportantDins o fora d’aes()?\n\n\n\n\nDins d’aes(): el color depèn d’una variable → aes(fill = titularitat)\nFora d’aes(): un color fix per a tot → geom_bar(fill = \"steelblue\")\n\nSi poseu un color fix dins d’aes() (aes(fill = \"steelblue\")), R el tracta com si fos una variable i el resultat és estrany."
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#desar-el-gràfic",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#desar-el-gràfic",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "6. Desar el gràfic",
+    "text": "6. Desar el gràfic\nggsave() desa l’últim gràfic que heu fet en un fitxer d’imatge, a la carpeta del projecte:\n\nggsave(\"grafic_habitat.png\",   # nom del fitxer\n       width = 8,              # amplada (en polzades)\n       height = 5)             # alçada (en polzades)\n\nEl fitxer apareixerà al panell Files i el podeu enganxar en un document o una presentació."
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#quan-alguna-cosa-falla",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#quan-alguna-cosa-falla",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "7. Quan alguna cosa falla",
+    "text": "7. Quan alguna cosa falla\n\n\n\n\n\n\n\n\nQuè passa\nPer què\nSolució\n\n\n\n\ncould not find function \"ggplot\"\nNo heu carregat el paquet\nlibrary(tidyverse)\n\n\nNomés surt el llenç buit\nFalta la capa geom_...()\nAfegiu-la amb +\n\n\nobject 'nota_ct' not found\nEl nom de la variable està mal escrit\nReviseu-lo amb glimpse(competencies)\n\n\nError amb |&gt; entre capes\nEntre capes va +\nCanvieu |&gt; per +\n\n\nEl gràfic no inclou l’última capa\nEl + és al principi d’una línia\nPoseu el + al final de la línia anterior"
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#xuleta",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#xuleta",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "Xuleta",
+    "text": "Xuleta\n\n\n\n\n\n\n\nVull…\nCodi\n\n\n\n\nBarres d’una variable categòrica\nggplot(dades, aes(x = var)) + geom_bar()\n\n\nHistograma d’una variable numèrica\nggplot(dades, aes(x = var)) + geom_histogram(binwidth = 5)\n\n\nBoxplot d’una variable numèrica\nggplot(dades, aes(y = var)) + geom_boxplot()\n\n\nBoxplot per grups\nggplot(dades, aes(x = grup, y = var)) + geom_boxplot()\n\n\nTítols\n+ labs(x = \"...\", y = \"...\", title = \"...\")\n\n\nEstil net\n+ theme_minimal()\n\n\nColor fix\ngeom_bar(fill = \"steelblue\")\n\n\nColor segons una variable\naes(fill = variable)\n\n\nDesar\nggsave(\"fitxer.png\", width = 8, height = 5)"
+  },
+  {
+    "objectID": "sessio-2/explicacions/tutorial_ggplot2.html#per-anar-més-lluny",
+    "href": "sessio-2/explicacions/tutorial_ggplot2.html#per-anar-més-lluny",
+    "title": "Tutorial: primers gràfics amb ggplot2",
+    "section": "Per anar més lluny",
+    "text": "Per anar més lluny\n\nSlides d’estadística descriptiva de la sessió 1: principis per fer bons gràfics i exemples de què no fer.\nR for Data Science, capítol «Data visualization» (en anglès): la introducció de referència a ggplot2.\nXuleta oficial de ggplot2 (PDF, en anglès): totes les geometries i opcions en dues pàgines."
+  },
+  {
+    "objectID": "sessio-2/explicacions/05_simulacio_intervals_confianca.html",
+    "href": "sessio-2/explicacions/05_simulacio_intervals_confianca.html",
+    "title": "Què vol dir «95 % de confiança»?",
+    "section": "",
+    "text": "NotaDe què va aquest document?\n\n\n\nA les slides hem calculat que, «amb un 95 % de confiança», la nota mitjana de matemàtiques de tots els alumnes de 6è és entre 72,0 i 75,1 punts. Però què vol dir exactament aquest 95 %? És una de les idees que més s’interpreten malament en estadística. Aquí ho veurem amb una simulació.\nEl codi R de cada gràfic és plegat: cliqueu a Code per veure’l."
+  },
+  {
+    "objectID": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#el-punt-de-partida-una-població-que-coneixem",
+    "href": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#el-punt-de-partida-una-població-que-coneixem",
+    "title": "Què vol dir «95 % de confiança»?",
+    "section": "El punt de partida: una població que coneixem",
+    "text": "El punt de partida: una població que coneixem\nCom a les explicacions anteriors, ens inventem una població de la qual sabem la resposta: l’alçada dels adults, amb una mitjana real de 172 cm i una desviació típica de 10 cm.\nAra fem com faríem a la vida real, però 1.000 vegades:\n\nTraiem una mostra aleatòria de 30 persones.\nCalculem l’interval de confiança del 95 %: \\(\\text{mitjana} \\pm 1{,}96 \\cdot SE\\).\nMirem si l’interval conté la mitjana real (172) o no.\n\n\nsimular_intervals &lt;- function(repeticions, n, confianca) {\n  z &lt;- qnorm(1 - (1 - confianca) / 2)       # 1,96 per al 95 %\n  tibble(mostra = 1:repeticions) |&gt;\n    mutate(mitjana = replicate(repeticions, mean(rnorm(n, mean = 172, sd = 10))),\n           se      = 10 / sqrt(n),\n           inf     = mitjana - z * se,\n           sup     = mitjana + z * se,\n           conte   = inf &lt;= 172 & sup &gt;= 172)\n}\n\nintervals &lt;- simular_intervals(repeticions = 1000, n = 30, confianca = 0.95)"
+  },
+  {
+    "objectID": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#els-primers-100-intervals",
+    "href": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#els-primers-100-intervals",
+    "title": "Què vol dir «95 % de confiança»?",
+    "section": "Els primers 100 intervals",
+    "text": "Els primers 100 intervals\nCada línia vertical és l’interval d’una mostra; el punt del mig, la seva mitjana. La línia horitzontal és la mitjana real:\n\n\nCodi\nintervals |&gt;\n  slice(1:100) |&gt;\n  mutate(conte = if_else(conte, \"Conté la mitjana real\", \"No la conté\")) |&gt;\n  ggplot(aes(x = mostra, ymin = inf, ymax = sup, color = conte)) +\n  geom_hline(yintercept = 172, linetype = \"dashed\", color = gris_fosc) +\n  geom_errorbar(width = 0, linewidth = 0.9) +\n  geom_point(aes(y = mitjana), size = 1.3) +\n  scale_color_manual(values = c(\"Conté la mitjana real\" = bordeus_clar, \"No la conté\" = bordeus)) +\n  labs(x = \"Mostra\", y = \"Interval de confiança del 95 % (cm)\", color = NULL) +\n  theme(legend.position = \"top\")\n\n\n\n\n\n\n\n\n\nLa majoria d’intervals creuen la línia de 172, però n’hi ha uns quants (en color fosc) que no: són mostres a les quals, per atzar, els ha tocat gent especialment alta o baixa."
+  },
+  {
+    "objectID": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#quants-intervals-encerten",
+    "href": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#quants-intervals-encerten",
+    "title": "Què vol dir «95 % de confiança»?",
+    "section": "Quants intervals encerten?",
+    "text": "Quants intervals encerten?\nDe les 1.000 mostres, la proporció d’intervals que contenen la mitjana real és:\n\nmean(intervals$conte)\n\n[1] 0.95\n\n\nGairebé exactament el 95 %. Aquest és el significat de «95 % de confiança»:\n\n\n\n\n\n\nImportantLa interpretació correcta\n\n\n\nSi repetíssim l’estudi moltes vegades, el 95 % dels intervals que calcularíem contindrien el valor real de la població.\nEl «95 %» és una propietat del mètode: és un mètode que encerta 19 de cada 20 vegades. Del nostre interval concret no sabem si és dels que encerten o dels que fallen; confiem que és dels bons.\n\n\nInterpretacions incorrectes que cal evitar:\n\n❌ «El 95 % dels alumnes té una nota entre 72,0 i 75,1.» L’interval parla de la mitjana, no dels alumnes individuals. (De fet, les notes individuals van de 16 a 100.)\n❌ «Hi ha un 95 % de probabilitat que la mitjana real sigui 73,6.» La mitjana de la mostra és 73,6; la real no la sabem, i l’interval ens diu entre quins valors és plausible que estigui."
+  },
+  {
+    "objectID": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#més-confiança-intervals-més-amples",
+    "href": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#més-confiança-intervals-més-amples",
+    "title": "Què vol dir «95 % de confiança»?",
+    "section": "Més confiança, intervals més amples",
+    "text": "Més confiança, intervals més amples\nRepetim la simulació amb tres nivells de confiança diferents:\n\n\nCodi\nnivells &lt;- map_dfr(c(0.90, 0.95, 0.99), \\(conf) {\n  simular_intervals(repeticions = 1000, n = 30, confianca = conf) |&gt;\n    summarise(`Intervals que encerten` = paste0(num(mean(conte) * 100), \" %\"),\n              `Amplada mitjana (cm)`   = num(mean(sup - inf))) |&gt;\n    mutate(`Nivell de confiança` = paste0(conf * 100, \" %\"), .before = 1)\n})\nknitr::kable(nivells, align = \"ccc\")\n\n\n\n\n\nNivell de confiança\nIntervals que encerten\nAmplada mitjana (cm)\n\n\n\n\n90 %\n90,8 %\n6,0\n\n\n95 %\n95,6 %\n7,2\n\n\n99 %\n99,0 %\n9,4\n\n\n\n\n\nCom més confiança volem, més intervals encerten… però a canvi són més amples, és a dir, menys precisos. No hi ha res gratis: un interval del 100 % de confiança aniria de 0 a l’infinit i no ens diria res. El 95 % és el compromís més habitual."
+  },
+  {
+    "objectID": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#mostres-més-grans-intervals-més-estrets",
+    "href": "sessio-2/explicacions/05_simulacio_intervals_confianca.html#mostres-més-grans-intervals-més-estrets",
+    "title": "Què vol dir «95 % de confiança»?",
+    "section": "Mostres més grans, intervals més estrets",
+    "text": "Mostres més grans, intervals més estrets\nAra mantenim el 95 % de confiança i canviem la mida de la mostra:\n\n\nCodi\nmides &lt;- map_dfr(c(10, 30, 300), \\(n) {\n  simular_intervals(repeticions = 40, n = n, confianca = 0.95) |&gt;\n    mutate(mida = paste(\"Mostres de\", n, \"persones\"))\n}) |&gt;\n  mutate(mida = factor(mida, levels = unique(mida)),\n         conte = if_else(conte, \"Conté la mitjana real\", \"No la conté\"))\n\nggplot(mides, aes(x = mostra, ymin = inf, ymax = sup, color = conte)) +\n  geom_hline(yintercept = 172, linetype = \"dashed\", color = gris_fosc) +\n  geom_errorbar(width = 0, linewidth = 0.9) +\n  scale_color_manual(values = c(\"Conté la mitjana real\" = bordeus_clar, \"No la conté\" = bordeus)) +\n  facet_wrap(~ mida) +\n  labs(x = \"Mostra\", y = \"IC del 95 % (cm)\", color = NULL) +\n  theme(legend.position = \"top\", axis.text.x = element_blank())\n\n\n\n\n\n\n\n\n\nEn els tres casos, aproximadament el 95 % dels intervals encerten. El que canvia és l’amplada: amb mostres més grans, l’error estàndard és més petit i l’interval és més precís.\n\n\n\n\n\n\nConsellIdees clau\n\n\n\n\nUn interval de confiança del 95 % és el resultat d’un mètode que encerta el 95 % de les vegades.\nNo sabem si el nostre interval concret encerta: confiem que sí.\nL’interval parla del valor de la població (la mitjana, la proporció…), no dels individus.\nMés confiança → interval més ample. Mostra més gran → interval més estret.\n\n\n\nAnterior: Què fa per dins t.test()? · Següent: Proporcions i distribució binomial"
+  },
+  {
+    "objectID": "sessio-2/explicacions/03_distribucio_mostreig_renda.html",
+    "href": "sessio-2/explicacions/03_distribucio_mostreig_renda.html",
+    "title": "I si la població no és normal? El teorema del límit central",
+    "section": "",
+    "text": "NotaDe què va aquest document?\n\n\n\nA l’explicació anterior hem vist que les mitjanes de moltes mostres formen una campana. Però allà la població (l’alçada) ja tenia forma de campana. Què passa si la població no és normal? Per exemple, la renda, que és molt asimètrica. Aquí veurem que les mitjanes també acaben formant una campana. És el teorema del límit central, i és el motiu pel qual els intervals de confiança i els contrastos funcionen gairebé sempre.\nEl codi R de cada gràfic és plegat: cliqueu a Code per veure’l."
+  },
+  {
+    "objectID": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#una-població-molt-asimètrica-la-renda",
+    "href": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#una-població-molt-asimètrica-la-renda",
+    "title": "I si la població no és normal? El teorema del límit central",
+    "section": "Una població molt asimètrica: la renda",
+    "text": "Una població molt asimètrica: la renda\nSimulem la renda mensual d’un milió de persones, amb una mitjana d’uns 2.000 €. Com passa a la realitat, la majoria de gent cobra relativament poc, i uns quants cobren molt:\n\n\nCodi\npoblacio &lt;- rgamma(1000000, shape = 2, scale = 1000)\n\nggplot(tibble(renda = poblacio), aes(x = renda)) +\n  geom_histogram(binwidth = 200, boundary = 0, fill = bordeus_clar, color = \"white\") +\n  geom_vline(xintercept = mean(poblacio), linetype = \"dashed\", color = bordeus, linewidth = 1) +\n  geom_vline(xintercept = median(poblacio), linetype = \"dotted\", color = gris_fosc, linewidth = 1) +\n  annotate(\"text\", x = mean(poblacio) + 150, y = Inf, vjust = 1.5, hjust = 0, color = bordeus,\n           label = paste(\"Mitjana:\", num(mean(poblacio), 0), \"€\")) +\n  annotate(\"text\", x = median(poblacio) - 150, y = Inf, vjust = 1.5, hjust = 1, color = gris_fosc,\n           label = paste(\"Mediana:\", num(median(poblacio), 0), \"€\")) +\n  scale_y_continuous(labels = scales::label_number(big.mark = \".\")) +\n  coord_cartesian(xlim = c(0, 10000)) +\n  labs(x = \"Renda mensual (€)\", y = \"Nombre de persones\")\n\n\n\n\n\n\n\n\n\nNo té res de campana: té una cua llarga cap a la dreta. Com vam veure a la part de descriptiva, quan hi ha una cua a la dreta la mitjana és més alta que la mediana: unes poques rendes molt altes «estiren» la mitjana cap amunt."
+  },
+  {
+    "objectID": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#mitjanes-de-mostres-petites-3-persones",
+    "href": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#mitjanes-de-mostres-petites-3-persones",
+    "title": "I si la població no és normal? El teorema del límit central",
+    "section": "Mitjanes de mostres petites (3 persones)",
+    "text": "Mitjanes de mostres petites (3 persones)\nTraiem 2.000 mostres de només 3 persones i en calculem la renda mitjana:\n\n\nCodi\ngrafic_mitjanes(filter(mitjanes, mida == \"Mostres de 3 persones\"))\n\n\n\n\n\n\n\n\n\nLes mitjanes ja s’han apropat més al centre que les rendes individuals, però la distribució encara és asimètrica: de tant en tant ens toca algú amb una renda molt alta i la mitjana de la mostra es dispara."
+  },
+  {
+    "objectID": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#mitjanes-de-mostres-més-grans",
+    "href": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#mitjanes-de-mostres-més-grans",
+    "title": "I si la població no és normal? El teorema del límit central",
+    "section": "Mitjanes de mostres més grans",
+    "text": "Mitjanes de mostres més grans\nAra fem el mateix amb mostres de 3, 10 i 50 persones:\n\n\nCodi\ngrafic_mitjanes(mitjanes) +\n  facet_wrap(~ mida)\n\n\n\n\n\n\n\n\n\nA mesura que la mostra creix:\n\nLes mitjanes es concentren al voltant de la mitjana real (la línia discontínua).\nLa distribució perd l’asimetria i agafa forma de campana.\n\nAmb mostres de 50 persones, la distribució de les mitjanes ja és pràcticament normal, tot i que la població de partida és molt asimètrica."
+  },
+  {
+    "objectID": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#el-teorema-del-límit-central",
+    "href": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#el-teorema-del-límit-central",
+    "title": "I si la població no és normal? El teorema del límit central",
+    "section": "El teorema del límit central",
+    "text": "El teorema del límit central\nAixò que acabem de veure té nom:\n\n\n\n\n\n\nImportantTeorema del límit central\n\n\n\nSi la mostra és prou gran, la distribució de les mitjanes mostrals és aproximadament normal, sigui quina sigui la forma de la població.\n\n\nPer què és tan important? Perquè tots els càlculs de les slides (l’interval de confiança amb \\(\\pm 1{,}96 \\cdot SE\\), el p-valor de t.test()…) suposen que les mitjanes es distribueixen com una normal. Gràcies al teorema del límit central, ho podem fer encara que les dades originals no siguin normals.\nI què vol dir «prou gran»? Com a regla pràctica, a partir d’unes 30 observacions sol ser suficient. Si la població és molt asimètrica (com la renda), en calen més; si ja és gairebé simètrica, n’hi ha prou amb menys."
+  },
+  {
+    "objectID": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#i-a-les-nostres-dades",
+    "href": "sessio-2/explicacions/03_distribucio_mostreig_renda.html#i-a-les-nostres-dades",
+    "title": "I si la població no és normal? El teorema del límit central",
+    "section": "I a les nostres dades?",
+    "text": "I a les nostres dades?\nA la part de descriptiva vam veure que les notes d’anglès tenen una cua a l’esquerra (la mitjana és més baixa que la mediana): no són normals. Però com que tenim 480 alumnes, la mitjana de la mostra sí que es comporta com una normal, i per això podem calcular-ne l’interval de confiança amb t.test() sense problemes.\n\nt.test(competencies$nota_ang)$conf.int\n\n[1] 76.97612 80.07511\nattr(,\"conf.level\")\n[1] 0.95\n\n\n\n\n\n\n\n\nConsellIdees clau\n\n\n\n\nMoltes variables reals no són normals (renda, temps d’espera, notes…).\nTot i això, les mitjanes de mostres prou grans sí que tenen forma de campana: és el teorema del límit central.\nPer això podem calcular intervals de confiança i fer contrastos amb mostres grans, encara que les dades no siguin normals.\nRegla pràctica: amb 30 o més observacions sol ser suficient; amb dades molt asimètriques, en calen més.\n\n\n\nAnterior: Distribució de mostreig · Següent: Què fa per dins t.test()?"
+  },
+  {
+    "objectID": "sessio-2/explicacions/01_normal_valor_z.html",
+    "href": "sessio-2/explicacions/01_normal_valor_z.html",
+    "title": "Distribució normal i valor z",
+    "section": "",
+    "text": "NotaDe què va aquest document?\n\n\n\nA les slides hem fet servir el número 1,96 per calcular intervals de confiança, i hem dit que «el 95 % dels valors queden a menys de 1,96 desviacions típiques del centre». Aquí veurem d’on surt: de la distribució normal i del valor z.\nNo cal saber-ho per fer l’exercici. El codi R de cada gràfic és plegat: cliqueu a Code per veure’l."
+  },
+  {
+    "objectID": "sessio-2/explicacions/01_normal_valor_z.html#la-distribució-normal",
+    "href": "sessio-2/explicacions/01_normal_valor_z.html#la-distribució-normal",
+    "title": "Distribució normal i valor z",
+    "section": "La distribució normal",
+    "text": "La distribució normal\nMoltes variables tenen una forma semblant quan en fem l’histograma: la majoria de valors s’agrupen al voltant del centre, i com més ens allunyem del centre, menys valors hi ha. És la forma de campana de la distribució normal.\nPer exemple, si mesuréssim l’alçada de tots els adults de Catalunya, obtindríem una distribució semblant a aquesta (suposem que la mitjana és 172 cm i la desviació típica, 10 cm):\n\n\nCodi\nalcada &lt;- tibble(x = seq(132, 212, length.out = 500),\n                 densitat = dnorm(x, mean = 172, sd = 10))\n\nggplot(alcada, aes(x = x, y = densitat)) +\n  geom_area(fill = bordeus_clar, alpha = 0.6) +\n  geom_line(color = bordeus, linewidth = 1) +\n  geom_vline(xintercept = 172, linetype = \"dashed\", color = gris_fosc) +\n  annotate(\"text\", x = 173, y = 0.041, label = \"Mitjana: 172 cm\", hjust = 0) +\n  labs(x = \"Alçada (cm)\", y = NULL) +\n  theme(axis.text.y = element_blank())\n\n\n\n\n\n\n\n\n\nUna normal queda completament definida per dos números:\n\nLa mitjana (\\(\\mu\\)): on és el centre de la campana.\nLa desviació típica (\\(\\sigma\\)): com d’ampla és la campana."
+  },
+  {
+    "objectID": "sessio-2/explicacions/01_normal_valor_z.html#la-regla-del-68-95-997",
+    "href": "sessio-2/explicacions/01_normal_valor_z.html#la-regla-del-68-95-997",
+    "title": "Distribució normal i valor z",
+    "section": "La regla del 68 – 95 – 99,7",
+    "text": "La regla del 68 – 95 – 99,7\nEn qualsevol distribució normal, sigui quina sigui la mitjana i la desviació típica, es compleix sempre que:\n\nEntre la mitjana i ±1 desviació típica hi ha el 68 % dels valors.\nEntre la mitjana i ±2 desviacions típiques hi ha el 95 % dels valors (més exactament, ±1,96).\nEntre la mitjana i ±3 desviacions típiques hi ha el 99,7 % dels valors.\n\n\n\nCodi\ncorba &lt;- tibble(z = seq(-3.5, 3.5, length.out = 500), densitat = dnorm(z))\n\nggplot(corba, aes(x = z, y = densitat)) +\n  geom_area(data = filter(corba, abs(z) &lt;= 3), fill = bordeus_clar, alpha = 0.35) +\n  geom_area(data = filter(corba, abs(z) &lt;= 2), fill = bordeus_clar, alpha = 0.6) +\n  geom_area(data = filter(corba, abs(z) &lt;= 1), fill = bordeus, alpha = 0.6) +\n  geom_line(color = bordeus, linewidth = 1) +\n  annotate(\"text\", x = 0, y = 0.17, label = \"68 %\", color = \"white\", size = 6, fontface = \"bold\") +\n  annotate(\"text\", x = 1.5, y = 0.06, label = \"95 %\", size = 5) +\n  annotate(\"text\", x = 2.5, y = 0.025, label = \"99,7 %\", size = 4) +\n  scale_x_continuous(breaks = -3:3,\n                     labels = c(\"142\", \"152\", \"162\", \"172\", \"182\", \"192\", \"202\")) +\n  labs(x = \"Alçada (cm): mitjana ± 1, 2 i 3 desviacions típiques\", y = NULL) +\n  theme(axis.text.y = element_blank(), panel.grid = element_blank())\n\n\n\n\n\n\n\n\n\nAplicat a l’alçada: el 68 % dels adults fa entre 162 i 182 cm, i el 95 %, entre 152 i 192 cm."
+  },
+  {
+    "objectID": "sessio-2/explicacions/01_normal_valor_z.html#el-valor-z-quantes-desviacions-típiques",
+    "href": "sessio-2/explicacions/01_normal_valor_z.html#el-valor-z-quantes-desviacions-típiques",
+    "title": "Distribució normal i valor z",
+    "section": "El valor z: quantes desviacions típiques?",
+    "text": "El valor z: quantes desviacions típiques?\nEl valor z ens diu a quantes desviacions típiques de la mitjana hi ha un valor concret:\n\\[z = \\frac{x - \\mu}{\\sigma} = \\frac{\\text{valor} - \\text{mitjana}}{\\text{desviació típica}}\\]\nExemple: una persona que fa 190 cm té un valor z de\n\\[z = \\frac{190 - 172}{10} = 1{,}8\\]\nÉs a dir, és 1,8 desviacions típiques més alta que la mitjana. Un valor z positiu vol dir «per sobre de la mitjana»; un de negatiu, «per sota»; i z = 0 vol dir «exactament a la mitjana».\n\nQuina proporció de gent és més alta que 190 cm?\nÉs l’àrea de la campana que queda a la dreta dels 190 cm. Amb R la calculem amb pnorm(), que dona la proporció de valors que queden per sota d’un valor (per això fem 1 - ...):\n\n1 - pnorm(190, mean = 172, sd = 10)\n\n[1] 0.03593032\n\n\n\n\nCodi\nggplot(alcada, aes(x = x, y = densitat)) +\n  geom_area(data = filter(alcada, x &gt;= 190), fill = bordeus, alpha = 0.7) +\n  geom_line(color = bordeus, linewidth = 1) +\n  geom_vline(xintercept = 190, color = bordeus, linewidth = 1) +\n  annotate(\"text\", x = 192, y = 0.02, hjust = 0, color = bordeus,\n           label = paste0(\"190 cm (z = 1,8)\\n\", num((1 - pnorm(1.8)) * 100), \" % de la gent\")) +\n  labs(x = \"Alçada (cm)\", y = NULL) +\n  theme(axis.text.y = element_blank())\n\n\n\n\n\n\n\n\n\nNomés un 3,6 % dels adults fa més de 190 cm.\n\n\nI al revés: a partir de quina alçada hi ha el 5 % més alt?\nAra sabem la proporció (el 5 % de dalt, és a dir, el 95 % per sota) i volem el valor. Ho fem amb qnorm():\n\nqnorm(0.95, mean = 172, sd = 10)\n\n[1] 188.4485\n\n\nEl 5 % més alt de la població fa més de 188,4 cm."
+  },
+  {
+    "objectID": "sessio-2/explicacions/01_normal_valor_z.html#per-a-què-serveix-el-valor-z-comparar-coses-diferents",
+    "href": "sessio-2/explicacions/01_normal_valor_z.html#per-a-què-serveix-el-valor-z-comparar-coses-diferents",
+    "title": "Distribució normal i valor z",
+    "section": "Per a què serveix el valor z? Comparar coses diferents",
+    "text": "Per a què serveix el valor z? Comparar coses diferents\nEl valor z permet comparar valors de variables que tenen escales o dispersions diferents. Per exemple, amb les dades de competències bàsiques del curs: un alumne treu un 90 en català i un 90 en matemàtiques. En quina assignatura ha destacat més?\n\ncompetencies |&gt;\n  summarise(mitjana_cat = mean(nota_cat, na.rm = TRUE),\n            sd_cat      = sd(nota_cat, na.rm = TRUE),\n            mitjana_mat = mean(nota_mat),\n            sd_mat      = sd(nota_mat)) |&gt;\n  mutate(z_cat = (90 - mitjana_cat) / sd_cat,\n         z_mat = (90 - mitjana_mat) / sd_mat)\n\n# A tibble: 1 × 6\n  mitjana_cat sd_cat mitjana_mat sd_mat z_cat z_mat\n        &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1        74.5   15.7        73.6   17.5 0.987 0.937\n\n\nEls dos valors z són semblants, però el 90 de matemàtiques destaca una mica més, perquè la mitjana de matemàtiques és més baixa. (En aquestes dades les notes no són exactament normals, però el valor z segueix indicant quantes desviacions típiques ens separen de la mitjana.)"
+  },
+  {
+    "objectID": "sessio-2/explicacions/01_normal_valor_z.html#don-surt-l196-dels-intervals-de-confiança",
+    "href": "sessio-2/explicacions/01_normal_valor_z.html#don-surt-l196-dels-intervals-de-confiança",
+    "title": "Distribució normal i valor z",
+    "section": "D’on surt l’1,96 dels intervals de confiança",
+    "text": "D’on surt l’1,96 dels intervals de confiança\nSi volem el 95 % central d’una normal, deixem un 2,5 % a cada costat. El valor z que deixa el 97,5 % per sota és:\n\nqnorm(0.975)\n\n[1] 1.959964\n\n\nAquest és l’1,96 que fem servir a l’interval de confiança: \\(\\text{mitjana} \\pm 1{,}96 \\cdot SE\\). Amb altres nivells de confiança, el número canvia:\n\n\n\nNivell de confiança\nDeixem a cada costat\nValor z\nAmb R\n\n\n\n\n90 %\n5 %\n1,645\nqnorm(0.95)\n\n\n95 %\n2,5 %\n1,96\nqnorm(0.975)\n\n\n99 %\n0,5 %\n2,576\nqnorm(0.995)\n\n\n\nCom més confiança volem, més gran és el número i, per tant, més ample és l’interval. És el que vam veure a les slides amb t.test(..., conf.level = 0.99).\n\n\n\n\n\n\nConsellIdees clau\n\n\n\n\nLa distribució normal té forma de campana i es defineix per la mitjana i la desviació típica.\nEn una normal, el 95 % dels valors queden a menys de 1,96 desviacions típiques de la mitjana.\nEl valor z diu a quantes desviacions típiques de la mitjana és un valor: \\(z = (x - \\mu) / \\sigma\\).\nA R: pnorm() passa d’un valor a una proporció, i qnorm() d’una proporció a un valor.\n\n\n\nSegüent: Distribució de mostreig: per què cada mostra dona un resultat diferent"
+  },
+  {
     "objectID": "sessio-4/index.html",
     "href": "sessio-4/index.html",
     "title": "Sessió 4 · Correlació i regressió",
@@ -11,7 +214,49 @@
     "href": "sessio-2/index.html",
     "title": "Sessió 2 · Descriptiva i inferència",
     "section": "",
-    "text": "Estadística descriptiva i fonaments de la inferència estadística: distribució de mostreig, intervals de confiança i contrastos d’hipòtesis univariats amb R.\n\n\n\n\n\n\nNota\n\n\n\nEls materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió."
+    "text": "Estadística descriptiva amb R (taules de freqüències, mitjana, mediana, quartils i desviació típica) i una introducció a la inferència estadística: error estàndard, intervals de confiança i una primera idea de contrast d’hipòtesis. Comencem acabant la pràctica 1."
+  },
+  {
+    "objectID": "sessio-2/index.html#slides",
+    "href": "sessio-2/index.html#slides",
+    "title": "Sessió 2 · Descriptiva i inferència",
+    "section": "Slides",
+    "text": "Slides\n\nSlides de la sessió 2 · Estadística descriptiva, pràctica 1 i introducció a la inferència"
+  },
+  {
+    "objectID": "sessio-2/index.html#materials",
+    "href": "sessio-2/index.html#materials",
+    "title": "Sessió 2 · Descriptiva i inferència",
+    "section": "Materials",
+    "text": "Materials\n\n\n\n\n\n\nConsell⬇ Descarregar els materials de la sessió 2 (zip)\n\n\n\n\n\n\nUn cop descomprimit, trobareu:\nsessio-2/\n├── sessio_2.Rproj                  ← obriu aquest fitxer amb RStudio\n├── dades/\n│   └── competencies.csv            Les dades netes de la pràctica 1 (480 alumnes)\n└── codi/\n    ├── 01_descriptiva_inferencia.R El codi de les slides\n    └── exercici_sessio_2.R         Plantilla de la pràctica 2\ncompetencies.csv són les dades ja netes: exactament les que s’obtenen en acabar la pràctica 1. Si no l’heu acabada, no passa res: la pràctica 2 parteix d’aquest fitxer."
+  },
+  {
+    "objectID": "sessio-2/index.html#pràctica-1-lacabem",
+    "href": "sessio-2/index.html#pràctica-1-lacabem",
+    "title": "Sessió 2 · Descriptiva i inferència",
+    "section": "Pràctica 1: l’acabem",
+    "text": "Pràctica 1: l’acabem\nQui no l’hagi acabada, té temps a classe per fer els passos 1 a 10 de l’exercici de la sessió 1, amb el projecte de la sessió 1 (sessio_1.Rproj) i el vostre script codi/exercici_sessio_1.R. La solució és a la pàgina de la sessió 1.\n\n\n\n\n\n\nConsellNo vau arribar al pas 4?\n\n\n\n⬇ Descarregueu exercici_sessio_1_passos_1-4.R: és la plantilla de l’exercici amb els passos 1 a 4 ja fets. Deseu-la a la carpeta sessio-1/codi/, obriu-la des del panell Files de RStudio i continueu des del pas 5."
+  },
+  {
+    "objectID": "sessio-2/index.html#pràctica-2-descriptiva-i-inferència",
+    "href": "sessio-2/index.html#pràctica-2-descriptiva-i-inferència",
+    "title": "Sessió 2 · Descriptiva i inferència",
+    "section": "Pràctica 2: descriptiva i inferència",
+    "text": "Pràctica 2: descriptiva i inferència\nAmb el projecte de la sessió 2 (sessio_2.Rproj), les dades dades/competencies.csv i la plantilla codi/exercici_sessio_2.R.\nPart A. Estadística descriptiva (abans de la pausa)\n\nImportar les dades amb read_csv2() i tornar a ordenar habitat amb factor().\nFreqüències de habitat: freqüències absolutes, percentatges i percentatges acumulats (count(), mutate() i cumsum()). Quin percentatge d’alumnes estudia en municipis de 100.000 habitants o menys?\nDescriptiva de nota_cat amb summarise(): mitjana, mediana, \\(Q_1\\), \\(Q_3\\), desviació típica i IQR. Compte amb els NA (na.rm = TRUE). La mitjana és més alta o més baixa que la mediana? Què vol dir?\nComparar les tres assignatures: en un sol summarise(), la mitjana i la mediana de nota_cat, nota_mat i nota_ang. En quina s’obtenen les notes més altes? En quina hi ha més diferència entre la mitjana i la mediana?\n\nJa ho teniu tot? Seguiu el tutorial de primers gràfics amb ggplot2.\nPart B. Inferència (després de la pausa), amb la nota de català (nota_cat)\n\nInterval de confiança del 95 % de la nota mitjana: a mà amb summarise() i amb t.test().\nIntervals de confiança del 90 % i del 99 %. Quin és més ample? Per què?\nUna proporció: quin percentatge d’alumnes té nivell \"Alt\" de matemàtiques? Interval de confiança amb prop.test(). Podem dir que són més de la meitat?\nUn contrast: la nota mitjana de català, és diferent de 75 (\\(\\alpha = 0{,}05\\))? És coherent amb l’interval del pas 5?\n\nComenteu i interpreteu els resultats de cada pas en paraules.\nQuè cal lliurar: l’script exercici_sessio_2.R (parts A i B) complet i comentat, per correu electrònic a joelardiacaarnau@gencat.cat.\n\n\n\n\n\n\nNotaSolució\n\n\n\nLa solució de la pràctica 2 (descriptiva i inferència) es publicarà aquí després de la sessió."
+  },
+  {
+    "objectID": "sessio-2/index.html#per-aprofundir-opcional",
+    "href": "sessio-2/index.html#per-aprofundir-opcional",
+    "title": "Sessió 2 · Descriptiva i inferència",
+    "section": "Per aprofundir (opcional)",
+    "text": "Per aprofundir (opcional)\nDocuments per llegir pel vostre compte, amb explicacions, simulacions i gràfics. El codi R hi és plegat: no cal entendre’l per seguir l’explicació. Es recomana llegir-los per ordre.\nInferència\n\nLa distribució normal i el valor z: d’on surt l’1,96 dels intervals de confiança.\nPer què cada mostra dona un resultat diferent: distribució de mostreig i error estàndard.\nI si la població no és normal?: el teorema del límit central.\nQuè fa per dins t.test()?: l’estadístic t, el p-valor i la distribució t de Student.\nQuè vol dir «95 % de confiança»?: una simulació amb 1.000 intervals.\nProporcions i distribució binomial: intervals per a proporcions i marge d’error de les enquestes.\n\nDescriptiva i gràfics\n\nTutorial: primers gràfics amb ggplot2: barres, histogrames i diagrames de caixa, pas a pas.\nSlides de descriptiva de la sessió 1: asimetria, curtosi i principis per fer bons gràfics."
+  },
+  {
+    "objectID": "sessio-2/index.html#fonts-de-les-dades",
+    "href": "sessio-2/index.html#fonts-de-les-dades",
+    "title": "Sessió 2 · Descriptiva i inferència",
+    "section": "Fonts de les dades",
+    "text": "Fonts de les dades\n\nCompetències bàsiques: mostra de l’avaluació de competències bàsiques de 6è de primària (2023) del Departament d’Educació, publicada al portal de dades obertes de la Generalitat."
   },
   {
     "objectID": "recursos.html",
@@ -137,7 +382,7 @@
     "href": "sessio-1/index.html#slides",
     "title": "Sessió 1 · Introducció a R i RStudio",
     "section": "Slides",
-    "text": "Slides\n\nSlides de la sessió 1 · Introducció a l’estadística, R, RStudio i tidyverse\nSlides d’estadística descriptiva · Les començarem si tenim temps; si no, a la sessió 2"
+    "text": "Slides\n\nSlides de la sessió 1 · Introducció a l’estadística, R, RStudio i tidyverse\nSlides d’estadística descriptiva · Per aprofundir: asimetria, curtosi i com fer bons gràfics (a la sessió 2 en fem una versió reduïda)"
   },
   {
     "objectID": "sessio-1/index.html#materials",
@@ -151,7 +396,7 @@
     "href": "sessio-1/index.html#exercici-importar-netejar-i-exportar-unes-dades",
     "title": "Sessió 1 · Introducció a R i RStudio",
     "section": "Exercici: importar, netejar i exportar unes dades",
-    "text": "Exercici: importar, netejar i exportar unes dades\nAmb les dades dades/competencies_basiques.csv i la plantilla codi/exercici_sessio_1.R:\n\nCarregar el tidyverse i importar les dades amb read_csv2().\nMirar les dades amb glimpse() i respondre en un comentari: quantes files i columnes hi ha? De quin tipus és cada variable?\nselect(): quedar-se amb CODI_ALUMNE, GENERE, NATURALESA, HABITAT, PCAT, PMAT i PANG.\nrename(): posar noms clars en minúscules (id, genere, titularitat, habitat, nota_cat, nota_mat, nota_ang).\nmutate() + case_when(): recodificar genere (D → \"Dona\", H → \"Home\").\nmutate() + factor(): ordenar les categories de habitat de menys a més habitants.\nmutate(): crear nota_mitjana (mitjana de les tres notes) i, amb case_when(), nivell_mat: Baix (&lt; 50), Mitjà (de 50 a menys de 75) i Alt (≥ 75).\nfilter(): eliminar els alumnes sense nota de matemàtiques.\nEscriure en un comentari una limitació d’aquestes dades.\nExportar les dades netes amb write_csv2() a dades/competencies_basiques_net.csv.\n\nQuè cal lliurar: l’script exercici_sessio_1.R complet i comentat i el fitxer competencies_basiques_net.csv, per correu electrònic a joelardiacaarnau@gencat.cat.\n\n\n\n\n\n\nNotaSolució\n\n\n\nLa solució de l’exercici es publicarà aquí després de la sessió."
+    "text": "Exercici: importar, netejar i exportar unes dades\nAmb les dades dades/competencies_basiques.csv i la plantilla codi/exercici_sessio_1.R:\n\nCarregar el tidyverse i importar les dades amb read_csv2().\nMirar les dades amb glimpse() i respondre en un comentari: quantes files i columnes hi ha? De quin tipus és cada variable?\nselect(): quedar-se amb CODI_ALUMNE, GENERE, NATURALESA, HABITAT, PCAT, PMAT i PANG.\nrename(): posar noms clars en minúscules (id, genere, titularitat, habitat, nota_cat, nota_mat, nota_ang).\nmutate() + case_when(): recodificar genere (D → \"Dona\", H → \"Home\").\nmutate() + factor(): ordenar les categories de habitat de menys a més habitants.\nmutate(): crear nota_mitjana (mitjana de les tres notes) i, amb case_when(), nivell_mat: Baix (&lt; 50), Mitjà (de 50 a menys de 75) i Alt (≥ 75).\nfilter(): eliminar els alumnes sense nota de matemàtiques.\nEscriure en un comentari una limitació d’aquestes dades.\nExportar les dades netes amb write_csv2() a dades/competencies_basiques_net.csv.\n\nQuè cal lliurar: l’script exercici_sessio_1.R complet i comentat i el fitxer competencies_basiques_net.csv, per correu electrònic a joelardiacaarnau@gencat.cat.\n\n\n\n\n\n\nNotaSolució\n\n\n\n⬇ Descarregar la solució de l’exercici (passos 1 a 10)."
   },
   {
     "objectID": "sessio-1/index.html#fonts-de-les-dades",
@@ -166,5 +411,166 @@
     "title": "Sessió 3 · Estadística bivariada",
     "section": "",
     "text": "Relacions entre dues variables qualitatives i entre una variable quantitativa i una qualitativa: taules de contingència, prova χ² i comparació de mitjanes amb R.\n\n\n\n\n\n\nNota\n\n\n\nEls materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "",
+    "text": "NotaDe què va aquest document?\n\n\n\nA les slides hem dit que, si repetíssim la mostra moltes vegades, cada cop obtindríem una mitjana diferent, i que aquesta variació és l’error estàndard. Aquí ho comprovarem amb una simulació: ens inventarem una població de la qual sabem la resposta, en traurem moltes mostres i mirarem què passa.\nEl codi R de cada gràfic és plegat: cliqueu a Code per veure’l."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#el-problema-mai-no-veiem-la-població",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#el-problema-mai-no-veiem-la-població",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "El problema: mai no veiem la població",
+    "text": "El problema: mai no veiem la població\nA la vida real tenim una sola mostra (per exemple, 480 alumnes) i volem saber alguna cosa de tota la població (tots els alumnes de 6è de Catalunya). No sabem la resposta correcta: per això fem estadística.\nPerò amb R podem fer trampa: inventar-nos una població sencera, de manera que sí que sabem la resposta, i veure com es comporten les mostres que en traiem."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#la-població-inventada-lalçada-dun-milió-dadults",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#la-població-inventada-lalçada-dun-milió-dadults",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "La població inventada: l’alçada d’un milió d’adults",
+    "text": "La població inventada: l’alçada d’un milió d’adults\nSimulem l’alçada d’un milió d’adults, amb una mitjana de 172 cm i una desviació típica de 10 cm:\n\n\nCodi\npoblacio &lt;- rnorm(1000000, mean = 172, sd = 10)\n\nggplot(tibble(alcada = poblacio), aes(x = alcada)) +\n  geom_histogram(binwidth = 2, fill = bordeus_clar, color = \"white\") +\n  geom_vline(xintercept = 172, linetype = \"dashed\", color = bordeus, linewidth = 1) +\n  scale_y_continuous(labels = scales::label_number(big.mark = \".\")) +\n  coord_cartesian(xlim = c(135, 210)) +\n  labs(x = \"Alçada (cm)\", y = \"Nombre de persones\")\n\n\n\n\n\n\n\n\n\nAquesta és la «veritat»: la mitjana real és 172 cm. Ara fem com si no la sabéssim."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#traiem-una-mostra-i-una-altra-i-una-altra",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#traiem-una-mostra-i-una-altra-i-una-altra",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "Traiem una mostra… i una altra… i una altra",
+    "text": "Traiem una mostra… i una altra… i una altra\nAgafem 10 persones a l’atzar i en calculem l’alçada mitjana. Després ho repetim amb 10 persones diferents, i així fins a 5 vegades:\n\n\nCodi\nmostres &lt;- tibble(mostra = paste(\"Mostra\", LETTERS[1:5]),\n                  mitjana = replicate(5, mean(sample(poblacio, 10))))\nmostres |&gt;\n  mutate(mitjana = num(mitjana))\n\n\n# A tibble: 5 × 2\n  mostra   mitjana\n  &lt;chr&gt;    &lt;chr&gt;  \n1 Mostra A 172,1  \n2 Mostra B 171,4  \n3 Mostra C 169,6  \n4 Mostra D 180,8  \n5 Mostra E 168,6  \n\n\nCada mostra dona una mitjana diferent, i cap no és exactament 172. No és cap error: és l’atzar de qui ens ha tocat a la mostra. És el que anomenem error de mostreig."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#i-si-ho-fem-moltes-vegades",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#i-si-ho-fem-moltes-vegades",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "I si ho fem moltes vegades?",
+    "text": "I si ho fem moltes vegades?\nRepetim el procés 20, 200 i 2.000 vegades. Cada barra dels gràfics compta quantes mostres han donat una mitjana d’aquell valor:\n\n\nCodi\nrepeticions &lt;- c(20, 200, 2000)\n\nmitjanes &lt;- map_dfr(repeticions, \\(r) {\n  tibble(mitjana = replicate(r, mean(sample(poblacio, 10))),\n         repeticions = paste(format(r, big.mark = \".\"), \"mostres de 10 persones\"))\n}) |&gt;\n  mutate(repeticions = factor(repeticions, levels = unique(repeticions)))\n\nggplot(mitjanes, aes(x = mitjana)) +\n  geom_histogram(bins = 30, fill = bordeus_clar, color = \"white\") +\n  geom_vline(xintercept = 172, linetype = \"dashed\", color = bordeus, linewidth = 1) +\n  facet_wrap(~ repeticions, scales = \"free_y\") +\n  labs(x = \"Alçada mitjana de cada mostra (cm)\", y = \"Nombre de mostres\")\n\n\n\n\n\n\n\n\n\nCom més mostres fem, més clara és la forma que apareix:\n\nLes mitjanes s’agrupen al voltant de la mitjana real (la línia discontínua): les mostres aleatòries no s’equivoquen sistemàticament cap a un costat.\nTenen forma de campana (una distribució normal).\nHi ha mostres que s’allunyen bastant de 172, però són poques.\n\nAquesta distribució de totes les mitjanes possibles s’anomena distribució de mostreig. La seva desviació típica és l’error estàndard: com d’allunyada de la real sol quedar la mitjana d’una mostra."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#la-mida-de-la-mostra-com-més-gran-més-precisió",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#la-mida-de-la-mostra-com-més-gran-més-precisió",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "La mida de la mostra: com més gran, més precisió",
+    "text": "La mida de la mostra: com més gran, més precisió\nAra comparem mostres de 10, 100 i 1.000 persones (2.000 mostres de cada mida):\n\n\nCodi\nmides &lt;- c(10, 100, 1000)\n\nper_mida &lt;- map_dfr(mides, \\(n) {\n  tibble(mitjana = replicate(2000, mean(sample(poblacio, n))),\n         mida = paste(\"Mostres de\", format(n, big.mark = \".\"), \"persones\"))\n}) |&gt;\n  mutate(mida = factor(mida, levels = unique(mida)))\n\nggplot(per_mida, aes(x = mitjana)) +\n  geom_histogram(bins = 40, fill = bordeus_clar, color = \"white\") +\n  geom_vline(xintercept = 172, linetype = \"dashed\", color = bordeus, linewidth = 1) +\n  facet_wrap(~ mida) +\n  labs(x = \"Alçada mitjana de cada mostra (cm)\", y = \"Nombre de mostres\")\n\n\n\n\n\n\n\n\n\nAmb mostres de 10 persones, les mitjanes van aproximadament de 165 a 179 cm. Amb mostres de 1.000, gairebé totes queden entre 171 i 173. Com més gran és la mostra, més a prop de la mitjana real queden les estimacions."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#lerror-estàndard-es-pot-calcular-sense-repetir-res",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#lerror-estàndard-es-pot-calcular-sense-repetir-res",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "L’error estàndard es pot calcular sense repetir res",
+    "text": "L’error estàndard es pot calcular sense repetir res\nA la vida real no podem repetir l’enquesta 2.000 vegades. La bona notícia és que l’error estàndard es pot calcular amb una sola mostra:\n\\[SE = \\frac{\\text{desviació típica}}{\\sqrt{n}}\\]\nComprovem-ho amb la simulació:\n\n\n\n\n\n\n\n\nMida de la mostra\nFórmula: \\(10 / \\sqrt{n}\\)\nDesviació típica de les 2.000 mitjanes simulades\n\n\n\n\n10\n3,16\n3,16\n\n\n100\n1,00\n1,00\n\n\n1.000\n0,32\n0,31\n\n\n\nLa fórmula encerta. Fixeu-vos també en l’arrel quadrada: per reduir l’error a la meitat, cal una mostra quatre vegades més gran. Per això les enquestes no fan servir mostres enormes: a partir d’un punt, guanyar precisió surt molt car."
+  },
+  {
+    "objectID": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#i-a-les-nostres-dades",
+    "href": "sessio-2/explicacions/02_distribucio_mostreig_alcada.html#i-a-les-nostres-dades",
+    "title": "Distribució de mostreig: per què cada mostra dona un resultat diferent",
+    "section": "I a les nostres dades?",
+    "text": "I a les nostres dades?\nA les dades del curs tenim 480 alumnes, i la desviació típica de la nota de matemàtiques és de 17,5 punts. Per tant:\n\\[SE = \\frac{17{,}5}{\\sqrt{480}} \\approx 0{,}8 \\text{ punts}\\]\nÉs a dir, la nota mitjana de la nostra mostra sol quedar a menys d’un punt de la mitjana real de tots els alumnes de Catalunya. Amb aquest número construïm l’interval de confiança: \\(\\text{mitjana} \\pm 1{,}96 \\cdot 0{,}8\\).\n\n\n\n\n\n\nConsellIdees clau\n\n\n\n\nCada mostra dona un resultat una mica diferent: és l’error de mostreig.\nSi poguéssim repetir la mostra moltes vegades, les mitjanes formarien una campana centrada en la mitjana real: la distribució de mostreig.\nLa seva desviació típica és l’error estàndard: \\(SE = s / \\sqrt{n}\\). El podem calcular amb una sola mostra.\nCom més gran és la mostra, més petit és l’error estàndard. Però per reduir-lo a la meitat cal multiplicar la mostra per quatre.\n\n\n\nAnterior: Distribució normal i valor z · Següent: I si la població no és normal? El teorema del límit central"
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html",
+    "title": "Què fa per dins t.test()?",
+    "section": "",
+    "text": "NotaDe què va aquest document?\n\n\n\nA les slides hem fet t.test(competencies$nota_mat, mu = 72) per saber si la nota mitjana de matemàtiques és diferent de 72, i hem mirat el p-valor. Aquí obrirem la caixa negra: què calcula R, d’on surt el p-valor i per què es diu t.\nPer entendre-ho bé, us anirà bé haver llegit abans les explicacions sobre la distribució normal i la distribució de mostreig. El codi R de cada gràfic és plegat: cliqueu a Code per veure’l."
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html#la-pregunta",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html#la-pregunta",
+    "title": "Què fa per dins t.test()?",
+    "section": "La pregunta",
+    "text": "La pregunta\nVolem saber si la nota mitjana de matemàtiques de tots els alumnes de 6è de Catalunya és diferent de 72 punts. Plantegem dues hipòtesis:\n\n\\(H_0\\) (hipòtesi nul·la): la mitjana és 72.\n\\(H_1\\) (hipòtesi alternativa): la mitjana no és 72.\n\nA la nostra mostra de 480 alumnes, la mitjana és de 73,58 punts. És més de 72, sí. Però podria ser per atzar? Ja sabem que cada mostra dona una mitjana una mica diferent. La pregunta real és: si la mitjana de tot Catalunya fos 72, seria estrany treure una mostra amb una mitjana de 73,58?"
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html#pas-1.-a-quina-distància-estem-de-72-lestadístic-t",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html#pas-1.-a-quina-distància-estem-de-72-lestadístic-t",
+    "title": "Què fa per dins t.test()?",
+    "section": "Pas 1. A quina distància estem de 72? (l’estadístic t)",
+    "text": "Pas 1. A quina distància estem de 72? (l’estadístic t)\nLa diferència és de 1,58 punts. Però «1,6 punts» és molt o poc? Depèn de quant varien les mitjanes d’una mostra a l’altra, és a dir, de l’error estàndard. Per això mesurem la distància en errors estàndard:\n\\[t = \\frac{\\text{mitjana de la mostra} - \\text{valor de } H_0}{SE} = \\frac{\\bar{x} - \\mu_0}{s / \\sqrt{n}}\\]\nÉs la mateixa idea que el valor z: quantes «unitats de variació» ens separen del valor de referència. Ho calculem a mà:\n\ncompetencies |&gt;\n  summarise(mitjana = mean(nota_mat),\n            se      = sd(nota_mat) / sqrt(n()),\n            t       = (mitjana - 72) / se)\n\n# A tibble: 1 × 3\n  mitjana    se     t\n    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1    73.6 0.800  1.98\n\n\nLa nostra mitjana és a 1,98 errors estàndard de 72."
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html#pas-2.-com-destrany-seria-això-si-h_0-fos-certa-el-p-valor",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html#pas-2.-com-destrany-seria-això-si-h_0-fos-certa-el-p-valor",
+    "title": "Què fa per dins t.test()?",
+    "section": "Pas 2. Com d’estrany seria això si \\(H_0\\) fos certa? (el p-valor)",
+    "text": "Pas 2. Com d’estrany seria això si \\(H_0\\) fos certa? (el p-valor)\nSi la mitjana real fos 72, els valors de t de les diferents mostres possibles formarien una campana centrada en 0. La majoria de mostres donarien valors de t entre −2 i 2. El p-valor és la proporció de mostres que donarien un t tan o més extrem que el nostre (per les dues bandes, perquè preguntem «diferent», no «més gran»):\n\n\nCodi\ncorba &lt;- tibble(t = seq(-4, 4, length.out = 800), densitat = dt(t, df = gl))\n\nggplot(corba, aes(x = t, y = densitat)) +\n  geom_area(data = filter(corba, t &gt;= abs(t_obs)), fill = bordeus, alpha = 0.7) +\n  geom_area(data = filter(corba, t &lt;= -abs(t_obs)), fill = bordeus, alpha = 0.7) +\n  geom_line(color = bordeus, linewidth = 1) +\n  geom_vline(xintercept = t_obs, color = bordeus, linewidth = 1) +\n  annotate(\"text\", x = t_obs + 0.1, y = 0.25, hjust = 0, color = bordeus,\n           label = paste0(\"La nostra mostra\\nt = \", num(t_obs, 2))) +\n  annotate(\"text\", x = 0, y = 0.15, label = \"Si H0 fos certa,\\nla majoria de mostres\\ndonarien valors aquí\",\n           size = 4, color = gris_fosc) +\n  labs(x = \"Valor de t\", y = NULL) +\n  theme(axis.text.y = element_blank())\n\n\n\n\n\n\n\n\n\nL’àrea fosca (les dues cues) és el p-valor. Amb R:\n\n2 * (1 - pt(1.9778, df = 479))\n\n[1] 0.04852397\n\n\nSi la mitjana real fos 72, només un 4,9 % de les mostres donarien una mitjana tan allunyada com la nostra. Com que és menys del 5 % (el nostre llindar, \\(\\alpha = 0{,}05\\)), concloem que és massa estrany per ser atzar: rebutgem \\(H_0\\)."
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html#pas-3.-comprovem-ho-amb-t.test",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html#pas-3.-comprovem-ho-amb-t.test",
+    "title": "Què fa per dins t.test()?",
+    "section": "Pas 3. Comprovem-ho amb t.test()",
+    "text": "Pas 3. Comprovem-ho amb t.test()\n\nt.test(competencies$nota_mat, mu = 72)\n\n\n    One Sample t-test\n\ndata:  competencies$nota_mat\nt = 1.9778, df = 479, p-value = 0.04853\nalternative hypothesis: true mean is not equal to 72\n95 percent confidence interval:\n 72.01028 75.15347\nsample estimates:\nmean of x \n 73.58187 \n\n\nSurten exactament els mateixos números: t = 1.9778, df = 479 (els graus de llibertat, \\(n - 1\\)) i p-value = 0.04853. Això és tot el que fa t.test()."
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html#per-què-es-diu-t-i-no-z",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html#per-què-es-diu-t-i-no-z",
+    "title": "Què fa per dins t.test()?",
+    "section": "Per què es diu t i no z?",
+    "text": "Per què es diu t i no z?\nSi coneguéssim la desviació típica de tota la població, la distribució seria exactament una normal i parlaríem de valor z. Però no la coneixem: l’estimem amb la de la mostra, i això afegeix una mica més d’incertesa. Per compensar-ho, fem servir la distribució t de Student, que és com una normal però amb les cues més gruixudes: els valors extrems són una mica més probables.\nQuanta més gruixuda? Depèn de la mida de la mostra, a través dels graus de llibertat (\\(n - 1\\)):\n\n\nCodi\nx &lt;- seq(-4, 4, length.out = 500)\ndistribucions &lt;- bind_rows(\n  tibble(x = x, densitat = dt(x, df = 2),  distribucio = \"t amb 2 graus de llibertat (n = 3)\"),\n  tibble(x = x, densitat = dt(x, df = 9),  distribucio = \"t amb 9 graus de llibertat (n = 10)\"),\n  tibble(x = x, densitat = dnorm(x),       distribucio = \"Normal (o t amb n gran)\")\n) |&gt;\n  mutate(distribucio = factor(distribucio, levels = unique(distribucio)))\n\nggplot(distribucions, aes(x = x, y = densitat, color = distribucio)) +\n  geom_line(linewidth = 1) +\n  scale_color_manual(values = c(bordeus_clar, \"#A23B4D\", bordeus)) +\n  labs(x = NULL, y = NULL, color = NULL) +\n  theme(axis.text.y = element_blank(), legend.position = \"bottom\", legend.direction = \"vertical\")\n\n\n\n\n\n\n\n\n\nAmb mostres petites, la t té les cues molt més altes que la normal. A partir d’unes 30 observacions, les dues són gairebé iguals. Amb els nostres 480 alumnes, la diferència és inapreciable: per això a les slides l’interval amb 1,96 (normal) i el de t.test() (t) donaven pràcticament el mateix."
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html#i-amb-una-mostra-petita",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html#i-amb-una-mostra-petita",
+    "title": "Què fa per dins t.test()?",
+    "section": "I amb una mostra petita?",
+    "text": "I amb una mostra petita?\nImaginem que mesurem l’alçada de 20 persones treballadores d’un departament. La mitjana és de 174 cm i la desviació típica, de 7 cm. És diferent de la mitjana de la població, 172 cm?\n\nt_petita &lt;- (174 - 172) / (7 / sqrt(20))\nt_petita\n\n[1] 1.277753\n\n2 * (1 - pt(t_petita, df = 19))   # p-valor\n\n[1] 0.2167283\n\n\nLa diferència és de 2 cm, més que a l’exemple de matemàtiques. Però amb només 20 persones l’error estàndard és gran, i el t és petit: el p-valor és d’un 22 %. No podem rebutjar \\(H_0\\): una diferència de 2 cm en una mostra de 20 persones pot ser perfectament per atzar.\n\n\n\n\n\n\nImportantCompte amb la interpretació\n\n\n\n«No rebutjar \\(H_0\\)» no vol dir que la mitjana sigui 172. Vol dir que, amb aquestes dades, no tenim prou evidència per dir que és diferent. Amb una mostra més gran, potser sí que la trobaríem."
+  },
+  {
+    "objectID": "sessio-2/explicacions/04_introduccio_ttest.html#contrastos-unilaterals-més-gran-que-o-més-petit-que",
+    "href": "sessio-2/explicacions/04_introduccio_ttest.html#contrastos-unilaterals-més-gran-que-o-més-petit-que",
+    "title": "Què fa per dins t.test()?",
+    "section": "Contrastos unilaterals: «més gran que» o «més petit que»",
+    "text": "Contrastos unilaterals: «més gran que» o «més petit que»\nFins ara hem preguntat si la mitjana és diferent de 72 (contrast bilateral: mirem les dues cues). Si la pregunta és només si és més gran, mirem una sola cua, amb l’argument alternative:\n\nt.test(competencies$nota_mat, mu = 72, alternative = \"greater\")$p.value\n\n[1] 0.02426298\n\n\nEl p-valor és la meitat, perquè només comptem una cua. Per a «més petit que», faríem servir alternative = \"less\". El tipus de contrast s’ha de decidir abans de mirar les dades, segons la pregunta que ens fem.\n\n\n\n\n\n\nConsellIdees clau\n\n\n\n\nL’estadístic t mesura a quants errors estàndard està la mitjana de la mostra del valor de \\(H_0\\).\nEl p-valor és la proporció de mostres que donarien un resultat tan o més extrem que el nostre si \\(H_0\\) fos certa.\nFem servir la distribució t perquè estimem la desviació típica amb la mostra. Amb mostres grans, és pràcticament igual que la normal.\nAmb mostres petites, l’error estàndard és gran i costa més rebutjar \\(H_0\\).\nt.test() fa tots aquests càlculs d’una vegada. Per defecte, el contrast és bilateral; amb alternative = \"greater\" o \"less\", unilateral.\n\n\n\nAnterior: El teorema del límit central · Següent: Què vol dir «95 % de confiança»?"
+  },
+  {
+    "objectID": "sessio-2/explicacions/06_binomial_aproximacio_normal.html",
+    "href": "sessio-2/explicacions/06_binomial_aproximacio_normal.html",
+    "title": "Proporcions i distribució binomial",
+    "section": "",
+    "text": "NotaDe què va aquest document?\n\n\n\nA les slides hem estimat el percentatge d’alumnes que van a un centre públic, amb prop.test(). Les proporcions són molt habituals a l’administració i a les enquestes: % de persones que aproven una política, % de tràmits resolts a temps, % d’atur… Aquí veurem com funciona la inferència amb proporcions i d’on surt el famós marge d’error de les enquestes.\nEl codi R de cada gràfic és plegat: cliqueu a Code per veure’l."
+  },
+  {
+    "objectID": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#variables-de-sí-o-no",
+    "href": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#variables-de-sí-o-no",
+    "title": "Proporcions i distribució binomial",
+    "section": "Variables de sí o no",
+    "text": "Variables de sí o no\nQuan la variable només té dues respostes (públic / privat, sí / no, aprova / no aprova), el que ens interessa és la proporció de «sí». Amb el tidyverse la calculem com qualsevol taula de freqüències:\n\ncompetencies |&gt;\n  count(titularitat) |&gt;                 # quants alumnes hi ha de cada tipus\n  mutate(proporcio = n / sum(n))        # proporció de cada tipus sobre el total\n\n# A tibble: 2 × 3\n  titularitat     n proporcio\n  &lt;chr&gt;       &lt;int&gt;     &lt;dbl&gt;\n1 Privat        163     0.340\n2 Públic        317     0.660\n\n\nUn 66,0 % dels alumnes de la mostra van a un centre públic: 317 de 480. Guardem aquests dos números, que els farem servir als càlculs següents:\n\npublics &lt;- 317   # alumnes de centres públics (els \"sí\")\nn &lt;- 480         # total d'alumnes"
+  },
+  {
+    "objectID": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#la-distribució-binomial-comptar-sís",
+    "href": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#la-distribució-binomial-comptar-sís",
+    "title": "Proporcions i distribució binomial",
+    "section": "La distribució binomial: comptar «sís»",
+    "text": "La distribució binomial: comptar «sís»\nImaginem que llancem una moneda 10 vegades. Quantes cares sortiran? Normalment unes 5, però podrien ser 4, 6, o fins i tot 2. La distribució que diu la probabilitat de cada resultat és la distribució binomial, i depèn de dos números: el nombre d’intents (\\(n = 10\\)) i la probabilitat de «sí» a cada intent (\\(p = 0{,}5\\)).\n\n\nCodi\ntibble(cares = 0:10, probabilitat = dbinom(0:10, size = 10, prob = 0.5)) |&gt;\n  ggplot(aes(x = factor(cares), y = probabilitat)) +\n  geom_col(fill = bordeus, width = 0.7) +\n  scale_y_continuous(labels = scales::label_percent(decimal.mark = \",\")) +\n  labs(x = \"Nombre de cares en 10 llançaments\", y = \"Probabilitat\")\n\n\n\n\n\n\n\n\n\nUna mostra és el mateix que llançar la moneda moltes vegades: cada alumne que entra a la mostra és un «intent», i el «sí» és que vagi a un centre públic."
+  },
+  {
+    "objectID": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#amb-mostres-grans-la-binomial-sassembla-a-una-normal",
+    "href": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#amb-mostres-grans-la-binomial-sassembla-a-una-normal",
+    "title": "Proporcions i distribució binomial",
+    "section": "Amb mostres grans, la binomial s’assembla a una normal",
+    "text": "Amb mostres grans, la binomial s’assembla a una normal\nSuposem que a tot Catalunya el 66 % dels alumnes va a un centre públic, i traiem moltes mostres de 30, 100 i 480 alumnes. Quina proporció de públics sortiria a cada mostra?\n\n\nCodi\nbinomials &lt;- map_dfr(c(30, 100, 480), \\(mida) {\n  tibble(exits = 0:mida) |&gt;\n    mutate(proporcio    = exits / mida,\n           probabilitat = dbinom(exits, size = mida, prob = 0.66),\n           mida         = paste(\"Mostres de\", mida, \"alumnes\"))\n}) |&gt;\n  mutate(mida = factor(mida, levels = unique(mida)))\n\nggplot(binomials, aes(x = proporcio, y = probabilitat)) +\n  geom_col(fill = bordeus_clar, color = bordeus_clar) +\n  geom_vline(xintercept = 0.66, linetype = \"dashed\", color = bordeus, linewidth = 1) +\n  facet_wrap(~ mida, scales = \"free_y\") +\n  scale_x_continuous(labels = scales::label_percent(), limits = c(0.35, 0.95)) +\n  labs(x = \"Proporció de públics a la mostra\", y = NULL) +\n  theme(axis.text.y = element_blank())\n\n\n\n\n\n\n\n\n\nDues coses que ja coneixem de les mitjanes:\n\nCom més gran és la mostra, més concentrats queden els resultats al voltant del 66 % real.\nAmb mostres grans, la forma és la d’una campana (normal).\n\nPer això podem calcular intervals de confiança per a proporcions igual que per a mitjanes. Com a regla pràctica, l’aproximació normal funciona bé si hi ha almenys 10 «sís» i 10 «nos» a la mostra."
+  },
+  {
+    "objectID": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#linterval-de-confiança-duna-proporció",
+    "href": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#linterval-de-confiança-duna-proporció",
+    "title": "Proporcions i distribució binomial",
+    "section": "L’interval de confiança d’una proporció",
+    "text": "L’interval de confiança d’una proporció\nL’error estàndard d’una proporció té una fórmula pròpia:\n\\[SE = \\sqrt{\\frac{p\\,(1 - p)}{n}}\\]\nI l’interval es construeix com sempre: \\(p \\pm 1{,}96 \\cdot SE\\). Amb les nostres dades:\n\np  &lt;- publics / n\nse &lt;- sqrt(p * (1 - p) / n)\nc(p - 1.96 * se, p + 1.96 * se)\n\n[1] 0.6180506 0.7027827\n\n\nHo comparem amb prop.test():\n\nprop.test(publics, n)$conf.int\n\n[1] 0.6158626 0.7023611\nattr(,\"conf.level\")\n[1] 0.95\n\n\nPràcticament el mateix: entre un 61,6 % i un 70,2 %. Les petites diferències són perquè prop.test() aplica una correcció que millora una mica el càlcul (la correcció de continuïtat). A la pràctica, feu servir prop.test()."
+  },
+  {
+    "objectID": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#el-marge-derror-de-les-enquestes",
+    "href": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#el-marge-derror-de-les-enquestes",
+    "title": "Proporcions i distribució binomial",
+    "section": "El marge d’error de les enquestes",
+    "text": "El marge d’error de les enquestes\nQuan una enquesta diu «marge d’error de ±3,1 punts», es refereix a aquest \\(1{,}96 \\cdot SE\\), calculat en el pitjor cas: quan la proporció és del 50 %, que és quan l’error estàndard és més gran. Així el marge val per a qualsevol pregunta de l’enquesta.\n\nmarge &lt;- function(n) 1.96 * sqrt(0.5 * 0.5 / n) * 100   # en punts percentuals\nmarge(c(500, 1000, 2000, 4000))\n\n[1] 4.382693 3.099032 2.191347 1.549516\n\n\n\n\n\nEntrevistes\nMarge d’error (95 %)\n\n\n\n\n500\n±4,4 punts\n\n\n1.000\n±3,1 punts\n\n\n2.000\n±2,2 punts\n\n\n4.000\n±1,5 punts\n\n\n\nDoblar les entrevistes no redueix el marge a la meitat: per fer-ho, cal multiplicar-les per quatre. Per això moltes enquestes treballen amb mostres d’entre 1.000 i 2.000 persones: més enllà, el cost creix molt més que la precisió.\n\n\n\n\n\n\nImportantEl marge d’error només inclou l’atzar\n\n\n\nEl marge d’error mesura l’error degut a treballar amb una mostra aleatòria. No inclou altres problemes: gent que no respon, preguntes mal formulades, mostres no aleatòries… Recordeu el cas del Literary Digest (1936) de les slides: 2,3 milions de respostes i un marge d’error minúscul, però un resultat completament equivocat."
+  },
+  {
+    "objectID": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#contrast-duna-proporció",
+    "href": "sessio-2/explicacions/06_binomial_aproximacio_normal.html#contrast-duna-proporció",
+    "title": "Proporcions i distribució binomial",
+    "section": "Contrast d’una proporció",
+    "text": "Contrast d’una proporció\nprop.test() també fa contrastos d’hipòtesis, com t.test(). Per exemple: la proporció d’alumnes en centres públics, és diferent del 70 %?\n\nprop.test(publics, n, p = 0.70)$p.value\n\n[1] 0.06538099\n\n\nEl p-valor és més gran que 0,05: no podem rebutjar que la proporció sigui del 70 %. És coherent amb l’interval de confiança, que inclou el 70 %.\n\n\n\n\n\n\nConsellIdees clau\n\n\n\n\nEn variables de sí o no, estimem la proporció de «sí»: count(variable) |&gt; mutate(proporcio = n / sum(n)).\nEl nombre de «sís» en una mostra segueix una distribució binomial, que amb mostres grans s’assembla a una normal.\nError estàndard d’una proporció: \\(\\sqrt{p(1-p)/n}\\). Interval de confiança: prop.test(casos, total)$conf.int.\nEl marge d’error d’una enquesta és \\(1{,}96 \\cdot SE\\) amb \\(p = 50\\,\\%\\). Només inclou l’error de mostreig, no els altres biaixos.\n\n\n\nAnterior: Què vol dir «95 % de confiança»? · Tornar a la pàgina de la sessió 2"
   }
 ]

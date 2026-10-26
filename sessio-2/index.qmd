@@ -1,11 +1,90 @@
 ---
 title: "Sessió 2 · Descriptiva i inferència"
 subtitle: "Dimarts 27 d'octubre de 2026 · 9.30 – 13.30 h"
-toc: false
 ---
 
-Estadística descriptiva i fonaments de la **inferència estadística**: distribució de mostreig, intervals de confiança i contrastos d'hipòtesis univariats amb R.
+**Estadística descriptiva** amb R (taules de freqüències, mitjana, mediana, quartils i desviació típica) i una introducció a la **inferència estadística**: error estàndard, intervals de confiança i una primera idea de contrast d'hipòtesis. Comencem acabant la pràctica 1.
+
+## Slides
+
+- **[Slides de la sessió 2](slides/sessio_2.qmd){target="_blank"}** · Estadística descriptiva, pràctica 1 i introducció a la inferència
+
+## Materials
+
+::: {.callout-tip}
+## [⬇ Descarregar els materials de la sessió 2 (zip)](materials-sessio-2.zip)
+:::
+
+Un cop descomprimit, trobareu:
+
+```
+sessio-2/
+├── sessio_2.Rproj                  ← obriu aquest fitxer amb RStudio
+├── dades/
+│   └── competencies.csv            Les dades netes de la pràctica 1 (480 alumnes)
+└── codi/
+    ├── 01_descriptiva_inferencia.R El codi de les slides
+    └── exercici_sessio_2.R         Plantilla de la pràctica 2
+```
+
+`competencies.csv` són les dades ja netes: exactament les que s'obtenen en acabar la pràctica 1. Si no l'heu acabada, no passa res: la pràctica 2 parteix d'aquest fitxer.
+
+## Pràctica 1: l'acabem
+
+Qui no l'hagi acabada, té temps a classe per fer els passos 1 a 10 de l'[exercici de la sessió 1](../sessio-1/index.qmd#exercici-importar-netejar-i-exportar-unes-dades), amb el projecte de la **sessió 1** (`sessio_1.Rproj`) i el vostre script `codi/exercici_sessio_1.R`. La solució és a la [pàgina de la sessió 1](../sessio-1/index.qmd#exercici-importar-netejar-i-exportar-unes-dades).
+
+::: {.callout-tip}
+## No vau arribar al pas 4?
+[⬇ Descarregueu `exercici_sessio_1_passos_1-4.R`](../sessio-1/codi/exercici_sessio_1_passos_1-4.R){download="exercici_sessio_1_passos_1-4.R"}: és la plantilla de l'exercici amb els passos 1 a 4 ja fets. Deseu-la a la carpeta `sessio-1/codi/`, obriu-la des del panell *Files* de RStudio i continueu des del pas 5.
+:::
+
+## Pràctica 2: descriptiva i inferència
+
+Amb el projecte de la **sessió 2** (`sessio_2.Rproj`), les dades `dades/competencies.csv` i la plantilla `codi/exercici_sessio_2.R`.
+
+**Part A. Estadística descriptiva** (abans de la pausa)
+
+1. **Importar les dades** amb `read_csv2()` i tornar a ordenar `habitat` amb `factor()`.
+2. **Freqüències de `habitat`**: freqüències absolutes, percentatges i percentatges acumulats (`count()`, `mutate()` i `cumsum()`). Quin percentatge d'alumnes estudia en municipis de 100.000 habitants o menys?
+3. **Descriptiva de `nota_cat`** amb `summarise()`: mitjana, mediana, $Q_1$, $Q_3$, desviació típica i IQR. Compte amb els `NA` (`na.rm = TRUE`). La mitjana és més alta o més baixa que la mediana? Què vol dir?
+4. **Comparar les tres assignatures**: en un sol `summarise()`, la mitjana i la mediana de `nota_cat`, `nota_mat` i `nota_ang`. En quina s'obtenen les notes més altes? En quina hi ha més diferència entre la mitjana i la mediana?
+
+Ja ho teniu tot? Seguiu el **[tutorial de primers gràfics amb `ggplot2`](explicacions/tutorial_ggplot2.qmd)**.
+
+**Part B. Inferència** (després de la pausa), amb la nota de català (`nota_cat`)
+
+5. **Interval de confiança del 95 %** de la nota mitjana: a mà amb `summarise()` i amb `t.test()`.
+6. Intervals de confiança del **90 %** i del **99 %**. Quin és més ample? Per què?
+7. **Una proporció**: quin percentatge d'alumnes té nivell `"Alt"` de matemàtiques? Interval de confiança amb `prop.test()`. Podem dir que són més de la meitat?
+8. **Un contrast**: la nota mitjana de català, és diferent de 75 ($\alpha = 0{,}05$)? És coherent amb l'interval del pas 5?
+
+Comenteu i interpreteu els resultats de cada pas **en paraules**.
+
+**Què cal lliurar**: l'script `exercici_sessio_2.R` (parts A i B) complet i comentat, per **correu electrònic** a [joelardiacaarnau@gencat.cat](mailto:joelardiacaarnau@gencat.cat).
 
 ::: {.callout-note}
-Els materials d'aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.
+## Solució
+La solució de la pràctica 2 (descriptiva i inferència) es publicarà aquí després de la sessió.
 :::
+
+## Per aprofundir (opcional)
+
+Documents per llegir pel vostre compte, amb explicacions, simulacions i gràfics. El codi R hi és plegat: no cal entendre'l per seguir l'explicació. Es recomana llegir-los per ordre.
+
+**Inferència**
+
+1. [La distribució normal i el valor z](explicacions/01_normal_valor_z.qmd): d'on surt l'1,96 dels intervals de confiança.
+2. [Per què cada mostra dona un resultat diferent](explicacions/02_distribucio_mostreig_alcada.qmd): distribució de mostreig i error estàndard.
+3. [I si la població no és normal?](explicacions/03_distribucio_mostreig_renda.qmd): el teorema del límit central.
+4. [Què fa per dins `t.test()`?](explicacions/04_introduccio_ttest.qmd): l'estadístic *t*, el p-valor i la distribució *t* de Student.
+5. [Què vol dir «95 % de confiança»?](explicacions/05_simulacio_intervals_confianca.qmd): una simulació amb 1.000 intervals.
+6. [Proporcions i distribució binomial](explicacions/06_binomial_aproximacio_normal.qmd): intervals per a proporcions i marge d'error de les enquestes.
+
+**Descriptiva i gràfics**
+
+- [Tutorial: primers gràfics amb `ggplot2`](explicacions/tutorial_ggplot2.qmd): barres, histogrames i diagrames de caixa, pas a pas.
+- [Slides de descriptiva de la sessió 1](../sessio-1/slides/descriptiva.qmd){target="_blank"}: asimetria, curtosi i principis per fer bons gràfics.
+
+## Fonts de les dades
+
+- **Competències bàsiques**: mostra de l'avaluació de competències bàsiques de 6è de primària (2023) del Departament d'Educació, publicada al [portal de dades obertes de la Generalitat](https://analisi.transparenciacatalunya.cat).

@@ -9,6 +9,8 @@ project:
     - sessio-*/index.qmd
     - sessio-1/slides/sessio_1.qmd
     - sessio-1/slides/descriptiva.qmd
+    - sessio-2/slides/sessio_2.qmd
+    - sessio-2/explicacions/*.qmd
 
 lang: ca
 

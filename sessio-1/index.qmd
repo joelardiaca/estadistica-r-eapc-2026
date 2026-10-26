@@ -8,7 +8,7 @@ Introducció a l'estadística (conceptes bàsics i tipus de variables) i primers
 ## Slides
 
 - **[Slides de la sessió 1](slides/sessio_1.qmd){target="_blank"}** · Introducció a l'estadística, R, RStudio i tidyverse
-- **[Slides d'estadística descriptiva](slides/descriptiva.qmd){target="_blank"}** · Les començarem si tenim temps; si no, a la sessió 2
+- **[Slides d'estadística descriptiva](slides/descriptiva.qmd){target="_blank"}** · Per aprofundir: asimetria, curtosi i com fer bons gràfics (a la sessió 2 en fem una versió reduïda)
 
 ## Materials
 
@@ -48,7 +48,7 @@ Amb les dades `dades/competencies_basiques.csv` i la plantilla `codi/exercici_se
 
 ::: {.callout-note}
 ## Solució
-La solució de l'exercici es publicarà aquí després de la sessió.
+[⬇ Descarregar la solució de l'exercici](codi/solucio_exercici_sessio_1.R){download="solucio_exercici_sessio_1.R"} (passos 1 a 10).
 :::
 
 ## Fonts de les dades

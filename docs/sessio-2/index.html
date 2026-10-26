@@ -74,10 +74,39 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -151,7 +180,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Continguts</h2>
+   
+  <ul>
+  <li><a href="#slides" id="toc-slides" class="nav-link active" data-scroll-target="#slides">Slides</a></li>
+  <li><a href="#materials" id="toc-materials" class="nav-link" data-scroll-target="#materials">Materials</a></li>
+  <li><a href="#pràctica-1-lacabem" id="toc-pràctica-1-lacabem" class="nav-link" data-scroll-target="#pràctica-1-lacabem">Pràctica 1: l’acabem</a></li>
+  <li><a href="#pràctica-2-descriptiva-i-inferència" id="toc-pràctica-2-descriptiva-i-inferència" class="nav-link" data-scroll-target="#pràctica-2-descriptiva-i-inferència">Pràctica 2: descriptiva i inferència</a></li>
+  <li><a href="#per-aprofundir-opcional" id="toc-per-aprofundir-opcional" class="nav-link" data-scroll-target="#per-aprofundir-opcional">Per aprofundir (opcional)</a></li>
+  <li><a href="#fonts-de-les-dades" id="toc-fonts-de-les-dades" class="nav-link" data-scroll-target="#fonts-de-les-dades">Fonts de les dades</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -175,22 +217,115 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Estadística descriptiva i fonaments de la <strong>inferència estadística</strong>: distribució de mostreig, intervals de confiança i contrastos d’hipòtesis univariats amb R.</p>
+<p><strong>Estadística descriptiva</strong> amb R (taules de freqüències, mitjana, mediana, quartils i desviació típica) i una introducció a la <strong>inferència estadística</strong>: error estàndard, intervals de confiança i una primera idea de contrast d’hipòtesis. Comencem acabant la pràctica 1.</p>
+<section id="slides" class="level2">
+<h2 class="anchored" data-anchor-id="slides">Slides</h2>
+<ul>
+<li><strong><a href="../sessio-2/slides/sessio_2.html" target="_blank">Slides de la sessió 2</a></strong> · Estadística descriptiva, pràctica 1 i introducció a la inferència</li>
+</ul>
+</section>
+<section id="materials" class="level2">
+<h2 class="anchored" data-anchor-id="materials">Materials</h2>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Consell</span><a href="materials-sessio-2.zip">⬇ Descarregar els materials de la sessió 2 (zip)</a>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+<p>Un cop descomprimit, trobareu:</p>
+<pre><code>sessio-2/
+├── sessio_2.Rproj                  ← obriu aquest fitxer amb RStudio
+├── dades/
+│   └── competencies.csv            Les dades netes de la pràctica 1 (480 alumnes)
+└── codi/
+    ├── 01_descriptiva_inferencia.R El codi de les slides
+    └── exercici_sessio_2.R         Plantilla de la pràctica 2</code></pre>
+<p><code>competencies.csv</code> són les dades ja netes: exactament les que s’obtenen en acabar la pràctica 1. Si no l’heu acabada, no passa res: la pràctica 2 parteix d’aquest fitxer.</p>
+</section>
+<section id="pràctica-1-lacabem" class="level2">
+<h2 class="anchored" data-anchor-id="pràctica-1-lacabem">Pràctica 1: l’acabem</h2>
+<p>Qui no l’hagi acabada, té temps a classe per fer els passos 1 a 10 de l’<a href="../sessio-1/index.html#exercici-importar-netejar-i-exportar-unes-dades">exercici de la sessió 1</a>, amb el projecte de la <strong>sessió 1</strong> (<code>sessio_1.Rproj</code>) i el vostre script <code>codi/exercici_sessio_1.R</code>. La solució és a la <a href="../sessio-1/index.html#exercici-importar-netejar-i-exportar-unes-dades">pàgina de la sessió 1</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Consell</span>No vau arribar al pas 4?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="../sessio-1/codi/exercici_sessio_1_passos_1-4.R" download="exercici_sessio_1_passos_1-4.R">⬇ Descarregueu <code>exercici_sessio_1_passos_1-4.R</code></a>: és la plantilla de l’exercici amb els passos 1 a 4 ja fets. Deseu-la a la carpeta <code>sessio-1/codi/</code>, obriu-la des del panell <em>Files</em> de RStudio i continueu des del pas 5.</p>
+</div>
+</div>
+</section>
+<section id="pràctica-2-descriptiva-i-inferència" class="level2">
+<h2 class="anchored" data-anchor-id="pràctica-2-descriptiva-i-inferència">Pràctica 2: descriptiva i inferència</h2>
+<p>Amb el projecte de la <strong>sessió 2</strong> (<code>sessio_2.Rproj</code>), les dades <code>dades/competencies.csv</code> i la plantilla <code>codi/exercici_sessio_2.R</code>.</p>
+<p><strong>Part A. Estadística descriptiva</strong> (abans de la pausa)</p>
+<ol type="1">
+<li><strong>Importar les dades</strong> amb <code>read_csv2()</code> i tornar a ordenar <code>habitat</code> amb <code>factor()</code>.</li>
+<li><strong>Freqüències de <code>habitat</code></strong>: freqüències absolutes, percentatges i percentatges acumulats (<code>count()</code>, <code>mutate()</code> i <code>cumsum()</code>). Quin percentatge d’alumnes estudia en municipis de 100.000 habitants o menys?</li>
+<li><strong>Descriptiva de <code>nota_cat</code></strong> amb <code>summarise()</code>: mitjana, mediana, <span class="math inline">\(Q_1\)</span>, <span class="math inline">\(Q_3\)</span>, desviació típica i IQR. Compte amb els <code>NA</code> (<code>na.rm = TRUE</code>). La mitjana és més alta o més baixa que la mediana? Què vol dir?</li>
+<li><strong>Comparar les tres assignatures</strong>: en un sol <code>summarise()</code>, la mitjana i la mediana de <code>nota_cat</code>, <code>nota_mat</code> i <code>nota_ang</code>. En quina s’obtenen les notes més altes? En quina hi ha més diferència entre la mitjana i la mediana?</li>
+</ol>
+<p>Ja ho teniu tot? Seguiu el <strong><a href="../sessio-2/explicacions/tutorial_ggplot2.html">tutorial de primers gràfics amb <code>ggplot2</code></a></strong>.</p>
+<p><strong>Part B. Inferència</strong> (després de la pausa), amb la nota de català (<code>nota_cat</code>)</p>
+<ol start="5" type="1">
+<li><strong>Interval de confiança del 95 %</strong> de la nota mitjana: a mà amb <code>summarise()</code> i amb <code>t.test()</code>.</li>
+<li>Intervals de confiança del <strong>90 %</strong> i del <strong>99 %</strong>. Quin és més ample? Per què?</li>
+<li><strong>Una proporció</strong>: quin percentatge d’alumnes té nivell <code>"Alt"</code> de matemàtiques? Interval de confiança amb <code>prop.test()</code>. Podem dir que són més de la meitat?</li>
+<li><strong>Un contrast</strong>: la nota mitjana de català, és diferent de 75 (<span class="math inline">\(\alpha = 0{,}05\)</span>)? És coherent amb l’interval del pas 5?</li>
+</ol>
+<p>Comenteu i interpreteu els resultats de cada pas <strong>en paraules</strong>.</p>
+<p><strong>Què cal lliurar</strong>: l’script <code>exercici_sessio_2.R</code> (parts A i B) complet i comentat, per <strong>correu electrònic</strong> a <a href="mailto:joelardiacaarnau@gencat.cat">joelardiacaarnau@gencat.cat</a>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Nota
+<span class="screen-reader-only">Nota</span>Solució
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Els materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.</p>
+<p>La solució de la pràctica 2 (descriptiva i inferència) es publicarà aquí després de la sessió.</p>
 </div>
 </div>
+</section>
+<section id="per-aprofundir-opcional" class="level2">
+<h2 class="anchored" data-anchor-id="per-aprofundir-opcional">Per aprofundir (opcional)</h2>
+<p>Documents per llegir pel vostre compte, amb explicacions, simulacions i gràfics. El codi R hi és plegat: no cal entendre’l per seguir l’explicació. Es recomana llegir-los per ordre.</p>
+<p><strong>Inferència</strong></p>
+<ol type="1">
+<li><a href="../sessio-2/explicacions/01_normal_valor_z.html">La distribució normal i el valor z</a>: d’on surt l’1,96 dels intervals de confiança.</li>
+<li><a href="../sessio-2/explicacions/02_distribucio_mostreig_alcada.html">Per què cada mostra dona un resultat diferent</a>: distribució de mostreig i error estàndard.</li>
+<li><a href="../sessio-2/explicacions/03_distribucio_mostreig_renda.html">I si la població no és normal?</a>: el teorema del límit central.</li>
+<li><a href="../sessio-2/explicacions/04_introduccio_ttest.html">Què fa per dins <code>t.test()</code>?</a>: l’estadístic <em>t</em>, el p-valor i la distribució <em>t</em> de Student.</li>
+<li><a href="../sessio-2/explicacions/05_simulacio_intervals_confianca.html">Què vol dir «95 % de confiança»?</a>: una simulació amb 1.000 intervals.</li>
+<li><a href="../sessio-2/explicacions/06_binomial_aproximacio_normal.html">Proporcions i distribució binomial</a>: intervals per a proporcions i marge d’error de les enquestes.</li>
+</ol>
+<p><strong>Descriptiva i gràfics</strong></p>
+<ul>
+<li><a href="../sessio-2/explicacions/tutorial_ggplot2.html">Tutorial: primers gràfics amb <code>ggplot2</code></a>: barres, histogrames i diagrames de caixa, pas a pas.</li>
+<li><a href="../sessio-1/slides/descriptiva.html" target="_blank">Slides de descriptiva de la sessió 1</a>: asimetria, curtosi i principis per fer bons gràfics.</li>
+</ul>
+</section>
+<section id="fonts-de-les-dades" class="level2">
+<h2 class="anchored" data-anchor-id="fonts-de-les-dades">Fonts de les dades</h2>
+<ul>
+<li><strong>Competències bàsiques</strong>: mostra de l’avaluació de competències bàsiques de 6è de primària (2023) del Departament d’Educació, publicada al <a href="https://analisi.transparenciacatalunya.cat">portal de dades obertes de la Generalitat</a>.</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
