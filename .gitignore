@@ -15,8 +15,9 @@ programacio_detallada.xlsx
 # Guió de la demo: es fa a classe (imprès), no es publica de moment
 **/codi/02_importar_netejar.R
 **/guies/
-# Solucions: es publiquen després de cada sessió (git add -f)
+# Solucions: no es pugen les fonts; la còpia a docs/ apareix quan la pàgina hi enllaça
 **/codi/solucio_*.R
+!docs/**/codi/solucio_*.R
 
 # ---- Fitxers generats en local ----------------------------------------------
 # Dades netes que es generen en executar els scripts
@@ -33,6 +34,8 @@ sessio-*/**/*.html
 # ---- Quarto -----------------------------------------------------------------
 /.quarto/
 *_files/
+# Gràfics dels HTML publicats (sense això no es veuen al web)
+!docs/**/*_files/
 *.knit.md
 
 # ---- Windows / OneDrive -----------------------------------------------------

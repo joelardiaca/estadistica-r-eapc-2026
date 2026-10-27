@@ -64,7 +64,7 @@ Comenteu i interpreteu els resultats de cada pas **en paraules**.
 
 ::: {.callout-note}
 ## Solució
-La solució de la pràctica 2 (descriptiva i inferència) es publicarà aquí després de la sessió.
+[⬇ Descarregar la solució de l'exercici](codi/solucio_exercici_sessio_2.R){download="solucio_exercici_sessio_2.R"}.
 :::
 
 ## Per aprofundir (opcional)
