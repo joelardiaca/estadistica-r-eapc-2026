@@ -1,11 +1,86 @@
 ---
 title: "Sessió 3 · Estadística bivariada"
 subtitle: "Dilluns 2 de novembre de 2026 · 9.30 – 13.30 h"
-toc: false
 ---
 
-Relacions entre dues variables qualitatives i entre una variable quantitativa i una qualitativa: **taules de contingència**, **prova χ²** i **comparació de mitjanes** amb R.
+Relacions entre dues variables: **taules de contingència** i test χ² (dues variables categòriques), i **comparació de mitjanes** amb t-test i ANOVA (una numèrica i una categòrica). Repàs de tot el que sabem fer amb R i tres novetats: `count()` amb dues variables, `arrange()` i **`group_by()`**, per fer càlculs per grups.
+
+## Slides
+
+- **[Slides de la sessió 3](slides/sessio_3.qmd){target="_blank"}** · Estadística bivariada, repàs de R i pràctica
+
+## Materials
+
+::: {.callout-tip}
+## [⬇ Descarregar els materials de la sessió 3 (zip)](materials-sessio-3.zip)
+:::
+
+**Pas a pas**:
+
+1. Descarregueu el zip i **descomprimiu-lo** (botó dret → *Extreu-ho tot*). No treballeu des de dins del zip!
+2. Entreu a la carpeta descomprimida i feu **doble clic** a `sessio_3.Rproj`.
+3. Al panell *Files* de RStudio, obriu la carpeta `codi/` i l'script que vulgueu.
+
+Un cop descomprimit, trobareu:
+
+```
+sessio-3/
+├── sessio_3.Rproj                  ← obriu aquest fitxer amb RStudio
+├── dades/
+│   ├── competencies.csv            Les dades netes de les sessions 1 i 2 (480 alumnes)
+│   └── paisos_esperanca_vida.csv   Esperança de vida per país i continent (repte)
+└── codi/
+    ├── 01_bivariada.R              El codi de les slides
+    └── exercici_sessio_3.R         Plantilla de la pràctica
+```
+
+## Pràctica: estadística bivariada amb R
+
+Amb el projecte de la **sessió 3** (`sessio_3.Rproj`) i la plantilla `codi/exercici_sessio_3.R`. El **pas 1** (importar les dades) ja està fet: només cal executar-lo.
+
+**Part A. Dues variables categòriques**: `count()` i `group_by()`
+
+2. **Taula de contingència** de `titularitat` i `nivell_mat` amb `count()`.
+3. **Percentatge** de cada nivell de matemàtiques **dins de cada titularitat** (`group_by()`, `mutate()` i `ungroup()`). On hi ha més alumnes amb nivell alt?
+4. **Ara sols**: el mateix amb `habitat` i `nivell_mat`.
+
+**Part B. Variable numèrica i categòrica**: `group_by()` i `summarise()`
+
+5. **Nota de matemàtiques per titularitat**: nombre d'alumnes, mitjana, mediana i desviació típica.
+6. **Les tres assignatures per hàbitat**, ordenades amb `arrange()`.
+7. **Dues variables de grup**: nota mitjana de matemàtiques per titularitat i gènere.
+
+Comenteu i interpreteu els resultats de cada pas **en paraules**.
+
+**Què cal lliurar**: l'script `exercici_sessio_3.R` complet i comentat, per **correu electrònic** a [joelardiacaarnau@gencat.cat](mailto:joelardiacaarnau@gencat.cat).
+
+::: {.callout-tip}
+## Ja ho teniu tot? Part opcional
+1. **Les diferències, són significatives?** El test χ² (`chisq.test()`) i el t-test (`t.test()`) amb les dades de la pràctica.
+2. **Repte**: l'esperança de vida per continent, amb `group_by()`, `summarise()`, `arrange()` i `filter()`.
+3. **[Tutorial: gràfics bivariats amb `ggplot2`](explicacions/tutorial_ggplot2_bivariada.qmd)**: barres per grups, boxplots i un gràfic per grup, pas a pas.
+:::
 
 ::: {.callout-note}
-Els materials d'aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.
+## Solució
+La solució de la pràctica es publicarà aquí després de la sessió.
 :::
+
+## Per aprofundir (opcional)
+
+Documents per llegir pel vostre compte, amb explicacions i gràfics. El codi R hi és plegat: no cal entendre'l per seguir l'explicació.
+
+1. [El test khi-quadrat, pas a pas](explicacions/01_distribucio_khi_quadrat.qmd): observades i esperades, el càlcul del χ² i d'on surt el p-valor.
+2. [Significativa no vol dir forta: la V de Cramér](explicacions/02_v_cramer.qmd): com es mesura la força d'una associació.
+3. [L'ANOVA i la distribució F, pas a pas](explicacions/03_distribucio_f_fisher.qmd): variació entre i dins dels grups, el càlcul de la F i d'on surt el p-valor.
+4. [Proves de normalitat](explicacions/04_proves_normalitat.qmd): histogrames, QQ-plot i Shapiro-Wilk; i quan cal preocupar-se'n (gairebé mai, amb grups grans).
+
+**Gràfics**
+
+- [Tutorial: gràfics bivariats amb `ggplot2`](explicacions/tutorial_ggplot2_bivariada.qmd)
+- [Tutorial: primers gràfics amb `ggplot2`](../sessio-2/explicacions/tutorial_ggplot2.qmd) (sessió 2)
+
+## Fonts de les dades
+
+- **Competències bàsiques**: mostra de l'avaluació de competències bàsiques de 6è de primària (2023) del Departament d'Educació, publicada al [portal de dades obertes de la Generalitat](https://analisi.transparenciacatalunya.cat).
+- **Esperança de vida**: [Our World in Data](https://ourworldindata.org), a partir de dades de Nacions Unides (2023).

@@ -1,0 +1,216 @@
+---
+title: "El test khi-quadrat, pas a pas"
+subtitle: "Sessió 3 · Explicació complementària"
+code-fold: true
+code-tools: true
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+set.seed(1234) # Per reproduir els resultats
+library(tidyverse)
+
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+
+# Números amb coma decimal per al text
+num <- function(x, d = 1) format(round(unname(x), d), nsmall = d, decimal.mark = ",", big.mark = ".")
+```
+
+::: {.callout-note}
+## Què hi trobareu?
+A les slides hem vist que el test $\chi^2$ (khi-quadrat) compara la taula **observada** amb la que **esperaríem** si no hi hagués associació, i que R ens dona un **p-valor**. Aquí veurem, pas a pas i amb el mateix exemple, **d'on surt** aquest p-valor. No cal entendre el codi (és plegat): n'hi ha prou de llegir el text i mirar els gràfics.
+:::
+
+## 1. On érem: TikTok i sexe
+
+L'exemple de les slides: una enquesta del CEO a joves de menys de 20 anys. Volem saber si l'ús de TikTok (**VD**) té relació amb el sexe (**VI**).
+
+```{r}
+# Les dades: una fila per persona
+tiktok <- tibble(sexe       = c("Home", "Home", "Dona", "Dona"),
+                 usa_tiktok = c("Sí", "No", "Sí", "No"),
+                 n          = c(138, 98, 136, 60)) |>
+  uncount(n)
+
+# Taula de contingència, amb el percentatge de cada resposta dins de cada sexe
+tiktok |>
+  count(sexe, usa_tiktok) |>
+  group_by(sexe) |>
+  mutate(percentatge = n / sum(n) * 100) |>
+  ungroup()
+```
+
+Un 58,5 % dels nois i un 69,4 % de les noies fan servir TikTok: **11 punts** de diferència. La pregunta del test és: **aquesta diferència, podria ser fruit de l'atzar?**
+
+- $H_0$: no hi ha associació. Si preguntéssim a **tots** els joves, nois i noies farien servir TikTok **igual**; la diferència de la mostra és casualitat.
+- $H_1$: hi ha associació.
+
+## 2. Què esperaríem si no hi hagués associació?
+
+Si el sexe no tingués res a veure amb TikTok, nois i noies l'usarien en la **mateixa proporció**: la del total, `r num(274 / 432 * 100, 1)` % (274 de 432 joves). Per tant, dels 236 nois, n'esperaríem $236 \times 0{,}634 \approx 149{,}7$ usuaris; i de les 196 noies, $196 \times 0{,}634 \approx 124{,}3$.
+
+En general, la **freqüència esperada** de cada cel·la és:
+
+$$E = \frac{\text{total de la fila} \times \text{total de la columna}}{n}$$
+
+Ho calculem per a les quatre cel·les i ho posem al costat de les **observades** ($O$):
+
+```{r}
+taula <- tiktok |>
+  count(sexe, usa_tiktok, name = "O") |>        # O: freqüències observades
+  group_by(sexe) |>
+  mutate(total_sexe = sum(O)) |>                # total de cada sexe
+  group_by(usa_tiktok) |>
+  mutate(total_tiktok = sum(O)) |>              # total de cada resposta
+  ungroup() |>
+  mutate(E = total_sexe * total_tiktok / sum(O)) # E: freqüències esperades
+
+taula |>
+  select(sexe, usa_tiktok, O, E)
+```
+
+Hi ha **menys** nois usuaris (138) dels que esperaríem (149,7), i **més** noies usuàries (136) de les esperades (124,3).
+
+## 3. Calcular el $\chi^2$ a mà
+
+El $\chi^2$ resumeix en un sol número com de lluny estan les observades de les esperades. Per a cada cel·la:
+
+1. Restem: $O - E$ (quant ens allunyem del que esperaríem)
+2. Ho elevem al quadrat: $(O - E)^2$ (així els valors negatius no anul·len els positius)
+3. Ho dividim per $E$: $\frac{(O - E)^2}{E}$ (una diferència de 10 és molt si n'esperàvem 20, però poc si n'esperàvem 2.000)
+
+I després ho sumem tot:
+
+$$\chi^2 = \sum \frac{(O - E)^2}{E}$$
+
+```{r}
+taula <- taula |>
+  mutate(diferencia   = O - E,
+         quadrat      = diferencia^2,
+         contribucio  = quadrat / E)
+
+taula |>
+  select(sexe, usa_tiktok, O, E, diferencia, quadrat, contribucio)
+
+chi2_observat <- sum(taula$contribucio)
+chi2_observat
+```
+
+El nostre $\chi^2$ val **`r num(chi2_observat, 2)`**. És el mateix que dona R (amb `correct = FALSE`, sense la correcció de Yates que R aplica per defecte a les taules 2 × 2):
+
+```{r}
+chisq.test(tiktok$sexe, tiktok$usa_tiktok, correct = FALSE)$statistic
+```
+
+## 4. És gran o petit, aquest $\chi^2$?
+
+Un $\chi^2$ de `r num(chi2_observat, 2)`, és molt o poc? Per saber-ho, cal saber **quins valors surten per atzar** quan **no** hi ha associació.
+
+Ho podem simular: agafem les mateixes 432 persones i **barregem a l'atzar** l'etiqueta del sexe, com si repartíssim els sexes amb una baralla de cartes. Així, per construcció, el sexe ja no té **cap relació** amb TikTok ($H_0$ és certa). Calculem el $\chi^2$ d'aquesta taula barrejada... i ho repetim **5.000 vegades**.
+
+```{r}
+chi2_simulats <- map_dbl(1:5000, function(i) {
+  sexe_barrejat <- sample(tiktok$sexe)        # barregem el sexe a l'atzar
+  chisq.test(sexe_barrejat, tiktok$usa_tiktok, correct = FALSE)$statistic
+})
+
+tibble(chi2 = chi2_simulats) |>
+  ggplot(aes(x = chi2)) +
+  geom_histogram(binwidth = 0.25, boundary = 0, fill = bordeus_clar, color = "white") +
+  geom_vline(xintercept = chi2_observat, color = bordeus, linewidth = 1.2) +
+  annotate("text", x = chi2_observat + 0.3, y = 1500, hjust = 0, color = bordeus,
+           label = paste0("El nostre χ² = ", num(chi2_observat, 2))) +
+  labs(title = "Valors de χ² quan NO hi ha associació (5.000 simulacions)",
+       x = "χ²", y = "Nombre de simulacions") +
+  theme_minimal()
+```
+
+Quan no hi ha associació, el $\chi^2$ sol ser **petit**: la majoria de simulacions donen valors entre 0 i 2. Un valor com el nostre surt **molt poques vegades**:
+
+```{r}
+mean(chi2_simulats >= chi2_observat)   # proporció de simulacions amb un χ² igual o més gran
+```
+
+Només un `r num(mean(chi2_simulats >= chi2_observat) * 100, 1)` % de les simulacions dona un $\chi^2$ tan gran com el nostre. **Això és el p-valor**: la probabilitat de trobar una diferència com la nostra (o més gran) **si no hi hagués associació**. Com que és més petit que 0,05, rebutgem $H_0$.
+
+## 5. Aquesta forma té nom: la distribució $\chi^2$
+
+No cal fer 5.000 simulacions cada vegada: els estadístics ja saben quina forma té aquest histograma. És la **distribució $\chi^2$**. Si la dibuixem a sobre de les simulacions, encaixa:
+
+```{r}
+tibble(chi2 = chi2_simulats) |>
+  ggplot(aes(x = chi2)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = 0.25, boundary = 0,
+                 fill = bordeus_clar, color = "white") +
+  stat_function(fun = dchisq, args = list(df = 1), color = bordeus, linewidth = 1.2,
+                xlim = c(0.05, 10)) +
+  coord_cartesian(xlim = c(0, 10), ylim = c(0, 1.2)) +
+  labs(title = "Simulacions (barres) i distribució χ² amb 1 grau de llibertat (línia)",
+       x = "χ²", y = "Densitat") +
+  theme_minimal()
+```
+
+`chisq.test()` fa servir aquesta corba per calcular el p-valor, en lloc de simular.
+
+## 6. Els graus de llibertat
+
+La forma de la distribució $\chi^2$ depèn dels **graus de llibertat** (gl), que depenen de la **mida de la taula**:
+
+$$gl = (\text{files} - 1) \times (\text{columnes} - 1)$$
+
+En una taula 2 × 2, $gl = 1 \times 1 = 1$. Per què? Si sabem els totals de files i columnes, n'hi ha prou de saber **una sola cel·la** per deduir les altres tres: només una cel·la és «lliure».
+
+Com més gran és la taula, més cel·les sumen al $\chi^2$, i més grans són els valors que surten **per atzar**. Per això la corba es desplaça cap a la dreta:
+
+```{r warning=FALSE}
+gl <- c(1, 2, 4, 6)
+valors <- seq(0.05, 20, by = 0.05)
+
+tibble(x = rep(valors, times = length(gl)),
+       gl = factor(rep(gl, each = length(valors))),
+       densitat = dchisq(x, df = as.numeric(as.character(gl)))) |>
+  ggplot(aes(x = x, y = densitat, color = gl)) +
+  geom_line(linewidth = 1) +
+  coord_cartesian(ylim = c(0, 0.5)) +
+  labs(title = "Distribució χ² per a diferents graus de llibertat",
+       subtitle = "gl = 1: taula 2 × 2 · gl = 2: taula 2 × 3 · gl = 4: taula 3 × 3 · gl = 6: taula 3 × 4",
+       x = "Valor de χ²", y = "Densitat", color = "Graus de\nllibertat") +
+  theme_minimal()
+```
+
+Per exemple, a la pràctica, la taula de l'hàbitat (3 categories) i el nivell de matemàtiques (3 categories) té $gl = 2 \times 2 = 4$.
+
+## 7. El valor crític
+
+Amb $\alpha = 0{,}05$, el **valor crític** és el valor de $\chi^2$ que només se supera un 5 % de les vegades per atzar. Si el nostre $\chi^2$ el supera, el p-valor és més petit que 0,05 i rebutgem $H_0$.
+
+```{r warning=FALSE}
+crit_val <- qchisq(0.95, df = 1)
+corba <- tibble(x = seq(0.05, 10, by = 0.01), densitat = dchisq(x, df = 1))
+
+ggplot(corba, aes(x = x, y = densitat)) +
+  geom_area(data = filter(corba, x > crit_val), fill = bordeus_clar) +
+  geom_line(linewidth = 1.2, color = "#2B2B2B") +
+  geom_vline(xintercept = crit_val, linetype = "dashed") +
+  geom_vline(xintercept = chi2_observat, color = bordeus, linewidth = 1.2) +
+  annotate("text", x = crit_val + 0.15, y = 0.6, hjust = 0,
+           label = paste0("Valor crític = ", num(crit_val, 2))) +
+  annotate("text", x = chi2_observat + 0.15, y = 0.4, hjust = 0, color = bordeus,
+           label = paste0("El nostre χ² = ", num(chi2_observat, 2))) +
+  coord_cartesian(ylim = c(0, 0.8)) +
+  labs(title = "Distribució χ² amb 1 grau de llibertat",
+       subtitle = "Zona ombrejada: el 5 % de valors més grans (zona de rebuig)",
+       x = "χ²", y = "Densitat") +
+  theme_minimal()
+```
+
+El nostre valor (`r num(chi2_observat, 2)`) és més gran que el valor crític (`r num(crit_val, 2)`): cau a la **zona de rebuig**. Hi ha associació significativa entre el sexe i l'ús de TikTok.
+
+## En resum
+
+1. Calculem què **esperaríem** a cada cel·la si no hi hagués associació.
+2. El $\chi^2$ suma com de lluny estan les **observades** de les **esperades**.
+3. Si no hi hagués associació, el $\chi^2$ seria petit. La **distribució $\chi^2$** ens diu quins valors surten per atzar.
+4. El **p-valor** és la probabilitat de trobar un $\chi^2$ com el nostre (o més gran) per atzar. Si p < 0,05, rebutgem $H_0$.
+
+Tot això ho fa `chisq.test()` d'una sola vegada. I si voleu saber si l'associació és **forta** (no només si existeix), vegeu l'explicació [«Significativa no vol dir forta: la V de Cramér»](02_v_cramer.qmd).

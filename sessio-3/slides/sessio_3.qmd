@@ -1,0 +1,1457 @@
+---
+title: "Introducció a l'estadística amb R"
+subtitle: "Sessió 3 · Estadística bivariada: relacions entre dues variables"
+author: "Joel Ardiaca"
+institute: "Centre d'Estudis d'Opinió"
+date: 2026-11-02
+date-format: long
+lang: ca
+format:
+  revealjs:
+    theme: [default, ../../assets/eapc.scss]
+    logo: ../../assets/logo_eapc.png
+    footer: "Introducció a l'estadística amb R · Sessió 3"
+    slide-number: c/t
+    width: 1280
+    height: 720
+    embed-resources: true
+    transition: fade
+    transition-speed: fast
+    code-copy: true
+    code-line-numbers: false
+    highlight-style: github
+    menu:
+      side: left
+    hash-type: number
+execute:
+  echo: true
+  warning: false
+  message: false
+fig-align: center
+knitr:
+  opts_knit:
+    root.dir: ".."
+  opts_chunk:
+    dev: "png"
+    dpi: 150
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+options(width = 70, pillar.width = 70)
+
+# Colors del tema (una sola tonalitat: bordeus)
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+gris_fosc    <- "#2B2B2B"
+
+theme_set(
+  theme_minimal(base_size = 20) +
+    theme(panel.grid.minor = element_blank(),
+          strip.text = element_text(size = 18, face = "bold", hjust = 0),
+          plot.title.position = "plot")
+)
+
+# Números amb coma decimal per al text de les slides
+num <- function(x, d = 1) format(round(unname(x), d), nsmall = d, decimal.mark = ",", big.mark = ".")
+
+# Taules per a les slides (sense mostrar el codi)
+taula <- function(x) knitr::kable(x, format.args = list(decimal.mark = ","))
+
+competencies <- read_csv2("dades/competencies.csv", show_col_types = FALSE) |>
+  mutate(habitat    = factor(habitat,
+                             levels = c("Fins a 10000", "De 10001 a 100000", "Més de 100000")),
+         nivell_mat = factor(nivell_mat, levels = c("Baix", "Mitjà", "Alt")))
+
+# Ús de TikTok per sexe (enquesta del CEO, menors de 20 anys): una fila per persona
+tiktok <- tibble(sexe       = c("Home", "Home", "Dona", "Dona"),
+                 usa_tiktok = c("Sí", "No", "Sí", "No"),
+                 n          = c(138, 98, 136, 60)) |>
+  uncount(n) |>
+  mutate(sexe       = factor(sexe, levels = c("Home", "Dona")),
+         usa_tiktok = factor(usa_tiktok, levels = c("Sí", "No")))
+
+# Dades simulades per als exemples de comparació de mitjanes
+set.seed(123)
+ingressos_sexe <- tibble(
+  sexe = c(rep("Home", 150), rep("Dona", 150)),
+  ingressos = c(rgamma(150, shape = 2, scale = 1000),
+                rgamma(150, shape = 1.96, scale = 975))
+)
+
+set.seed(123)
+ingressos_estudis <- tibble(
+  estudis = factor(rep(c("Bàsic", "Mitjà", "Superior"), each = 100),
+                   levels = c("Bàsic", "Mitjà", "Superior")),
+  ingressos = c(rgamma(100, shape = 2.2, scale = 800),
+                rgamma(100, shape = 2.2, scale = 900),
+                rgamma(100, shape = 2.2, scale = 1000))
+)
+```
+
+# Benvinguda {.seccio background-color="#6D071A"}
+
+::: notes
+**9:30 – 9:35 (5')** Pla del dia. Avui no cal obrir RStudio fins després de la pausa: la teoria i el repàs de R es fan mirant les slides.
+:::
+
+## Què farem avui?
+
+| Hora | Què farem |
+|:---:|---|
+| 9.30 | **Teoria**: relacions entre dues variables |
+| 10.20 | **Repàs de R**: tot el que ja sabem fer... i tres coses noves: `count()` amb dues variables, `arrange()` i `group_by()` |
+| 11.00 | *Pausa* |
+| 11.30 | **Pràctica**: estadística bivariada amb R, cadascú al seu ritme |
+| 13.20 | Tancament |
+
+: {tbl-colwidths="[15,85]"}
+
+::: {.missatge}
+Fins a la pausa, **no cal obrir RStudio**: mireu i pregunteu. Després de la pausa, tot el temps és vostre.
+:::
+
+# Relacions entre dues variables {.seccio background-color="#6D071A"}
+
+::: notes
+**9:35 – 10:20 (45')** Teoria: la idea, com es llegeix el resultat i com s'interpreta. El codi de les taules està amagat: el veurem al repàs de R. Les fórmules són per entendre la idea, no per calcular-les a mà.
+:::
+
+## Variable dependent i independent
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### Variable independent (VI)
+- La que **explica** o es considera la causa
+- També: explicativa, predictor, factor
+:::
+
+::: {.column width="50%"}
+### Variable dependent (VD)
+- La que volem **estudiar o predir**
+- També: variable resposta, resultat
+:::
+
+::::
+
+::: {.caixa-verda}
+**Exemples**
+
+- **Ingressos** (VD) segons **nivell d'estudis** (VI)
+- **Nota de matemàtiques** (VD) segons **titularitat del centre** (VI)
+:::
+
+## Quina tècnica fem servir?
+
+Depèn del **tipus** de les dues variables:
+
+| | **VI categòrica** | **VI numèrica** |
+|---|:---:|:---:|
+| **VD categòrica** | Taules de contingència, $\chi^2$ <br> **Avui** | (Regressió logística) |
+| **VD numèrica** | Comparació de mitjanes: t-test, ANOVA <br> **Avui** | Correlació i regressió <br> **Sessió 4** |
+
+: {tbl-colwidths="[24,38,38]"}
+
+# Dues variables categòriques {.seccio background-color="#6D071A"}
+
+## La taula de contingència
+
+- Creua **dues variables categòriques**: cada cel·la diu quants casos hi ha de cada **combinació**
+- Exemple: enquesta del CEO a joves de menys de 20 anys. **VI**: sexe; **VD**: fa servir TikTok?
+
+```{r}
+#| echo: false
+tiktok |>
+  count(usa_tiktok, sexe) |>
+  pivot_wider(names_from = sexe, values_from = n) |>
+  mutate(Total = Home + Dona) |>
+  bind_rows(tibble(usa_tiktok = "Total", Home = 236, Dona = 196, Total = 432)) |>
+  rename(`Fa servir TikTok?` = usa_tiktok) |>
+  taula()
+```
+
+::: {.petit .gris}
+Ara no ens fixem en el codi: el veurem al repàs de R.
+:::
+
+## Hi ha associació? Casos extrems
+
+:::: {.columns}
+
+::: {.column width="33%"}
+**Cap associació**
+
+| | Home | Dona |
+|---|:---:|:---:|
+| A favor | 150 | 150 |
+| En contra | 150 | 150 |
+
+El sexe **no diu res** de l'opinió
+:::
+
+::: {.column width="33%"}
+**Associació parcial**
+
+| | Home | Dona |
+|---|:---:|:---:|
+| A favor | 180 | 150 |
+| En contra | 120 | 150 |
+
+Els homes, **una mica** més a favor
+:::
+
+::: {.column width="33%"}
+**Associació perfecta**
+
+| | Home | Dona |
+|---|:---:|:---:|
+| A favor | 300 | 0 |
+| En contra | 0 | 300 |
+
+Sabent el sexe, **sabem** l'opinió
+:::
+
+::::
+
+::: {.missatge}
+Hi ha **associació** quan la distribució de la VD **canvia** d'un grup de la VI a un altre.
+:::
+
+## Per comparar: percentatges dins de cada grup
+
+Hi ha més noies que nois a la mostra: per comparar, cal mirar el **percentatge dins de cada sexe**.
+
+```{r}
+#| echo: false
+tiktok |>
+  count(sexe, usa_tiktok) |>
+  group_by(sexe) |>
+  mutate(pct = round(n / sum(n) * 100, 1)) |>
+  ungroup() |>
+  select(-n) |>
+  pivot_wider(names_from = sexe, values_from = pct) |>
+  rename(`Fa servir TikTok? (%)` = usa_tiktok) |>
+  taula()
+```
+
+::: {.caixa}
+Un **58,5 %** dels nois i un **69,4 %** de les noies fan servir TikTok: hi ha **11 punts** de diferència. Sembla que hi ha associació... però és una **mostra**. Podria ser fruit de l'**atzar**?
+:::
+
+::: {.petit .gris}
+Regla: els percentatges de la **VD** (TikTok), calculats **dins de cada grup de la VI** (sexe). Cada columna suma 100.
+:::
+
+## Què esperaríem si no hi hagués associació?
+
+Si el sexe no tingués res a veure amb TikTok, nois i noies l'usarien **igual**: el `r num(274 / 432 * 100)` % del total.
+
+```{r}
+#| include: false
+esperades <- tiktok |>
+  count(sexe, usa_tiktok) |>
+  group_by(sexe) |>
+  mutate(total_sexe = sum(n)) |>
+  group_by(usa_tiktok) |>
+  mutate(total_tiktok = sum(n)) |>
+  ungroup() |>
+  mutate(esperades = total_sexe * total_tiktok / sum(n))
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Observades** ($O$): el que hem trobat
+
+```{r}
+#| echo: false
+esperades |>
+  select(sexe, usa_tiktok, n) |>
+  pivot_wider(names_from = sexe, values_from = n) |>
+  rename(`TikTok?` = usa_tiktok) |>
+  taula()
+```
+:::
+
+::: {.column width="50%"}
+**Esperades** ($E$): si no hi hagués associació
+
+```{r}
+#| echo: false
+esperades |>
+  mutate(esperades = round(esperades, 1)) |>
+  select(sexe, usa_tiktok, esperades) |>
+  pivot_wider(names_from = sexe, values_from = esperades) |>
+  rename(`TikTok?` = usa_tiktok) |>
+  taula()
+```
+:::
+
+::::
+
+::: {.caixa .petit}
+Esperaríem `r num(esperades$esperades[1])` nois usuaris i n'hem trobat 138: **menys** del que tocaria. I `r num(esperades$esperades[3])` noies usuàries, i n'hem trobat 136: **més**. Com més s'allunyen $O$ i $E$, més evidència d'associació.
+:::
+
+## El test $\chi^2$ (khi-quadrat)
+
+:::: {.columns}
+
+::: {.column width="45%"}
+- $H_0$: **no hi ha associació**
+- $H_1$: **hi ha associació**
+:::
+
+::: {.column width="55%"}
+$$\chi^2 = \sum \frac{(O - E)^2}{E}$$
+:::
+
+::::
+
+- El $\chi^2$ diu **com de lluny** és la taula observada ($O$) de l'esperada ($E$)
+- $\chi^2 = 0$: no hi ha cap diferència. Com més **gran**, més lluny de la independència
+
+. . .
+
+::: {.missatge}
+**p-valor**: la probabilitat de trobar una diferència com la nostra **només per atzar**, si no hi hagués associació. Si **p < 0,05**, rebutgem $H_0$.
+:::
+
+## El test $\chi^2$ amb R
+
+```{r}
+chisq.test(tiktok$sexe, tiktok$usa_tiktok)
+```
+
+```{r}
+#| include: false
+test_tiktok <- chisq.test(tiktok$sexe, tiktok$usa_tiktok)
+```
+
+. . .
+
+::: {.caixa}
+**p = `r num(test_tiktok$p.value, 3)` < 0,05** → rebutgem $H_0$: hi ha **associació significativa** entre el sexe i l'ús de TikTok. La diferència d'11 punts difícilment és fruit de l'atzar.
+:::
+
+::: {.petit .gris}
+Necessita freqüències esperades **> 5** a totes les cel·les. Si no, R avisa («*Chi-squared approximation may be incorrect*») i cal fer servir `fisher.test()`. 📖 **Per aprofundir**: [la distribució khi-quadrat](../explicacions/01_distribucio_khi_quadrat.html){target="_blank"} i [significativa no vol dir forta: la V de Cramér](../explicacions/02_v_cramer.html){target="_blank"}.
+:::
+
+# Una numèrica i una categòrica {.seccio background-color="#6D071A"}
+
+## Comparar mitjanes entre grups
+
+Quan una variable **numèrica** (ingressos, nota...) pot variar segons una **categòrica** (sexe, estudis...):
+
+1. Calculem la **mitjana** (i la dispersió) de cada grup
+2. Ho mirem amb un **boxplot** per grup
+3. Contrastem si la diferència és **significativa**:
+    - **2 grups** → **t-test**
+    - **3 o més grups** → **ANOVA**
+
+::: {.petit .gris}
+Als exemples, dades **simulades** d'ingressos mensuals.
+:::
+
+## Dos grups: el t-test
+
+:::: {.columns}
+
+::: {.column width="40%"}
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.6
+ggplot(ingressos_sexe, aes(x = sexe, y = ingressos)) +
+  geom_boxplot(fill = bordeus_clar, width = 0.5) +
+  stat_summary(fun = mean, geom = "point", color = bordeus, size = 4) +
+  labs(x = NULL, y = "Ingressos mensuals (€)")
+```
+
+::: {.petit .centre}
+El punt és la **mitjana** de cada grup.
+:::
+:::
+
+::: {.column width="60%"}
+- $H_0$: les dues mitjanes són **iguals**
+- $H_1$: les mitjanes són **diferents**
+
+La fórmula `numerica ~ grup` es llegeix «*ingressos **segons** sexe*»:
+
+```{r}
+#| eval: false
+t.test(ingressos ~ sexe, data = ingressos_sexe)
+```
+
+```{r}
+#| include: false
+tt <- t.test(ingressos ~ sexe, data = ingressos_sexe)
+```
+
+::: {.caixa}
+Diferència de `r round(abs(diff(tt$estimate)))` € al mes, però **p = `r num(tt$p.value, 2)` > 0,05**: **no podem afirmar** que la diferència sigui significativa.
+:::
+:::
+
+::::
+
+::: notes
+De la sortida de `t.test()` només cal mirar les dues mitjanes (*sample estimates*) i el p-valor. Supòsits (independència, normalitat o grups grans): a l'explicació «Proves de normalitat».
+:::
+
+## Tres o més grups: per què no fem t-tests?
+
+Amb 3 grups (Bàsic, Mitjà, Superior) hi ha **3 parelles** per comparar. Amb 5 grups, **10 parelles**.
+
+- Cada t-test té un **5 %** de probabilitat d'equivocar-se (trobar una diferència que no existeix)
+- Si en fem molts, la probabilitat d'equivocar-nos **en algun** es dispara
+
+. . .
+
+::: {.missatge}
+L'**ANOVA** (anàlisi de la variància) respon d'un sol cop: **hi ha alguna diferència** entre les mitjanes dels grups?
+:::
+
+- $H_0$: **totes** les mitjanes són iguals
+- $H_1$: **almenys una** mitjana és diferent
+
+## La idea de l'ANOVA: variació entre i dins dels grups
+
+```{r}
+#| include: false
+# Dos escenaris amb les mateixes mitjanes exactes (40, 50, 60) i diferent dispersió
+set.seed(42)
+escenaris <- tibble(grup = factor(rep(rep(c("A", "B", "C"), each = 10), 2)),
+                    escenari = rep(c("1. Poca variació dins dels grups",
+                                     "2. Molta variació dins dels grups"), each = 30),
+                    desv = rep(c(4, 25), each = 30),
+                    soroll = rnorm(60)) |>
+  group_by(escenari, grup) |>
+  mutate(valor = c(40, 50, 60)[as.integer(grup)] + (soroll - mean(soroll)) / sd(soroll) * desv) |>
+  ungroup()
+
+f_escenaris <- escenaris |>
+  group_by(escenari) |>
+  summarise(f = summary(aov(valor ~ grup, data = pick(valor, grup)))[[1]]$`F value`[1])
+```
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 3.6
+ggplot(escenaris, aes(x = grup, y = valor)) +
+  geom_jitter(width = 0.15, height = 0, color = bordeus_clar, size = 2.5) +
+  stat_summary(fun = mean, geom = "crossbar", color = bordeus, width = 0.5, linewidth = 0.8) +
+  facet_wrap(~ escenari) +
+  labs(x = "Grup", y = NULL)
+```
+
+En tots dos casos les mitjanes (línies) són **les mateixes**: 40, 50 i 60. Però:
+
+- **Esquerra**: els grups estan ben **separats** → les diferències entre mitjanes **són clares**
+- **Dreta**: els grups es **barregen** → les mateixes diferències podrien ser **atzar**
+
+## L'estadístic F
+
+L'ANOVA compara les dues fonts de variació:
+
+$$F = \frac{\text{variació } \textbf{entre} \text{ grups (com d'allunyades estan les mitjanes)}}{\text{variació } \textbf{dins} \text{ dels grups (com d'escampats estan els casos)}}$$
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.caixa}
+**F gran** → les mitjanes estan lluny en comparació amb la variació interna → **p petit** → hi ha diferències
+
+A l'exemple de l'esquerra: F = `r num(f_escenaris$f[1], 1)`
+:::
+:::
+
+::: {.column width="50%"}
+::: {.caixa}
+**F petit** (a prop d'1) → les diferències entre mitjanes són com la variació normal → **p gran** → no podem dir que n'hi hagi
+
+A l'exemple de la dreta: F = `r num(f_escenaris$f[2], 1)`
+:::
+:::
+
+::::
+
+::: {.petit .gris}
+Supòsits: observacions **independents**, variable **normal** dins de cada grup (o grups grans) i variàncies **semblants**. 📖 **Per aprofundir**: [la distribució F i com es calcula l'ANOVA](../explicacions/03_distribucio_f_fisher.html){target="_blank"}.
+:::
+
+## L'ANOVA amb R
+
+Ingressos segons el nivell d'estudis:
+
+:::: {.columns}
+
+::: {.column width="40%"}
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 4.6
+ggplot(ingressos_estudis, aes(x = estudis, y = ingressos)) +
+  geom_boxplot(fill = bordeus_clar, width = 0.5) +
+  stat_summary(fun = mean, geom = "point", color = bordeus, size = 4) +
+  labs(x = NULL, y = "Ingressos mensuals (€)")
+```
+:::
+
+::: {.column width="60%"}
+```{r}
+model <- aov(ingressos ~ estudis,
+             data = ingressos_estudis)
+summary(model)
+```
+
+::: {.petit}
+- `F value`: l'estadístic F (`r num(summary(model)[[1]]$"F value"[1], 2)`)
+- `Pr(>F)`: el **p-valor** (`r num(summary(model)[[1]]$"Pr(>F)"[1], 3)`)
+:::
+
+::: {.caixa .petit}
+**p < 0,05** → rebutgem $H_0$: **no** tots els nivells d'estudis tenen els mateixos ingressos mitjans.
+:::
+:::
+
+::::
+
+## Entre quins grups? La prova de Tukey
+
+L'ANOVA diu que **hi ha alguna diferència**, però no **on**. La prova *post hoc* de Tukey compara **totes les parelles**, corregint el problema de fer moltes comparacions:
+
+```{r}
+TukeyHSD(model)
+```
+
+::: {.caixa .petit}
+Mireu la columna `p adj`: **Bàsic** és diferent de **Mitjà** i de **Superior** (p < 0,05); entre **Mitjà** i **Superior**, la diferència **no** és significativa.
+:::
+
+## Resum: quina prova per a què?
+
+| Variables | Descriure | Contrastar ($H_0$: no hi ha relació) |
+|---|---|---|
+| **2 categòriques** | % de la VD dins de cada grup de la VI | $\chi^2$: `chisq.test()` |
+| **Numèrica** segons **categòrica (2 grups)** | Mitjana per grup, boxplot | t-test: `t.test()` |
+| **Numèrica** segons **categòrica (3+ grups)** | Mitjana per grup, boxplot | ANOVA: `aov()` + `TukeyHSD()` |
+
+: {tbl-colwidths="[30,35,35]"}
+
+<br>
+
+::: {.missatge}
+Sempre en el mateix ordre: primer **descriure** (quina diferència hi ha? és gran?), després **contrastar** (p < 0,05 → la relació és **significativa**).
+:::
+
+# Repàs de R: què sabem fer? {.seccio background-color="#6D071A"}
+
+::: notes
+**10:20 – 11:00 (40')** Molt a poc a poc: cada slide va apareixent línia a línia (frase → codi). Primer, repàs de tot el que ja sabem (sessions 1 i 2). Després, les tres novetats: `count()` amb dues variables, `arrange()` i `group_by()` (amb `count()`, `ungroup()` i `summarise()`). Tot el codi és a `codi/01_bivariada.R`.
+:::
+
+## Sempre comencem igual
+
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Carreguem el tidyverse
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+library(tidyverse)
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+
+# Importem les dades (CSV amb ; i coma decimal)
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+competencies <- read_csv2("dades/competencies.csv")
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+
+# Mirem què hi ha
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+glimpse(competencies)
+```
+:::
+::: {.fragment .petit}
+```{r}
+#| echo: false
+glimpse(competencies)
+```
+:::
+:::
+
+## Els verbs del tidyverse
+
+Un **verb** agafa una taula de dades, hi fa **una cosa** i en torna una altra taula. Ja en coneixem sis:
+
+| Verb | Què fa | Treballa amb... |
+|---|---|---|
+| `filter()` | **Tria files** que compleixen una condició | Files |
+| `select()` | **Tria columnes** | Columnes |
+| `rename()` | **Canvia el nom** de columnes | Columnes |
+| `mutate()` | **Crea o modifica** columnes | Columnes |
+| `count()` | **Compta** quantes files hi ha de cada categoria | Resum |
+| `summarise()` | **Resumeix** moltes files en una (mitjana, mediana...) | Resum |
+
+: {tbl-colwidths="[18,57,25]"}
+
+::: {.missatge}
+Els enllacem amb el pipe **`|>`**, que es llegeix «**i després**».
+:::
+
+## Triar i transformar, pas a pas
+
+:::: {.columns}
+
+::: {.column width="55%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Agafa les dades i després...
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+competencies |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...queda't amb els centres públics
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  filter(titularitat == "Públic") |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...tria tres columnes
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  select(genere, nota_cat, nota_mat) |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...canvia el nom de genere per sexe
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  rename(sexe = genere) |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...i crea la nota de mates sobre 10
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  mutate(nota_mat_10 = nota_mat / 10)
+```
+:::
+:::
+:::
+
+::: {.column width="45%"}
+::: {.fragment .petit}
+```{r}
+#| echo: false
+competencies |>
+  filter(titularitat == "Públic") |>
+  select(genere, nota_cat, nota_mat) |>
+  rename(sexe = genere) |>
+  mutate(nota_mat_10 = nota_mat / 10)
+```
+:::
+:::
+
+::::
+
+## Resumir: `count()` i `summarise()`
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Quants alumnes hi ha de cada nivell
+# de matemàtiques?
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+competencies |>
+  count(nivell_mat)
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  count(nivell_mat)
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Quina és la nota mitjana i la
+# mediana de matemàtiques?
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+competencies |>
+  summarise(mitjana = mean(nota_mat),
+            mediana = median(nota_mat))
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  summarise(mitjana = mean(nota_mat),
+            mediana = median(nota_mat))
+```
+:::
+:::
+:::
+
+::::
+
+::: {.fragment .petit .gris}
+`count()` i `summarise()` **redueixen** la taula: de 480 files (alumnes) passem a una fila per categoria o a una sola fila.
+:::
+
+## Guardar o només mirar?
+
+Amb `<-` **guardem** el resultat en un objecte. Sense `<-`, R el **mostra** per pantalla i se n'oblida.
+
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# 1. Un canvi que volem CONSERVAR a les dades: sobreescrivim el mateix objecte
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+competencies <- competencies |>
+  rename(nota_global = nota_mitjana)
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+
+# 2. Un resultat NOU que volem fer servir després: el guardem amb un altre nom
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+taula_nivells <- competencies |>
+  count(nivell_mat)
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+
+# 3. Només volem VEURE la resposta (una mitjana, una taula...): sense <-
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+competencies |>
+  summarise(mitjana = mean(nota_mat))
+```
+:::
+:::
+
+::: {.fragment .caixa .petit}
+Els objectes guardats apareixen al panell **Environment**. Compte: `competencies <- ...` **substitueix** les dades d'abans. Si us equivoqueu, torneu a executar l'script des del principi.
+:::
+
+## I les funcions «auxiliars»
+
+No són verbs: treballen amb **una columna** i van **a dins** d'un verb.
+
+| Funció | Per a què | A dins de... |
+|---|---|---|
+| `case_when()` | **Recodificar**: `case_when(x == "D" ~ "Dona", ...)` | `mutate()` |
+| `factor()` | **Ordenar** les categories | `mutate()` |
+| `is.na()` | Detectar **valors perduts** (`NA`) | `filter()` |
+| `mean()`, `median()`, `sd()`, `quantile()` | Mitjana, mediana, desviació típica, quartils | `summarise()` |
+| `n()` | **Comptar** files | `summarise()` |
+
+: {tbl-colwidths="[30,45,25]"}
+
+## Verbs i auxiliars junts
+
+:::: {.columns}
+
+::: {.column width="60%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Agafa les dades i després...
+competencies |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...crea una columna: aprova mates?
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  mutate(aprova_mat = case_when(nota_mat >= 50 ~ "Sí",
+                                nota_mat <  50 ~ "No")) |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...i compta quants n'hi ha de cada
+  count(aprova_mat)
+```
+:::
+:::
+:::
+
+::: {.column width="40%"}
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  mutate(aprova_mat = case_when(nota_mat >= 50 ~ "Sí",
+                                nota_mat <  50 ~ "No")) |>
+  count(aprova_mat)
+```
+:::
+:::
+
+::::
+
+::: {.fragment .caixa .petit}
+El **verb** (`mutate()`) diu **què** fem amb la taula: crear una columna. L'**auxiliar** (`case_when()`) diu **com** es calcula aquesta columna.
+:::
+
+# Tres novetats per a la bivariada {.seccio background-color="#6D071A"}
+
+## Novetat 1: `count()` amb dues variables
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Abans: una variable
+competencies |>
+  count(nivell_mat)
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  count(nivell_mat)
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Ara: dues variables
+competencies |>
+  count(genere, nivell_mat)
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  count(genere, nivell_mat)
+```
+:::
+:::
+:::
+
+::::
+
+::: {.fragment .caixa}
+Una fila per a cada **combinació** de gènere i nivell. És la **taula de contingència**, posada «en vertical»: cada fila és una cel·la.
+:::
+
+## Novetat 2: `arrange()`, ordenar les files
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# De menys a més
+competencies |>
+  count(genere, nivell_mat) |>
+  arrange(n)
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  count(genere, nivell_mat) |>
+  arrange(n)
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# De més a menys: desc()
+competencies |>
+  count(genere, nivell_mat) |>
+  arrange(desc(n))
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  count(genere, nivell_mat) |>
+  arrange(desc(n))
+```
+:::
+:::
+:::
+
+::::
+
+::: {.fragment .petit .gris}
+`arrange()` no canvia res de les dades: només l'**ordre** de les files. `desc()` (de *descending*) és una auxiliar.
+:::
+
+## Novetat 3: `group_by()`, la idea
+
+`group_by()` **no canvia** les dades: les **separa en grups**. El verb que ve **després** es fa **per a cada grup** per separat.
+
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+competencies |>
+  group_by(genere)
+```
+:::
+::: {.fragment .petit}
+```{r}
+#| echo: false
+competencies |>
+  group_by(genere) |>
+  print(n = 3)
+```
+:::
+:::
+
+::: {.fragment .caixa .petit}
+Les dades són les mateixes, però a dalt hi diu **`# Groups: genere [2]`**: R recorda que hi ha 2 grups (dones i homes).
+:::
+
+## `group_by()` + `count()`: percentatges dins de cada grup
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Sense group_by(): % sobre el TOTAL
+competencies |>
+  count(genere, nivell_mat) |>
+  mutate(pct = n / sum(n) * 100)
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  count(genere, nivell_mat) |>
+  mutate(pct = n / sum(n) * 100)
+```
+:::
+:::
+
+::: {.fragment .petit}
+`sum(n)` = 480 alumnes. Els 6 % sumen 100.
+:::
+:::
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Amb group_by(): % dins de cada GÈNERE
+competencies |>
+  count(genere, nivell_mat) |>
+  group_by(genere) |>
+  mutate(pct = n / sum(n) * 100)
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  count(genere, nivell_mat) |>
+  group_by(genere) |>
+  mutate(pct = n / sum(n) * 100)
+```
+:::
+:::
+
+::: {.fragment .petit}
+`sum(n)` = 247 dones i 233 homes. Sumen 100 **dins de cada gènere**: el 58,4 % dels nois té nivell alt, davant del 45,3 % de les noies.
+:::
+:::
+
+::::
+
+## `ungroup()`: treure els grups
+
+Després de `group_by()`, el resultat **queda agrupat**: tot el que vingui després es farà per grups. Quan ja no ho volem, **`ungroup()`**:
+
+:::: {.columns}
+
+::: {.column width="55%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+competencies |>
+  count(genere, nivell_mat) |>
+  group_by(genere) |>
+  mutate(pct_genere = n / sum(n) * 100) |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...i ara traiem els grups
+  ungroup() |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...i el % sobre el total d'alumnes
+  mutate(pct_total = n / sum(n) * 100)
+```
+:::
+:::
+:::
+
+::: {.column width="45%"}
+::: {.fragment .petit}
+```{r}
+#| echo: false
+competencies |>
+  count(genere, nivell_mat) |>
+  group_by(genere) |>
+  mutate(pct_genere = n / sum(n) * 100) |>
+  ungroup() |>
+  mutate(pct_total = n / sum(n) * 100)
+```
+:::
+:::
+
+::::
+
+::: {.fragment .missatge}
+Bon costum: acabar amb **`ungroup()`** quan ja no necessitem els grups. Ja no hi diu `# Groups`.
+:::
+
+## `group_by()` + `summarise()`: un resum per grup
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Sense group_by(): una sola fila
+competencies |>
+  summarise(n = n(),
+            mitjana_mat = mean(nota_mat))
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  summarise(n = n(),
+            mitjana_mat = mean(nota_mat))
+```
+:::
+:::
+:::
+
+::: {.column width="50%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Amb group_by(): una fila PER GRUP
+competencies |>
+  group_by(genere) |>
+  summarise(n = n(),
+            mitjana_mat = mean(nota_mat))
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  group_by(genere) |>
+  summarise(n = n(),
+            mitjana_mat = mean(nota_mat))
+```
+:::
+:::
+:::
+
+::::
+
+::: {.fragment .missatge}
+`group_by(genere) |> summarise(...)` es llegeix: «**per a cada gènere**, calcula...».
+:::
+
+## Diverses variables alhora
+
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Per a cada gènere, quants alumnes hi ha i quina nota mitjana treuen a cada assignatura?
+competencies |>
+  group_by(genere) |>
+  summarise(n           = n(),
+            mitjana_cat = mean(nota_cat, na.rm = TRUE),
+            mitjana_mat = mean(nota_mat),
+            mitjana_ang = mean(nota_ang, na.rm = TRUE))
+```
+:::
+::: {.fragment}
+```{r}
+#| echo: false
+competencies |>
+  group_by(genere) |>
+  summarise(n           = n(),
+            mitjana_cat = mean(nota_cat, na.rm = TRUE),
+            mitjana_mat = mean(nota_mat),
+            mitjana_ang = mean(nota_ang, na.rm = TRUE))
+```
+:::
+:::
+
+::: {.fragment .caixa}
+Les noies treuen més nota de **català** i d'**anglès**; els nois, de **matemàtiques**. (Compte amb els `NA`: `na.rm = TRUE`.)
+:::
+
+## Dos grups alhora, ordenat i desagrupat
+
+:::: {.columns}
+
+::: {.column width="55%"}
+::: {.creix}
+::: {.fragment}
+```{r}
+#| eval: false
+# Per a cada gènere I hàbitat...
+competencies |>
+  group_by(genere, habitat) |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...nombre d'alumnes i nota de català
+  summarise(n = n(),
+            mitjana_cat = mean(nota_cat, na.rm = TRUE)) |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...traiem els grups
+  ungroup() |>
+```
+:::
+::: {.fragment}
+```{r}
+#| eval: false
+  # ...i ordenem de més a menys nota
+  arrange(desc(mitjana_cat))
+```
+:::
+:::
+:::
+
+::: {.column width="45%"}
+::: {.fragment .petit}
+```{r}
+#| echo: false
+competencies |>
+  group_by(genere, habitat) |>
+  summarise(n = n(),
+            mitjana_cat = mean(nota_cat, na.rm = TRUE)) |>
+  ungroup() |>
+  arrange(desc(mitjana_cat))
+```
+:::
+:::
+
+::::
+
+::: {.fragment .petit .gris}
+Si R mostra un missatge sobre com queda agrupat el resultat del `summarise()`, no és cap error: amb `ungroup()` ens n'oblidem.
+:::
+
+## Xuleta: bivariada amb R
+
+| Vull... | Codi |
+|---|---|
+| Taula de contingència | `count(vi, vd)` |
+| % de la VD dins de cada grup de la VI | `count(vi, vd) |> group_by(vi) |> mutate(pct = n / sum(n) * 100) |> ungroup()` |
+| Resum d'una numèrica per grup | `group_by(grup) |> summarise(n = n(), mitjana = mean(x))` |
+| Per a dues variables de grup | `group_by(grup1, grup2) |> summarise(...) |> ungroup()` |
+| Ordenar les files | `arrange(x)` o, de més a menys, `arrange(desc(x))` |
+
+: {tbl-colwidths="[32,68]"}
+
+::: {.petit .gris}
+**Opcional**, per saber si les diferències són significatives: `chisq.test(dades$vi, dades$vd)`, `t.test(x ~ grup, data = dades)` i `summary(aov(x ~ grup, data = dades))`.
+:::
+
+# Pausa ☕ {.seccio background-color="#6D071A"}
+
+::: notes
+**11:00 – 11:30** Pausa.
+:::
+
+# Pràctica: bivariada amb R {.seccio background-color="#6D071A"}
+
+::: notes
+**11:30 – 11:40 (10')** Que tothom obri els materials de la sessió 3 (slide següent) i executi el pas 1. **11:40 – 13:20 (100')** Pràctica amb `codi/exercici_sessio_3.R`. Passar per les taules. L'objectiu és `count()` + `group_by()` + `summarise()`; la significació és opcional. La solució (`codi/solucio_exercici_sessio_3.R`) es publica a la web després de la sessió: no es corregeix a classe.
+:::
+
+## Pas a pas: obrir els materials de la sessió 3
+
+1. Descarregueu el **zip** de la sessió 3 de la web del curs
+2. **Descomprimiu-lo**: botó dret → *Extreu-ho tot*. No treballeu des de dins del zip!
+3. Entreu a la carpeta descomprimida i feu **doble clic** a `sessio_3.Rproj`
+4. Comproveu que a dalt a la dreta de RStudio hi diu **`sessio_3`**
+5. Al panell *Files* (a baix a la dreta), obriu la carpeta `codi/` i l'script `exercici_sessio_3.R`
+6. Executeu el **pas 1**, que ja està fet: ha de sortir una taula de 480 files
+
+::: {.caixa-verda}
+Les dades (`dades/competencies.csv`) són les **mateixes dades netes** de la sessió 2: tothom comença des del mateix punt. A `codi/01_bivariada.R` hi ha tot el codi de les slides.
+:::
+
+## Pràctica: cadascú al seu ritme
+
+Tot és a la plantilla `codi/exercici_sessio_3.R`:
+
+| | Què farem | Amb... |
+|---|---|---|
+| **Pas 1** | Importar les dades (**ja fet**: només cal executar-lo) | `read_csv2()` |
+| **Part A** · passos 2 a 4 | El nivell de matemàtiques segons la **titularitat** i l'**hàbitat** | `count()` + `group_by()` |
+| **Part B** · passos 5 a 7 | Les notes segons la **titularitat**, l'**hàbitat** i el **gènere** | `group_by()` + `summarise()` |
+| *Opcional 1* | Les diferències, **són significatives**? | `chisq.test()`, `t.test()` |
+| *Opcional 2* | **Repte**: l'esperança de vida per continent | Tot el que sabeu |
+| *Opcional 3* | [Tutorial: gràfics bivariats amb `ggplot2`](../explicacions/tutorial_ggplot2_bivariada.html){target="_blank"} | `ggplot()` |
+
+: {tbl-colwidths="[22,53,25]"}
+
+::: {.missatge}
+L'important avui: **`count()`, `group_by()` i `summarise()`**. Si arribeu a la part opcional, perfecte; si no, també.
+:::
+
+## Part A: dues variables categòriques
+
+El nivell de matemàtiques (`nivell_mat`, **VD**), és diferent segons la titularitat del centre (`titularitat`, **VI**)?
+
+::: {.petit}
+**Pas 2. Taula de contingència** amb `count()` i dues variables. Quants alumnes de centres públics tenen nivell alt?
+
+**Pas 3. Percentatges dins de cada titularitat**: afegiu-hi `group_by(titularitat)`, `mutate(percentatge = n / sum(n) * 100)` i `ungroup()`. On hi ha més alumnes amb nivell alt?
+
+**Pas 4. Ara sols**: el mateix (passos 2 i 3) amb **`habitat`** en lloc de `titularitat`. El percentatge de nivell alt, canvia segons la mida del municipi?
+:::
+
+::: {.caixa .petit}
+Escriviu les respostes **en paraules**, amb comentaris (`#`). La xuleta i `codi/01_bivariada.R` us fan de guia.
+:::
+
+## Part B: una numèrica i una categòrica
+
+::: {.petit}
+**Pas 5. Nota de matemàtiques per titularitat**: `group_by()` + `summarise()` amb el nombre d'alumnes, la mitjana, la mediana i la desviació típica. Qui treu millor nota? Quants punts més?
+
+**Pas 6. Les tres assignatures per hàbitat**: en un sol `summarise()`, la mitjana de `nota_cat`, `nota_mat` i `nota_ang`, ordenat amb `arrange(desc(...))`. Compte amb els `NA`!
+
+**Pas 7. Dues variables de grup**: nota mitjana de matemàtiques per **titularitat i gènere**, amb `ungroup()` i ordenat. La diferència entre nois i noies, és igual a la pública i a la privada?
+:::
+
+::: {.caixa-verda .petit}
+**Lliurament**: l'script `exercici_sessio_3.R` complet i comentat, per **correu electrònic** a [joelardiacaarnau@gencat.cat](mailto:joelardiacaarnau@gencat.cat).
+:::
+
+## Ja ho teniu? Part opcional
+
+::: {.petit}
+**Opcional 1. Les diferències, són significatives?** Fins ara hem descrit la mostra. Podem generalitzar-ho a tots els alumnes de 6è de Catalunya?
+
+- Nivell de matemàtiques i titularitat (part A): `chisq.test(competencies$titularitat, competencies$nivell_mat)`
+- Nota de matemàtiques i titularitat (part B): `t.test(nota_mat ~ titularitat, data = competencies)`
+
+**Opcional 2. Repte: l'esperança de vida per continent** (`dades/paisos_esperanca_vida.csv`, una fila per país), sense pistes:
+
+- Importeu les dades i mireu-les
+- Per a cada continent: nombre de països, mitjana, mínim i màxim de l'esperança de vida, de més a menys
+- Quins són els 5 països d'Europa amb més esperança de vida?
+
+**Opcional 3.** El [tutorial de gràfics bivariats amb `ggplot2`](../explicacions/tutorial_ggplot2_bivariada.html){target="_blank"}: barres per grups, boxplots i un gràfic per grup.
+:::
+
+## Quan alguna cosa falla
+
+| Què passa | Per què | Solució |
+|---|---|---|
+| `object 'competencies' not found` | No heu executat el pas 1 | Executeu-lo (Ctrl + Enter) |
+| `'dades/...' does not exist` | R no és a la carpeta del projecte | Obriu el fitxer `sessio_3.Rproj` |
+| Els percentatges no sumen 100 dins de cada grup | Falta el `group_by()` | Poseu-lo **abans** del `mutate()` |
+| `summarise()` torna una sola fila | Falta el `group_by()` | Poseu-lo **abans** del `summarise()` |
+| La mitjana surt `NA` | Hi ha valors perduts | `mean(x, na.rm = TRUE)` |
+| Missatge sobre com queda «agrupat» el resultat | No és cap error | Podeu seguir (o afegir `ungroup()`) |
+
+: {tbl-colwidths="[35,30,35]"}
+
+## El teu torn (100') {.el-teu-torn}
+
+1. **Part A**: passos 2 a 4 (`count()` + `group_by()`)
+2. **Part B**: passos 5 a 7 (`group_by()` + `summarise()`)
+3. **Ja ho teniu tot?** La part opcional del final de l'script:
+    - Les diferències, **són significatives**? ($\chi^2$ i t-test)
+    - **Repte**: esperança de vida per continent
+    - El [tutorial de gràfics bivariats amb `ggplot2`](../explicacions/tutorial_ggplot2_bivariada.html){target="_blank"}
+
+<br>
+
+::: {.petit .gris}
+Mentre treballeu aniré passant per les taules. Si us encalleu, aviseu!
+:::
+
+# Tancament {.seccio background-color="#6D071A"}
+
+::: notes
+**13:20 – 13:30 (10')** Resum i propera sessió. Recordar el lliurament de l'exercici de la sessió 3.
+:::
+
+## Què hem après avui?
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### Estadística bivariada
+- Variable dependent i independent
+- Taules de contingència i percentatges **dins de cada grup**
+- Associació: observades, esperades i el test $\chi^2$
+- Comparar mitjanes: t-test i ANOVA
+:::
+
+::: {.column width="50%"}
+### R
+- `count()` amb **dues variables**
+- `arrange()`: **ordenar**
+- **`group_by()`**: fer-ho **per a cada grup**
+- `group_by()` + `count()` i `group_by()` + `summarise()`
+- `ungroup()`: treure els grups
+:::
+
+::::
+
+<br>
+
+::: {.missatge}
+Propera sessió (dl. 9 de novembre): relació entre dues variables **numèriques**: **correlació i regressió**.
+:::

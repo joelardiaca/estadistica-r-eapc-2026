@@ -11,6 +11,8 @@ project:
     - sessio-1/slides/descriptiva.qmd
     - sessio-2/slides/sessio_2.qmd
     - sessio-2/explicacions/*.qmd
+    - sessio-3/slides/sessio_3.qmd
+    - sessio-3/explicacions/*.qmd
 
 lang: ca
 

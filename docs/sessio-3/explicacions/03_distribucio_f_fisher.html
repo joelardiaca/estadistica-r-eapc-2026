@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ca" xml:lang="ca"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>L’ANOVA i la distribució F, pas a pas – Introducció a l'estadística amb R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2e38a2a98391fee9a8937dbccf18c8cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Cap resultat",
+    "search-matching-documents-text": "documents que coincideixen",
+    "search-copy-link-title": "Copia l'enllaç a la cerca",
+    "search-hide-matches-text": "Amaga les coincidències addicionals",
+    "search-more-match-text": "altra coincidència en aquest document",
+    "search-more-matches-text": "altres coincidències en aquest document",
+    "search-clear-button-title": "Neteja",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel·la",
+    "search-submit-button-title": "Envia",
+    "search-label": "Cerca"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../assets/logo_eapc.png" alt="Escola d'Administració Pública de Catalunya" class="navbar-logo light-content">
+    <img src="../../assets/logo_eapc.png" alt="Escola d'Administració Pública de Catalunya" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Introducció a l’estadística amb R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Cerca"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Commuta la navegació" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Inici</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../abans-de-comencar.html"> 
+<span class="menu-text">Abans de començar</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-sessions" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Sessions</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-sessions">    
+        <li>
+    <a class="dropdown-item" href="../../sessio-1/index.html">
+ <span class="dropdown-text">Sessió 1 · Introducció a R i RStudio</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../sessio-2/index.html">
+ <span class="dropdown-text">Sessió 2 · Descriptiva i inferència</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../sessio-3/index.html">
+ <span class="dropdown-text">Sessió 3 · Estadística bivariada</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../sessio-4/index.html">
+ <span class="dropdown-text">Sessió 4 · Correlació i regressió</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../recursos.html"> 
+<span class="menu-text">Recursos</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/joelardiaca/estadistica-r-eapc-2026"> <i class="bi bi-github" role="img" aria-label="Repositori a GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Continguts</h2>
+   
+  <ul>
+  <li><a href="#on-érem-ingressos-segons-el-nivell-destudis" id="toc-on-érem-ingressos-segons-el-nivell-destudis" class="nav-link active" data-scroll-target="#on-érem-ingressos-segons-el-nivell-destudis">1. On érem: ingressos segons el nivell d’estudis</a></li>
+  <li><a href="#dues-fonts-de-variació" id="toc-dues-fonts-de-variació" class="nav-link" data-scroll-target="#dues-fonts-de-variació">2. Dues fonts de variació</a></li>
+  <li><a href="#calcular-la-f-a-mà" id="toc-calcular-la-f-a-mà" class="nav-link" data-scroll-target="#calcular-la-f-a-mà">3. Calcular la F a mà</a></li>
+  <li><a href="#llegir-la-sortida-de-summaryaov" id="toc-llegir-la-sortida-de-summaryaov" class="nav-link" data-scroll-target="#llegir-la-sortida-de-summaryaov">4. Llegir la sortida de <code>summary(aov())</code></a></li>
+  <li><a href="#és-gran-o-petita-aquesta-f" id="toc-és-gran-o-petita-aquesta-f" class="nav-link" data-scroll-target="#és-gran-o-petita-aquesta-f">5. És gran o petita, aquesta F?</a></li>
+  <li><a href="#aquesta-forma-té-nom-la-distribució-f-de-fisher" id="toc-aquesta-forma-té-nom-la-distribució-f-de-fisher" class="nav-link" data-scroll-target="#aquesta-forma-té-nom-la-distribució-f-de-fisher">6. Aquesta forma té nom: la distribució F de Fisher</a></li>
+  <li><a href="#el-valor-crític" id="toc-el-valor-crític" class="nav-link" data-scroll-target="#el-valor-crític">7. El valor crític</a></li>
+  <li><a href="#i-el-t-test" id="toc-i-el-t-test" class="nav-link" data-scroll-target="#i-el-t-test">8. I el t-test?</a></li>
+  <li><a href="#en-resum" id="toc-en-resum" class="nav-link" data-scroll-target="#en-resum">En resum</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">L’ANOVA i la distribució F, pas a pas</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Codi</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostra tot el codi</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Amaga tot el codi</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Visualitza el codi</a></li></ul></div></div>
+<p class="subtitle lead">Sessió 3 · Explicació complementària</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Què hi trobareu?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A les slides hem vist que l’<strong>ANOVA</strong> compara la variació <strong>entre</strong> grups amb la variació <strong>dins</strong> dels grups, i que el quocient entre totes dues és l’estadístic <strong>F</strong>. Aquí veurem, amb el mateix exemple de les slides, <strong>com es calcula</strong> la F, què vol dir cada número de la sortida de <code>summary(aov())</code> i <strong>d’on surt</strong> el p-valor. No cal entendre el codi (és plegat): n’hi ha prou de llegir el text i mirar els gràfics.</p>
+</div>
+</div>
+<section id="on-érem-ingressos-segons-el-nivell-destudis" class="level2">
+<h2 class="anchored" data-anchor-id="on-érem-ingressos-segons-el-nivell-destudis">1. On érem: ingressos segons el nivell d’estudis</h2>
+<p>L’exemple de les slides: ingressos mensuals (dades simulades) de 300 persones amb estudis bàsics, mitjans o superiors, 100 de cada grup.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ingressos_estudis <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">estudis =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Bàsic"</span>, <span class="st">"Mitjà"</span>, <span class="st">"Superior"</span>), <span class="at">each =</span> <span class="dv">100</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Bàsic"</span>, <span class="st">"Mitjà"</span>, <span class="st">"Superior"</span>)),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ingressos =</span> <span class="fu">c</span>(<span class="fu">rgamma</span>(<span class="dv">100</span>, <span class="at">shape =</span> <span class="fl">2.2</span>, <span class="at">scale =</span> <span class="dv">800</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                <span class="fu">rgamma</span>(<span class="dv">100</span>, <span class="at">shape =</span> <span class="fl">2.2</span>, <span class="at">scale =</span> <span class="dv">900</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                <span class="fu">rgamma</span>(<span class="dv">100</span>, <span class="at">shape =</span> <span class="fl">2.2</span>, <span class="at">scale =</span> <span class="dv">1000</span>))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>resum <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(estudis) <span class="sc">|&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">mitjana =</span> <span class="fu">mean</span>(ingressos),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">desv_tipica =</span> <span class="fu">sd</span>(ingressos))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>resum</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  estudis      n mitjana desv_tipica
+  &lt;fct&gt;    &lt;int&gt;   &lt;dbl&gt;       &lt;dbl&gt;
+1 Bàsic      100   1539.        946.
+2 Mitjà      100   1947.       1327.
+3 Superior   100   2006.       1182.</code></pre>
+</div>
+</div>
+<p>Les mitjanes són diferents: de 1.539 € (bàsics) a 2.006 € (superiors). La pregunta de l’ANOVA és: <strong>aquestes diferències, podrien ser fruit de l’atzar?</strong></p>
+<ul>
+<li><span class="math inline">\(H_0\)</span>: les tres mitjanes són <strong>iguals</strong> a la població; les diferències de la mostra són casualitat.</li>
+<li><span class="math inline">\(H_1\)</span>: <strong>almenys una</strong> mitjana és diferent.</li>
+</ul>
+</section>
+<section id="dues-fonts-de-variació" class="level2">
+<h2 class="anchored" data-anchor-id="dues-fonts-de-variació">2. Dues fonts de variació</h2>
+<p>Els ingressos varien d’una persona a una altra. Una part d’aquesta variació s’explica pel <strong>grup</strong> (els que tenen estudis superiors cobren, de mitjana, més) i una part és variació <strong>dins</strong> de cada grup (no tothom amb estudis superiors cobra el mateix).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mitjana_total <span class="ot">&lt;-</span> <span class="fu">mean</span>(ingressos_estudis<span class="sc">$</span>ingressos)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mitjanes_grup <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(estudis) <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mitjana =</span> <span class="fu">mean</span>(ingressos))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ingressos_estudis, <span class="fu">aes</span>(<span class="at">x =</span> estudis, <span class="at">y =</span> ingressos)) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.15</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus_clar, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> mitjana_total, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_crossbar</span>(<span class="at">data =</span> mitjanes_grup, <span class="fu">aes</span>(<span class="at">y =</span> mitjana, <span class="at">ymin =</span> mitjana, <span class="at">ymax =</span> mitjana),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> bordeus, <span class="at">width =</span> <span class="fl">0.5</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">3.45</span>, <span class="at">y =</span> mitjana_total <span class="sc">+</span> <span class="dv">250</span>, <span class="at">hjust =</span> <span class="dv">1</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"Mitjana total"</span>) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cada punt és una persona"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Línies de color: mitjana de cada grup · Línia discontínua: mitjana total"</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Ingressos mensuals (€)"</span>) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_distribucio_f_fisher_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Variació entre grups</strong>: com d’allunyades estan les <strong>mitjanes de cada grup</strong> (les línies de color) de la <strong>mitjana total</strong> (la línia discontínua).</li>
+<li><strong>Variació dins dels grups</strong>: com d’allunyades estan les <strong>persones</strong> (els punts) de la mitjana del <strong>seu grup</strong>.</li>
+</ul>
+<p>Si <span class="math inline">\(H_0\)</span> fos certa, les mitjanes dels grups estarien a prop de la mitjana total i la variació entre grups seria petita <strong>en comparació amb</strong> la variació dins dels grups.</p>
+</section>
+<section id="calcular-la-f-a-mà" class="level2">
+<h2 class="anchored" data-anchor-id="calcular-la-f-a-mà">3. Calcular la F a mà</h2>
+<p>Per mesurar cada variació, sumem distàncies <strong>al quadrat</strong> (com fèiem amb la variància a la sessió 2):</p>
+<ul>
+<li><strong>Suma de quadrats entre grups</strong>: per a cada grup, <span class="math inline">\((\text{mitjana del grup} - \text{mitjana total})^2\)</span>, multiplicat pel nombre de persones del grup.</li>
+<li><strong>Suma de quadrats dins dels grups</strong>: per a cada persona, <span class="math inline">\((\text{ingressos} - \text{mitjana del seu grup})^2\)</span>.</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dades <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(estudis) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mitjana_grup =</span> <span class="fu">mean</span>(ingressos)) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>sq_entre <span class="ot">&lt;-</span> <span class="fu">sum</span>((dades<span class="sc">$</span>mitjana_grup <span class="sc">-</span> mitjana_total)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>sq_dins  <span class="ot">&lt;-</span> <span class="fu">sum</span>((dades<span class="sc">$</span>ingressos <span class="sc">-</span> dades<span class="sc">$</span>mitjana_grup)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sq_entre =</span> sq_entre, <span class="at">sq_dins =</span> sq_dins)</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> sq_entre   sq_dins 
+ 12892062 401206916 </code></pre>
+</div>
+</div>
+<p>Però no podem comparar-les directament: la suma «dins» suma 300 persones, i la suma «entre», només 3 grups. Per això cada suma es divideix pels seus <strong>graus de llibertat</strong> (gl), i obtenim una <strong>variància mitjana</strong> (<em>mean square</em>, MS):</p>
+<ul>
+<li>Entre grups: <span class="math inline">\(gl = \text{grups} - 1 = 3 - 1 = 2\)</span></li>
+<li>Dins dels grups: <span class="math inline">\(gl = \text{persones} - \text{grups} = 300 - 3 = 297\)</span></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ms_entre <span class="ot">&lt;-</span> sq_entre <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ms_dins  <span class="ot">&lt;-</span> sq_dins <span class="sc">/</span> <span class="dv">297</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>f        <span class="ot">&lt;-</span> ms_entre <span class="sc">/</span> ms_dins</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">ms_entre =</span> ms_entre, <span class="at">ms_dins =</span> ms_dins, <span class="at">F =</span> f)</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    ms_entre      ms_dins            F 
+6.446031e+06 1.350865e+06 4.771780e+00 </code></pre>
+</div>
+</div>
+<p><span class="math display">\[F = \frac{MS_{entre}}{MS_{dins}} = \frac{6.446.031}{1.350.865} = 4,77\]</span></p>
+<p>La variació entre grups és gairebé <strong>5 vegades</strong> més gran que la variació dins dels grups.</p>
+</section>
+<section id="llegir-la-sortida-de-summaryaov" class="level2">
+<h2 class="anchored" data-anchor-id="llegir-la-sortida-de-summaryaov">4. Llegir la sortida de <code>summary(aov())</code></h2>
+<p>Tot el que acabem de calcular és exactament el que mostra R:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">aov</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> ingressos_estudis)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Df    Sum Sq Mean Sq F value  Pr(&gt;F)   
+estudis       2  12892062 6446031   4.772 0.00913 **
+Residuals   297 401206916 1350865                   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 22%">
+<col style="width: 32%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Columna</th>
+<th>Què és</th>
+<th>Fila <code>estudis</code> (entre grups)</th>
+<th>Fila <code>Residuals</code> (dins dels grups)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Df</code></td>
+<td>Graus de llibertat</td>
+<td>grups − 1 = 2</td>
+<td>persones − grups = 297</td>
+</tr>
+<tr class="even">
+<td><code>Sum Sq</code></td>
+<td>Suma de quadrats</td>
+<td>variació entre grups</td>
+<td>variació dins dels grups</td>
+</tr>
+<tr class="odd">
+<td><code>Mean Sq</code></td>
+<td><code>Sum Sq</code> / <code>Df</code></td>
+<td><span class="math inline">\(MS_{entre}\)</span></td>
+<td><span class="math inline">\(MS_{dins}\)</span></td>
+</tr>
+<tr class="even">
+<td><code>F value</code></td>
+<td><span class="math inline">\(MS_{entre} / MS_{dins}\)</span></td>
+<td>l’estadístic F</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>Pr(&gt;F)</code></td>
+<td>El <strong>p-valor</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>En el dia a dia, només cal mirar l’<strong>F</strong> i, sobretot, el <strong>p-valor</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Consell</span>Ho voleu veure en un esquema? (cliqueu)
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../slides/img/anova.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="és-gran-o-petita-aquesta-f" class="level2">
+<h2 class="anchored" data-anchor-id="és-gran-o-petita-aquesta-f">5. És gran o petita, aquesta F?</h2>
+<p>Una F de 4,77, és molt o poc? Per saber-ho, cal saber <strong>quins valors de F surten per atzar</strong> quan <strong>no</strong> hi ha diferències entre grups.</p>
+<p>Ho simulem: agafem les mateixes 300 persones i <strong>barregem a l’atzar</strong> l’etiqueta del nivell d’estudis. Així, per construcció, els estudis ja no tenen <strong>cap relació</strong> amb els ingressos (<span class="math inline">\(H_0\)</span> és certa). Calculem la F de les dades barrejades… i ho repetim <strong>5.000 vegades</strong>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>f_simulades <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, <span class="cf">function</span>(i) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  barrejat <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">estudis =</span> <span class="fu">sample</span>(estudis))     <span class="co"># barregem els estudis a l'atzar</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="fu">aov</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> barrejat))[[<span class="dv">1</span>]]<span class="sc">$</span><span class="st">`</span><span class="at">F value</span><span class="st">`</span>[<span class="dv">1</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">f =</span> f_simulades) <span class="sc">|&gt;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> f)) <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.2</span>, <span class="at">boundary =</span> <span class="dv">0</span>, <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> f, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> f <span class="sc">+</span> <span class="fl">0.15</span>, <span class="at">y =</span> <span class="dv">800</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"La nostra F = "</span>, <span class="fu">num</span>(f, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Valors de F quan NO hi ha diferències entre grups (5.000 simulacions)"</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"F"</span>, <span class="at">y =</span> <span class="st">"Nombre de simulacions"</span>) <span class="sc">+</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_distribucio_f_fisher_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Quan no hi ha diferències entre grups, la F sol ser <strong>petita</strong>, a prop d’1: la variació entre grups és de la mateixa mida que la de dins. Una F com la nostra surt molt poques vegades:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(f_simulades <span class="sc">&gt;=</span> f)   <span class="co"># proporció de simulacions amb una F igual o més gran</span></span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0096</code></pre>
+</div>
+</div>
+<p>Només un 1,0 % de les simulacions. <strong>Això és el p-valor</strong>: la probabilitat de trobar una F com la nostra (o més gran) <strong>si les mitjanes fossin iguals</strong>. Com que és més petit que 0,05, rebutgem <span class="math inline">\(H_0\)</span>.</p>
+</section>
+<section id="aquesta-forma-té-nom-la-distribució-f-de-fisher" class="level2">
+<h2 class="anchored" data-anchor-id="aquesta-forma-té-nom-la-distribució-f-de-fisher">6. Aquesta forma té nom: la distribució F de Fisher</h2>
+<p>No cal simular cada vegada: la forma d’aquest histograma és la <strong>distribució F de Fisher</strong>, que depèn de <strong>dos</strong> graus de llibertat, els de les dues files de la taula de l’ANOVA (aquí, 2 i 297).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">f =</span> f_simulades) <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> f)) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">binwidth =</span> <span class="fl">0.2</span>, <span class="at">boundary =</span> <span class="dv">0</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> df, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">297</span>), <span class="at">color =</span> bordeus,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simulacions (barres) i distribució F amb 2 i 297 graus de llibertat (línia)"</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"F"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_distribucio_f_fisher_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><code>summary(aov())</code> fa servir aquesta corba per calcular el p-valor. La forma canvia segons els graus de llibertat, però sempre és <strong>asimètrica</strong>, amb valors <strong>positius</strong> i la majoria a prop d’1:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">map_dfr</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>), <span class="cf">function</span>(gl1) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">densitat =</span> <span class="fu">df</span>(x, <span class="at">df1 =</span> gl1, <span class="at">df2 =</span> <span class="dv">30</span>),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">gl =</span> <span class="fu">paste0</span>(<span class="st">"gl1 = "</span>, gl1, <span class="st">" ("</span>, gl1 <span class="sc">+</span> <span class="dv">1</span>, <span class="st">" grups), gl2 = 30"</span>))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat, <span class="at">color =</span> gl)) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.2</span>)) <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució F per a diferents graus de llibertat"</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Valor de F"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_distribucio_f_fisher_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="el-valor-crític" class="level2">
+<h2 class="anchored" data-anchor-id="el-valor-crític">7. El valor crític</h2>
+<p>Amb <span class="math inline">\(\alpha = 0{,}05\)</span>, el <strong>valor crític</strong> és el valor de F que només se supera un 5 % de les vegades per atzar. Si la nostra F el supera, rebutgem <span class="math inline">\(H_0\)</span>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>crit_val <span class="ot">&lt;-</span> <span class="fu">qf</span>(<span class="fl">0.95</span>, <span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">297</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>corba <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">7</span>, <span class="at">by =</span> <span class="fl">0.01</span>), <span class="at">densitat =</span> <span class="fu">df</span>(x, <span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">297</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(corba, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat)) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> <span class="fu">filter</span>(corba, x <span class="sc">&gt;</span> crit_val), <span class="at">fill =</span> bordeus_clar) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"#2B2B2B"</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> crit_val, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> f, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_val <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.7</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Valor crític = "</span>, <span class="fu">num</span>(crit_val, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> f <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"La nostra F = "</span>, <span class="fu">num</span>(f, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució F amb 2 i 297 graus de llibertat"</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Zona ombrejada: el 5 % de valors més grans (zona de rebuig)"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"F"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_distribucio_f_fisher_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La nostra F (4,77) és més gran que el valor crític (3,03): cau a la <strong>zona de rebuig</strong>. No tots els nivells d’estudis tenen els mateixos ingressos mitjans. Per saber <strong>quins</strong> grups són diferents, cal la prova de Tukey (<code>TukeyHSD(model)</code>), com hem vist a les slides.</p>
+</section>
+<section id="i-el-t-test" class="level2">
+<h2 class="anchored" data-anchor-id="i-el-t-test">8. I el t-test?</h2>
+<p>Amb <strong>dos</strong> grups, l’ANOVA i el t-test diuen el mateix: la F és el quadrat de la <em>t</em> (<span class="math inline">\(F = t^2\)</span>) i el p-valor és idèntic (si al <code>t.test()</code> hi posem <code>var.equal = TRUE</code>). Per exemple, només amb estudis bàsics i superiors:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dos_grups <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(estudis <span class="sc">!=</span> <span class="st">"Mitjà"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> dos_grups, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>statistic<span class="sc">^</span><span class="dv">2</span>   <span class="co"># t al quadrat</span></span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      t 
+9.48505 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> dos_grups))[[<span class="dv">1</span>]]<span class="sc">$</span><span class="st">`</span><span class="at">F value</span><span class="st">`</span>[<span class="dv">1</span>]       <span class="co"># F de l'ANOVA</span></span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.48505</code></pre>
+</div>
+</div>
+<p>L’ANOVA és, doncs, una generalització del t-test a <strong>més de dos grups</strong>.</p>
+</section>
+<section id="en-resum" class="level2">
+<h2 class="anchored" data-anchor-id="en-resum">En resum</h2>
+<ol type="1">
+<li>L’ANOVA separa la variació en dues parts: <strong>entre</strong> grups i <strong>dins</strong> dels grups.</li>
+<li>La <strong>F</strong> és el quocient entre totes dues: com més gran, més clares són les diferències entre grups.</li>
+<li>Si les mitjanes fossin iguals, la F seria a prop d’1. La <strong>distribució F</strong> ens diu quins valors surten per atzar.</li>
+<li>El <strong>p-valor</strong> és la probabilitat de trobar una F com la nostra (o més gran) per atzar. Si p &lt; 0,05, rebutgem <span class="math inline">\(H_0\)</span> i, amb Tukey, mirem entre quins grups hi ha diferències.</li>
+</ol>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiat!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiat!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/joelardiaca\.github\.io\/estadistica-r-eapc-2026\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Codi font</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "L'ANOVA i la distribució F, pas a pas"</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Sessió 3 · Explicació complementària"</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> true</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE, warning=FALSE, message=FALSE}</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>bordeus      <span class="ot">&lt;-</span> <span class="st">"#6D071A"</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>bordeus_clar <span class="ot">&lt;-</span> <span class="st">"#D8A9B1"</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Números amb coma decimal per al text</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>num <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">d =</span> <span class="dv">1</span>) <span class="fu">format</span>(<span class="fu">round</span>(<span class="fu">unname</span>(x), d), <span class="at">nsmall =</span> d, <span class="at">decimal.mark =</span> <span class="st">","</span>, <span class="at">big.mark =</span> <span class="st">"."</span>)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Què hi trobareu?</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>A les slides hem vist que l'**ANOVA** compara la variació **entre** grups amb la variació **dins** dels grups, i que el quocient entre totes dues és l'estadístic **F**. Aquí veurem, amb el mateix exemple de les slides, **com es calcula** la F, què vol dir cada número de la sortida de `summary(aov())` i **d'on surt** el p-valor. No cal entendre el codi (és plegat): n'hi ha prou de llegir el text i mirar els gràfics.</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. On érem: ingressos segons el nivell d'estudis</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>L'exemple de les slides: ingressos mensuals (dades simulades) de 300 persones amb estudis bàsics, mitjans o superiors, 100 de cada grup.</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>ingressos_estudis <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">estudis =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Bàsic"</span>, <span class="st">"Mitjà"</span>, <span class="st">"Superior"</span>), <span class="at">each =</span> <span class="dv">100</span>),</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>                   <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Bàsic"</span>, <span class="st">"Mitjà"</span>, <span class="st">"Superior"</span>)),</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">ingressos =</span> <span class="fu">c</span>(<span class="fu">rgamma</span>(<span class="dv">100</span>, <span class="at">shape =</span> <span class="fl">2.2</span>, <span class="at">scale =</span> <span class="dv">800</span>),</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>                <span class="fu">rgamma</span>(<span class="dv">100</span>, <span class="at">shape =</span> <span class="fl">2.2</span>, <span class="at">scale =</span> <span class="dv">900</span>),</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>                <span class="fu">rgamma</span>(<span class="dv">100</span>, <span class="at">shape =</span> <span class="fl">2.2</span>, <span class="at">scale =</span> <span class="dv">1000</span>))</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>resum <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(estudis) <span class="sc">|&gt;</span></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>            <span class="at">mitjana =</span> <span class="fu">mean</span>(ingressos),</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>            <span class="at">desv_tipica =</span> <span class="fu">sd</span>(ingressos))</span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>resum</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>Les mitjanes són diferents: de <span class="in">`r num(resum$mitjana[1], 0)`</span> € (bàsics) a <span class="in">`r num(resum$mitjana[3], 0)`</span> € (superiors). La pregunta de l'ANOVA és: **aquestes diferències, podrien ser fruit de l'atzar?**</span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$H_0$: les tres mitjanes són **iguals** a la població; les diferències de la mostra són casualitat.</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$H_1$: **almenys una** mitjana és diferent.</span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Dues fonts de variació</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>Els ingressos varien d'una persona a una altra. Una part d'aquesta variació s'explica pel **grup** (els que tenen estudis superiors cobren, de mitjana, més) i una part és variació **dins** de cada grup (no tothom amb estudis superiors cobra el mateix).</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>mitjana_total <span class="ot">&lt;-</span> <span class="fu">mean</span>(ingressos_estudis<span class="sc">$</span>ingressos)</span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a>mitjanes_grup <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(estudis) <span class="sc">|&gt;</span></span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mitjana =</span> <span class="fu">mean</span>(ingressos))</span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ingressos_estudis, <span class="fu">aes</span>(<span class="at">x =</span> estudis, <span class="at">y =</span> ingressos)) <span class="sc">+</span></span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.15</span>, <span class="at">height =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus_clar, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> mitjana_total, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_crossbar</span>(<span class="at">data =</span> mitjanes_grup, <span class="fu">aes</span>(<span class="at">y =</span> mitjana, <span class="at">ymin =</span> mitjana, <span class="at">ymax =</span> mitjana),</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> bordeus, <span class="at">width =</span> <span class="fl">0.5</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">3.45</span>, <span class="at">y =</span> mitjana_total <span class="sc">+</span> <span class="dv">250</span>, <span class="at">hjust =</span> <span class="dv">1</span>,</span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"Mitjana total"</span>) <span class="sc">+</span></span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Cada punt és una persona"</span>,</span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Línies de color: mitjana de cada grup · Línia discontínua: mitjana total"</span>,</span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Ingressos mensuals (€)"</span>) <span class="sc">+</span></span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Variació entre grups**: com d'allunyades estan les **mitjanes de cada grup** (les línies de color) de la **mitjana total** (la línia discontínua).</span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Variació dins dels grups**: com d'allunyades estan les **persones** (els punts) de la mitjana del **seu grup**.</span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a>Si $H_0$ fos certa, les mitjanes dels grups estarien a prop de la mitjana total i la variació entre grups seria petita **en comparació amb** la variació dins dels grups.</span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. Calcular la F a mà</span></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a>Per mesurar cada variació, sumem distàncies **al quadrat** (com fèiem amb la variància a la sessió 2):</span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Suma de quadrats entre grups**: per a cada grup, $(\text{mitjana del grup} - \text{mitjana total})^2$, multiplicat pel nombre de persones del grup.</span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Suma de quadrats dins dels grups**: per a cada persona, $(\text{ingressos} - \text{mitjana del seu grup})^2$.</span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a>dades <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(estudis) <span class="sc">|&gt;</span></span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">mitjana_grup =</span> <span class="fu">mean</span>(ingressos)) <span class="sc">|&gt;</span></span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a>sq_entre <span class="ot">&lt;-</span> <span class="fu">sum</span>((dades<span class="sc">$</span>mitjana_grup <span class="sc">-</span> mitjana_total)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a>sq_dins  <span class="ot">&lt;-</span> <span class="fu">sum</span>((dades<span class="sc">$</span>ingressos <span class="sc">-</span> dades<span class="sc">$</span>mitjana_grup)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb20-102"><a href="#cb20-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-103"><a href="#cb20-103" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sq_entre =</span> sq_entre, <span class="at">sq_dins =</span> sq_dins)</span>
+<span id="cb20-104"><a href="#cb20-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-105"><a href="#cb20-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-106"><a href="#cb20-106" aria-hidden="true" tabindex="-1"></a>Però no podem comparar-les directament: la suma «dins» suma 300 persones, i la suma «entre», només 3 grups. Per això cada suma es divideix pels seus **graus de llibertat** (gl), i obtenim una **variància mitjana** (*mean square*, MS):</span>
+<span id="cb20-107"><a href="#cb20-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-108"><a href="#cb20-108" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Entre grups: $gl = \text{grups} - 1 = 3 - 1 = 2$</span>
+<span id="cb20-109"><a href="#cb20-109" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Dins dels grups: $gl = \text{persones} - \text{grups} = 300 - 3 = 297$</span>
+<span id="cb20-110"><a href="#cb20-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-113"><a href="#cb20-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-114"><a href="#cb20-114" aria-hidden="true" tabindex="-1"></a>ms_entre <span class="ot">&lt;-</span> sq_entre <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb20-115"><a href="#cb20-115" aria-hidden="true" tabindex="-1"></a>ms_dins  <span class="ot">&lt;-</span> sq_dins <span class="sc">/</span> <span class="dv">297</span></span>
+<span id="cb20-116"><a href="#cb20-116" aria-hidden="true" tabindex="-1"></a>f        <span class="ot">&lt;-</span> ms_entre <span class="sc">/</span> ms_dins</span>
+<span id="cb20-117"><a href="#cb20-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-118"><a href="#cb20-118" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">ms_entre =</span> ms_entre, <span class="at">ms_dins =</span> ms_dins, <span class="at">F =</span> f)</span>
+<span id="cb20-119"><a href="#cb20-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-120"><a href="#cb20-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-121"><a href="#cb20-121" aria-hidden="true" tabindex="-1"></a>$$F = \frac{MS_{entre}}{MS_{dins}} = \frac{<span class="in">`r format(round(ms_entre), big.mark = ".", decimal.mark = ",")`</span>}{<span class="in">`r format(round(ms_dins), big.mark = ".", decimal.mark = ",")`</span>} = <span class="in">`r format(round(f, 2), decimal.mark = ",")`</span>$$</span>
+<span id="cb20-122"><a href="#cb20-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-123"><a href="#cb20-123" aria-hidden="true" tabindex="-1"></a>La variació entre grups és gairebé **5 vegades** més gran que la variació dins dels grups.</span>
+<span id="cb20-124"><a href="#cb20-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-125"><a href="#cb20-125" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. Llegir la sortida de `summary(aov())`</span></span>
+<span id="cb20-126"><a href="#cb20-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-127"><a href="#cb20-127" aria-hidden="true" tabindex="-1"></a>Tot el que acabem de calcular és exactament el que mostra R:</span>
+<span id="cb20-128"><a href="#cb20-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-131"><a href="#cb20-131" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-132"><a href="#cb20-132" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">aov</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> ingressos_estudis)</span>
+<span id="cb20-133"><a href="#cb20-133" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span>
+<span id="cb20-134"><a href="#cb20-134" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-135"><a href="#cb20-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-136"><a href="#cb20-136" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Columna <span class="pp">|</span> Què és <span class="pp">|</span> Fila <span class="in">`estudis`</span> (entre grups) <span class="pp">|</span> Fila <span class="in">`Residuals`</span> (dins dels grups) <span class="pp">|</span></span>
+<span id="cb20-137"><a href="#cb20-137" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb20-138"><a href="#cb20-138" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Df`</span> <span class="pp">|</span> Graus de llibertat <span class="pp">|</span> grups − 1 = 2 <span class="pp">|</span> persones − grups = 297 <span class="pp">|</span></span>
+<span id="cb20-139"><a href="#cb20-139" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Sum Sq`</span> <span class="pp">|</span> Suma de quadrats <span class="pp">|</span> variació entre grups <span class="pp">|</span> variació dins dels grups <span class="pp">|</span></span>
+<span id="cb20-140"><a href="#cb20-140" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Mean Sq`</span> <span class="pp">|</span> <span class="in">`Sum Sq`</span> / <span class="in">`Df`</span> <span class="pp">|</span> $MS_{entre}$ <span class="pp">|</span> $MS_{dins}$ <span class="pp">|</span></span>
+<span id="cb20-141"><a href="#cb20-141" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`F value`</span> <span class="pp">|</span> $MS_{entre} / MS_{dins}$ <span class="pp">|</span> l'estadístic F <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb20-142"><a href="#cb20-142" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Pr(&gt;F)`</span> <span class="pp">|</span> El **p-valor** <span class="pp">|</span> <span class="pp">|</span> <span class="pp">|</span></span>
+<span id="cb20-143"><a href="#cb20-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-144"><a href="#cb20-144" aria-hidden="true" tabindex="-1"></a>: {tbl-colwidths="<span class="co">[</span><span class="ot">13,22,32,33</span><span class="co">]</span>"}</span>
+<span id="cb20-145"><a href="#cb20-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-146"><a href="#cb20-146" aria-hidden="true" tabindex="-1"></a>En el dia a dia, només cal mirar l'**F** i, sobretot, el **p-valor**.</span>
+<span id="cb20-147"><a href="#cb20-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-148"><a href="#cb20-148" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true"}</span>
+<span id="cb20-149"><a href="#cb20-149" aria-hidden="true" tabindex="-1"></a><span class="fu">## Ho voleu veure en un esquema? (cliqueu)</span></span>
+<span id="cb20-150"><a href="#cb20-150" aria-hidden="true" tabindex="-1"></a><span class="al">![](../slides/img/anova.jpg)</span>{fig-align="center" width="100%"}</span>
+<span id="cb20-151"><a href="#cb20-151" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb20-152"><a href="#cb20-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-153"><a href="#cb20-153" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. És gran o petita, aquesta F?</span></span>
+<span id="cb20-154"><a href="#cb20-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-155"><a href="#cb20-155" aria-hidden="true" tabindex="-1"></a>Una F de <span class="in">`r format(round(f, 2), decimal.mark = ",")`</span>, és molt o poc? Per saber-ho, cal saber **quins valors de F surten per atzar** quan **no** hi ha diferències entre grups.</span>
+<span id="cb20-156"><a href="#cb20-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-157"><a href="#cb20-157" aria-hidden="true" tabindex="-1"></a>Ho simulem: agafem les mateixes 300 persones i **barregem a l'atzar** l'etiqueta del nivell d'estudis. Així, per construcció, els estudis ja no tenen **cap relació** amb els ingressos ($H_0$ és certa). Calculem la F de les dades barrejades... i ho repetim **5.000 vegades**.</span>
+<span id="cb20-158"><a href="#cb20-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-161"><a href="#cb20-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-162"><a href="#cb20-162" aria-hidden="true" tabindex="-1"></a>f_simulades <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, <span class="cf">function</span>(i) {</span>
+<span id="cb20-163"><a href="#cb20-163" aria-hidden="true" tabindex="-1"></a>  barrejat <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb20-164"><a href="#cb20-164" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">estudis =</span> <span class="fu">sample</span>(estudis))     <span class="co"># barregem els estudis a l'atzar</span></span>
+<span id="cb20-165"><a href="#cb20-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>(<span class="fu">aov</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> barrejat))[[<span class="dv">1</span>]]<span class="sc">$</span><span class="st">`</span><span class="at">F value</span><span class="st">`</span>[<span class="dv">1</span>]</span>
+<span id="cb20-166"><a href="#cb20-166" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb20-167"><a href="#cb20-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-168"><a href="#cb20-168" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">f =</span> f_simulades) <span class="sc">|&gt;</span></span>
+<span id="cb20-169"><a href="#cb20-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> f)) <span class="sc">+</span></span>
+<span id="cb20-170"><a href="#cb20-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.2</span>, <span class="at">boundary =</span> <span class="dv">0</span>, <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb20-171"><a href="#cb20-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> f, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb20-172"><a href="#cb20-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> f <span class="sc">+</span> <span class="fl">0.15</span>, <span class="at">y =</span> <span class="dv">800</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb20-173"><a href="#cb20-173" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"La nostra F = "</span>, <span class="fu">num</span>(f, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb20-174"><a href="#cb20-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Valors de F quan NO hi ha diferències entre grups (5.000 simulacions)"</span>,</span>
+<span id="cb20-175"><a href="#cb20-175" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"F"</span>, <span class="at">y =</span> <span class="st">"Nombre de simulacions"</span>) <span class="sc">+</span></span>
+<span id="cb20-176"><a href="#cb20-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb20-177"><a href="#cb20-177" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-178"><a href="#cb20-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-179"><a href="#cb20-179" aria-hidden="true" tabindex="-1"></a>Quan no hi ha diferències entre grups, la F sol ser **petita**, a prop d'1: la variació entre grups és de la mateixa mida que la de dins. Una F com la nostra surt molt poques vegades:</span>
+<span id="cb20-180"><a href="#cb20-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-183"><a href="#cb20-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-184"><a href="#cb20-184" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(f_simulades <span class="sc">&gt;=</span> f)   <span class="co"># proporció de simulacions amb una F igual o més gran</span></span>
+<span id="cb20-185"><a href="#cb20-185" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-186"><a href="#cb20-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-187"><a href="#cb20-187" aria-hidden="true" tabindex="-1"></a>Només un <span class="in">`r num(mean(f_simulades &gt;= f) * 100, 1)`</span> % de les simulacions. **Això és el p-valor**: la probabilitat de trobar una F com la nostra (o més gran) **si les mitjanes fossin iguals**. Com que és més petit que 0,05, rebutgem $H_0$.</span>
+<span id="cb20-188"><a href="#cb20-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-189"><a href="#cb20-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6. Aquesta forma té nom: la distribució F de Fisher</span></span>
+<span id="cb20-190"><a href="#cb20-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-191"><a href="#cb20-191" aria-hidden="true" tabindex="-1"></a>No cal simular cada vegada: la forma d'aquest histograma és la **distribució F de Fisher**, que depèn de **dos** graus de llibertat, els de les dues files de la taula de l'ANOVA (aquí, 2 i 297).</span>
+<span id="cb20-192"><a href="#cb20-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-195"><a href="#cb20-195" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-196"><a href="#cb20-196" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">f =</span> f_simulades) <span class="sc">|&gt;</span></span>
+<span id="cb20-197"><a href="#cb20-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> f)) <span class="sc">+</span></span>
+<span id="cb20-198"><a href="#cb20-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">binwidth =</span> <span class="fl">0.2</span>, <span class="at">boundary =</span> <span class="dv">0</span>,</span>
+<span id="cb20-199"><a href="#cb20-199" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb20-200"><a href="#cb20-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> df, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">297</span>), <span class="at">color =</span> bordeus,</span>
+<span id="cb20-201"><a href="#cb20-201" aria-hidden="true" tabindex="-1"></a>                <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb20-202"><a href="#cb20-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb20-203"><a href="#cb20-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simulacions (barres) i distribució F amb 2 i 297 graus de llibertat (línia)"</span>,</span>
+<span id="cb20-204"><a href="#cb20-204" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"F"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb20-205"><a href="#cb20-205" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb20-206"><a href="#cb20-206" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-207"><a href="#cb20-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-208"><a href="#cb20-208" aria-hidden="true" tabindex="-1"></a><span class="in">`summary(aov())`</span> fa servir aquesta corba per calcular el p-valor. La forma canvia segons els graus de llibertat, però sempre és **asimètrica**, amb valors **positius** i la majoria a prop d'1:</span>
+<span id="cb20-209"><a href="#cb20-209" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-212"><a href="#cb20-212" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-213"><a href="#cb20-213" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">5</span>, <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb20-214"><a href="#cb20-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-215"><a href="#cb20-215" aria-hidden="true" tabindex="-1"></a><span class="fu">map_dfr</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>), <span class="cf">function</span>(gl1) {</span>
+<span id="cb20-216"><a href="#cb20-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> x, <span class="at">densitat =</span> <span class="fu">df</span>(x, <span class="at">df1 =</span> gl1, <span class="at">df2 =</span> <span class="dv">30</span>),</span>
+<span id="cb20-217"><a href="#cb20-217" aria-hidden="true" tabindex="-1"></a>         <span class="at">gl =</span> <span class="fu">paste0</span>(<span class="st">"gl1 = "</span>, gl1, <span class="st">" ("</span>, gl1 <span class="sc">+</span> <span class="dv">1</span>, <span class="st">" grups), gl2 = 30"</span>))</span>
+<span id="cb20-218"><a href="#cb20-218" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb20-219"><a href="#cb20-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat, <span class="at">color =</span> gl)) <span class="sc">+</span></span>
+<span id="cb20-220"><a href="#cb20-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb20-221"><a href="#cb20-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.2</span>)) <span class="sc">+</span></span>
+<span id="cb20-222"><a href="#cb20-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució F per a diferents graus de llibertat"</span>,</span>
+<span id="cb20-223"><a href="#cb20-223" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Valor de F"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb20-224"><a href="#cb20-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb20-225"><a href="#cb20-225" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-226"><a href="#cb20-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-227"><a href="#cb20-227" aria-hidden="true" tabindex="-1"></a><span class="fu">## 7. El valor crític</span></span>
+<span id="cb20-228"><a href="#cb20-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-229"><a href="#cb20-229" aria-hidden="true" tabindex="-1"></a>Amb $\alpha = 0{,}05$, el **valor crític** és el valor de F que només se supera un 5 % de les vegades per atzar. Si la nostra F el supera, rebutgem $H_0$.</span>
+<span id="cb20-230"><a href="#cb20-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-231"><a href="#cb20-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r warning=FALSE}</span></span>
+<span id="cb20-232"><a href="#cb20-232" aria-hidden="true" tabindex="-1"></a>crit_val <span class="ot">&lt;-</span> <span class="fu">qf</span>(<span class="fl">0.95</span>, <span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">297</span>)</span>
+<span id="cb20-233"><a href="#cb20-233" aria-hidden="true" tabindex="-1"></a>corba <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">7</span>, <span class="at">by =</span> <span class="fl">0.01</span>), <span class="at">densitat =</span> <span class="fu">df</span>(x, <span class="at">df1 =</span> <span class="dv">2</span>, <span class="at">df2 =</span> <span class="dv">297</span>))</span>
+<span id="cb20-234"><a href="#cb20-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-235"><a href="#cb20-235" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(corba, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat)) <span class="sc">+</span></span>
+<span id="cb20-236"><a href="#cb20-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> <span class="fu">filter</span>(corba, x <span class="sc">&gt;</span> crit_val), <span class="at">fill =</span> bordeus_clar) <span class="sc">+</span></span>
+<span id="cb20-237"><a href="#cb20-237" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"#2B2B2B"</span>) <span class="sc">+</span></span>
+<span id="cb20-238"><a href="#cb20-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> crit_val, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb20-239"><a href="#cb20-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> f, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb20-240"><a href="#cb20-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_val <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.7</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb20-241"><a href="#cb20-241" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Valor crític = "</span>, <span class="fu">num</span>(crit_val, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb20-242"><a href="#cb20-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> f <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb20-243"><a href="#cb20-243" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"La nostra F = "</span>, <span class="fu">num</span>(f, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb20-244"><a href="#cb20-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució F amb 2 i 297 graus de llibertat"</span>,</span>
+<span id="cb20-245"><a href="#cb20-245" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Zona ombrejada: el 5 % de valors més grans (zona de rebuig)"</span>,</span>
+<span id="cb20-246"><a href="#cb20-246" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"F"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb20-247"><a href="#cb20-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb20-248"><a href="#cb20-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-249"><a href="#cb20-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-250"><a href="#cb20-250" aria-hidden="true" tabindex="-1"></a>La nostra F (<span class="in">`r num(f, 2)`</span>) és més gran que el valor crític (<span class="in">`r num(crit_val, 2)`</span>): cau a la **zona de rebuig**. No tots els nivells d'estudis tenen els mateixos ingressos mitjans. Per saber **quins** grups són diferents, cal la prova de Tukey (<span class="in">`TukeyHSD(model)`</span>), com hem vist a les slides.</span>
+<span id="cb20-251"><a href="#cb20-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-252"><a href="#cb20-252" aria-hidden="true" tabindex="-1"></a><span class="fu">## 8. I el t-test?</span></span>
+<span id="cb20-253"><a href="#cb20-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-254"><a href="#cb20-254" aria-hidden="true" tabindex="-1"></a>Amb **dos** grups, l'ANOVA i el t-test diuen el mateix: la F és el quadrat de la *t* ($F = t^2$) i el p-valor és idèntic (si al <span class="in">`t.test()`</span> hi posem <span class="in">`var.equal = TRUE`</span>). Per exemple, només amb estudis bàsics i superiors:</span>
+<span id="cb20-255"><a href="#cb20-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-258"><a href="#cb20-258" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb20-259"><a href="#cb20-259" aria-hidden="true" tabindex="-1"></a>dos_grups <span class="ot">&lt;-</span> ingressos_estudis <span class="sc">|&gt;</span></span>
+<span id="cb20-260"><a href="#cb20-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(estudis <span class="sc">!=</span> <span class="st">"Mitjà"</span>)</span>
+<span id="cb20-261"><a href="#cb20-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-262"><a href="#cb20-262" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> dos_grups, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>statistic<span class="sc">^</span><span class="dv">2</span>   <span class="co"># t al quadrat</span></span>
+<span id="cb20-263"><a href="#cb20-263" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">aov</span>(ingressos <span class="sc">~</span> estudis, <span class="at">data =</span> dos_grups))[[<span class="dv">1</span>]]<span class="sc">$</span><span class="st">`</span><span class="at">F value</span><span class="st">`</span>[<span class="dv">1</span>]       <span class="co"># F de l'ANOVA</span></span>
+<span id="cb20-264"><a href="#cb20-264" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb20-265"><a href="#cb20-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-266"><a href="#cb20-266" aria-hidden="true" tabindex="-1"></a>L'ANOVA és, doncs, una generalització del t-test a **més de dos grups**.</span>
+<span id="cb20-267"><a href="#cb20-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-268"><a href="#cb20-268" aria-hidden="true" tabindex="-1"></a><span class="fu">## En resum</span></span>
+<span id="cb20-269"><a href="#cb20-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-270"><a href="#cb20-270" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>L'ANOVA separa la variació en dues parts: **entre** grups i **dins** dels grups.</span>
+<span id="cb20-271"><a href="#cb20-271" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>La **F** és el quocient entre totes dues: com més gran, més clares són les diferències entre grups.</span>
+<span id="cb20-272"><a href="#cb20-272" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Si les mitjanes fossin iguals, la F seria a prop d'1. La **distribució F** ens diu quins valors surten per atzar.</span>
+<span id="cb20-273"><a href="#cb20-273" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>El **p-valor** és la probabilitat de trobar una F com la nostra (o més gran) per atzar. Si p &lt; 0,05, rebutgem $H_0$ i, amb Tukey, mirem entre quins grups hi ha diferències.</span>
+</code></pre></div><button title="Copia al porta-retalls" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Joel Ardiaca · Centre d’Estudis d’Opinió · EAPC 2026</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Materials amb llicència <a href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a> · Codi amb llicència MIT</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

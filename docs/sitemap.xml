@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/explicacions/tutorial_ggplot2_bivariada.html</loc>
+    <lastmod>2026-10-28T14:21:58.425Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/explicacions/03_distribucio_f_fisher.html</loc>
+    <lastmod>2026-10-28T14:18:52.028Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/explicacions/01_distribucio_khi_quadrat.html</loc>
+    <lastmod>2026-10-28T14:18:26.712Z</lastmod>
+  </url>
+  <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/tutorial_ggplot2.html</loc>
     <lastmod>2026-10-26T14:31:39.357Z</lastmod>
   </url>
@@ -46,7 +58,7 @@
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/index.html</loc>
-    <lastmod>2026-10-16T10:35:44.168Z</lastmod>
+    <lastmod>2026-10-29T07:41:03.037Z</lastmod>
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-1/slides/sessio_1.html</loc>
@@ -67,5 +79,17 @@
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/explicacions/06_binomial_aproximacio_normal.html</loc>
     <lastmod>2026-10-26T14:32:18.494Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/slides/sessio_3.html</loc>
+    <lastmod>2026-10-28T13:48:28.992Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/explicacions/02_v_cramer.html</loc>
+    <lastmod>2026-10-28T13:48:51.344Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/explicacions/04_proves_normalitat.html</loc>
+    <lastmod>2026-10-28T14:18:53.052Z</lastmod>
   </url>
 </urlset>

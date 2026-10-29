@@ -1,0 +1,237 @@
+"PAIS";"CONTINENT";"ESP_VIDA";"Year"
+"Afghanistan";"Asia";66,0346;2023
+"Albania";"Europe";79,6019;2023
+"Algeria";"Africa";76,261;2023
+"American Samoa";"Oceania";72,8518;2023
+"Andorra";"Europe";84,0406;2023
+"Angola";"Africa";64,617;2023
+"Anguilla";"Americas";79,3115;2023
+"Antigua and Barbuda";"Americas";77,5976;2023
+"Argentina";"Americas";77,3947;2023
+"Armenia";"Asia";75,6827;2023
+"Aruba";"Americas";76,353;2023
+"Australia";"Oceania";83,9228;2023
+"Austria";"Europe";81,9559;2023
+"Azerbaijan";"Asia";74,4286;2023
+"Bahamas";"Americas";74,5518;2023
+"Bahrain";"Asia";81,2835;2023
+"Bangladesh";"Asia";74,6723;2023
+"Barbados";"Americas";76,1782;2023
+"Belarus";"Europe";74,4339;2023
+"Belgium";"Europe";82,115;2023
+"Belize";"Americas";73,5656;2023
+"Benin";"Africa";60,7738;2023
+"Bermuda";"Americas";82,3089;2023
+"Bhutan";"Asia";72,9753;2023
+"Bolivia";"Americas";68,5814;2023
+"Bonaire Sint Eustatius and Saba";"Americas";77,4355;2023
+"Bosnia and Herzegovina";"Europe";77,8504;2023
+"Botswana";"Africa";69,1631;2023
+"Brazil";"Americas";75,8482;2023
+"British Virgin Islands";"Americas";77,2758;2023
+"Brunei";"Asia";75,3266;2023
+"Bulgaria";"Europe";75,6363;2023
+"Burkina Faso";"Africa";61,092;2023
+"Burundi";"Africa";63,6511;2023
+"Cambodia";"Asia";70,6675;2023
+"Cameroon";"Africa";63,6996;2023
+"Canada";"Americas";82,6302;2023
+"Cape Verde";"Africa";76,0587;2023
+"Cayman Islands";"Americas";80,3576;2023
+"Central African Republic";"Africa";57,4077;2023
+"Chad";"Africa";55,0692;2023
+"Chile";"Americas";81,1667;2023
+"China";"Asia";77,9529;2023
+"Colombia";"Americas";77,7246;2023
+"Comoros";"Africa";66,7768;2023
+"Congo";"Africa";65,772;2023
+"Cook Islands";"Oceania";75,2818;2023
+"Costa Rica";"Americas";80,7995;2023
+"Cote d'Ivoire";"Africa";61,9438;2023
+"Croatia";"Europe";78,5803;2023
+"Cuba";"Americas";78,0855;2023
+"Curacao";"Americas";76,7996;2023
+"Cyprus";"Asia";81,648;2023
+"Czechia";"Europe";79,8341;2023
+"Democratic Republic of Congo";"Africa";61,895;2023
+"Denmark";"Europe";81,9328;2023
+"Djibouti";"Africa";65,9865;2023
+"Dominica";"Americas";71,1325;2023
+"Dominican Republic";"Americas";73,7201;2023
+"East Timor";"Asia";67,6894;2023
+"Ecuador";"Americas";77,3924;2023
+"Egypt";"Africa";71,6335;2023
+"El Salvador";"Americas";72,0993;2023
+"Equatorial Guinea";"Africa";63,7071;2023
+"Eritrea";"Africa";68,6239;2023
+"Estonia";"Europe";79,1535;2023
+"Eswatini";"Africa";64,1227;2023
+"Ethiopia";"Africa";67,315;2023
+"Falkland Islands";"Americas";79,2132;2023
+"Faroe Islands";"Europe";80,1792;2023
+"Fiji";"Oceania";67,3157;2023
+"Finland";"Europe";81,9102;2023
+"France";"Europe";83,3253;2023
+"French Guiana";"Americas";76,9781;2023
+"French Polynesia";"Oceania";84,0698;2023
+"Gabon";"Africa";68,3367;2023
+"Gambia";"Africa";65,8603;2023
+"Georgia";"Asia";74,4965;2023
+"Germany";"Europe";81,3777;2023
+"Ghana";"Africa";65,4979;2023
+"Gibraltar";"Europe";83,553;2023
+"Greece";"Europe";81,8568;2023
+"Greenland";"Americas";70,055;2023
+"Grenada";"Americas";75,2052;2023
+"Guadeloupe";"Americas";82,0503;2023
+"Guam";"Oceania";77,2093;2023
+"Guatemala";"Americas";72,6023;2023
+"Guernsey";"Europe";83,2744;2023
+"Guinea";"Africa";60,7405;2023
+"Guinea-Bissau";"Africa";64,0849;2023
+"Guyana";"Americas";70,1802;2023
+"Haiti";"Americas";64,9356;2023
+"Honduras";"Americas";72,8842;2023
+"Hong Kong";"Asia";85,5106;2023
+"Hungary";"Europe";77,024;2023
+"Iceland";"Europe";82,6911;2023
+"India";"Asia";72,0026;2023
+"Indonesia";"Asia";71,1457;2023
+"Iran";"Asia";77,6545;2023
+"Iraq";"Asia";72,3242;2023
+"Ireland";"Europe";82,4118;2023
+"Isle of Man";"Europe";80,999;2023
+"Israel";"Asia";82,408;2023
+"Italy";"Europe";83,7157;2023
+"Jamaica";"Americas";71,4789;2023
+"Japan";"Asia";84,7123;2023
+"Jersey";"Europe";79,7071;2023
+"Jordan";"Asia";77,8145;2023
+"Kazakhstan";"Asia";74,4021;2023
+"Kenya";"Africa";63,6459;2023
+"Kiribati";"Oceania";66,4731;2023
+"Kuwait";"Asia";80,4047;2023
+"Kyrgyzstan";"Asia";71,677;2023
+"Laos";"Asia";68,9637;2023
+"Latvia";"Europe";76,1898;2023
+"Lebanon";"Asia";77,817;2023
+"Lesotho";"Africa";57,3749;2023
+"Liberia";"Africa";62,1625;2023
+"Libya";"Africa";69,3389;2023
+"Liechtenstein";"Europe";83,6298;2023
+"Lithuania";"Europe";76,025;2023
+"Luxembourg";"Europe";82,2294;2023
+"Macao";"Asia";83,0749;2023
+"Madagascar";"Africa";63,6317;2023
+"Malawi";"Africa";67,3535;2023
+"Malaysia";"Asia";76,6571;2023
+"Maldives";"Asia";81,0412;2023
+"Mali";"Africa";60,4394;2023
+"Malta";"Europe";83,2989;2023
+"Marshall Islands";"Oceania";66,9454;2023
+"Martinique";"Americas";82,5651;2023
+"Mauritania";"Africa";68,4836;2023
+"Mauritius";"Africa";74,9263;2023
+"Mayotte";"Africa";76,0544;2023
+"Mexico";"Americas";75,069;2023
+"Micronesia (country)";"Oceania";67,1983;2023
+"Moldova";"Europe";71,1985;2023
+"Monaco";"Europe";86,3724;2023
+"Mongolia";"Asia";71,7341;2023
+"Montenegro";"Europe";77,0869;2023
+"Montserrat";"Americas";76,1857;2023
+"Morocco";"Africa";75,3128;2023
+"Mozambique";"Africa";63,6111;2023
+"Myanmar";"Asia";66,889;2023
+"Namibia";"Africa";67,3848;2023
+"Nauru";"Oceania";62,1094;2023
+"Nepal";"Asia";70,3537;2023
+"Netherlands";"Europe";82,1576;2023
+"New Caledonia";"Oceania";78,7658;2023
+"New Zealand";"Oceania";82,088;2023
+"Nicaragua";"Americas";74,9468;2023
+"Niger";"Africa";61,1833;2023
+"Nigeria";"Africa";54,4623;2023
+"Niue";"Oceania";69,9778;2023
+"North Korea";"Asia";73,6418;2023
+"North Macedonia";"Europe";77,3947;2023
+"Northern Mariana Islands";"Oceania";78,8075;2023
+"Norway";"Europe";83,3078;2023
+"Oman";"Asia";80,0305;2023
+"Pakistan";"Asia";67,649;2023
+"Palau";"Oceania";69,269;2023
+"Palestine";"Asia";65,1703;2023
+"Panama";"Americas";79,5937;2023
+"Papua New Guinea";"Oceania";66,134;2023
+"Paraguay";"Americas";73,8443;2023
+"Peru";"Americas";77,7401;2023
+"Philippines";"Asia";69,8327;2023
+"Poland";"Europe";78,6329;2023
+"Portugal";"Europe";82,3599;2023
+"Puerto Rico";"Americas";81,6902;2023
+"Qatar";"Asia";82,368;2023
+"Reunion";"Africa";83,5472;2023
+"Romania";"Europe";75,9381;2023
+"Russia";"Europe";73,1541;2023
+"Rwanda";"Africa";67,7852;2023
+"Saint Barthelemy";"Americas";84,2901;2023
+"Saint Helena";"Africa";76,7869;2023
+"Saint Kitts and Nevis";"Americas";72,1447;2023
+"Saint Lucia";"Americas";72,6968;2023
+"Saint Martin (French part)";"Americas";80,2238;2023
+"Saint Pierre and Miquelon";"Americas";76,7578;2023
+"Saint Vincent and the Grenadines";"Americas";71,2301;2023
+"Samoa";"Oceania";71,6982;2023
+"San Marino";"Europe";85,7062;2023
+"Sao Tome and Principe";"Africa";69,7182;2023
+"Saudi Arabia";"Asia";78,7321;2023
+"Senegal";"Africa";68,6829;2023
+"Serbia";"Europe";76,7693;2023
+"Seychelles";"Africa";72,862;2023
+"Sierra Leone";"Africa";61,7858;2023
+"Singapore";"Asia";83,7362;2023
+"Sint Maarten (Dutch part)";"Americas";76,371;2023
+"Slovakia";"Europe";78,3414;2023
+"Slovenia";"Europe";81,6034;2023
+"Solomon Islands";"Oceania";70,5277;2023
+"Somalia";"Africa";58,8158;2023
+"South Africa";"Africa";66,1387;2023
+"South Korea";"Asia";84,3288;2023
+"South Sudan";"Africa";57,6174;2023
+"Spain";"Europe";83,6703;2023
+"Sri Lanka";"Asia";77,4828;2023
+"Sudan";"Africa";66,331;2023
+"Suriname";"Americas";73,631;2023
+"Sweden";"Europe";83,2624;2023
+"Switzerland";"Europe";83,9536;2023
+"Syria";"Asia";72,1201;2023
+"Taiwan";"Asia";80,5588;2023
+"Tajikistan";"Asia";71,7901;2023
+"Tanzania";"Africa";66,9953;2023
+"Thailand";"Asia";76,4115;2023
+"Togo";"Africa";62,7387;2023
+"Tokelau";"Oceania";77,0512;2023
+"Tonga";"Oceania";72,8947;2023
+"Trinidad and Tobago";"Americas";73,4896;2023
+"Tunisia";"Africa";76,5077;2023
+"Turkey";"Asia";77,1557;2023
+"Turkmenistan";"Asia";70,0727;2023
+"Turks and Caicos Islands";"Americas";78,0077;2023
+"Tuvalu";"Oceania";67,1049;2023
+"Uganda";"Africa";68,2523;2023
+"Ukraine";"Europe";73,4225;2023
+"United Arab Emirates";"Asia";82,9091;2023
+"United Kingdom";"Europe";81,3015;2023
+"United States";"Americas";79,3043;2023
+"United States Virgin Islands";"Americas";75,4724;2023
+"Uruguay";"Americas";78,1385;2023
+"Uzbekistan";"Asia";72,3884;2023
+"Vanuatu";"Oceania";71,4769;2023
+"Vatican";"Europe";82,9848;2023
+"Venezuela";"Americas";72,5142;2023
+"Vietnam";"Asia";74,5883;2023
+"Wallis and Futuna";"Oceania";78,6286;2023
+"Western Sahara";"Africa";71,385;2023
+"Yemen";"Asia";69,2952;2023
+"Zambia";"Africa";66,3487;2023
+"Zimbabwe";"Africa";62,7748;2023

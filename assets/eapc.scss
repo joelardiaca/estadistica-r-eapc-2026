@@ -153,6 +153,15 @@ $code-block-border-color:    #E2E2E2;
 .reveal pre code { line-height: 1.35; }
 .reveal div.sourceCode { margin: 0.4em 0; }
 .reveal .cell-output pre code { background: #fff; }
+
+// Codi que "creix" línia a línia: cada línia és un fragment i tots junts
+// semblen un sol bloc (::: {.creix} amb un ::: {.fragment} per línia)
+.reveal .creix div.sourceCode,
+.reveal .creix div.sourceCode pre {
+  margin: 0;
+  border-radius: 0;
+}
+.reveal .creix .cell-output { margin-top: 0.5em; }
 .reveal .cell-output-stdout pre,
 .reveal .cell-output pre {
   border-left: 4px solid $gris-mig;

@@ -1,0 +1,97 @@
+---
+title: "Significativa no vol dir forta: la V de Cramér"
+subtitle: "Sessió 3 · Explicació complementària"
+code-fold: true
+code-tools: true
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+
+competencies <- read_csv2("../dades/competencies.csv", show_col_types = FALSE) |>
+  mutate(habitat    = factor(habitat,
+                             levels = c("Fins a 10000", "De 10001 a 100000", "Més de 100000")),
+         nivell_mat = factor(nivell_mat, levels = c("Baix", "Mitjà", "Alt")))
+```
+
+## Dues preguntes diferents
+
+Quan creuem dues variables categòriques, ens podem fer dues preguntes:
+
+1. **L'associació existeix?** És a dir, la diferència que veiem a la mostra, la podem generalitzar a la població, o podria ser fruit de l'atzar? Ho respon el **test $\chi^2$** amb el p-valor.
+2. **L'associació és forta?** És a dir, saber una variable, ens diu molt o poc de l'altra? Ho respon la **V de Cramér**.
+
+No són la mateixa pregunta. El p-valor depèn molt de la **mida de la mostra**: amb mostres molt grans, associacions minúscules surten significatives; amb mostres petites, associacions força clares poden no sortir-ne.
+
+## La fórmula
+
+La V de Cramér parteix del mateix $\chi^2$ del test, però el «corregeix» per la mida de la mostra i de la taula, perquè sempre quedi entre **0** (cap associació) i **1** (associació perfecta):
+
+$$
+V = \sqrt{\frac{\chi^2}{n \cdot (k - 1)}}
+$$
+
+on $n$ és el nombre de casos i $k$, el número més petit entre el nombre de files i el de columnes de la taula (en una taula 2 × 3, $k = 2$).
+
+Una guia orientativa per interpretar-la:
+
+| V | Associació |
+|---|---|
+| 0 – 0,10 | Feble |
+| 0,10 – 0,30 | Moderada |
+| > 0,30 | Forta |
+
+## Exemple: TikTok i sexe
+
+L'exemple de les slides: l'ús de TikTok per sexe entre els joves de menys de 20 anys (enquesta del CEO).
+
+```{r}
+# Les dades: una fila per persona
+tiktok <- tibble(sexe       = c("Home", "Home", "Dona", "Dona"),
+                 usa_tiktok = c("Sí", "No", "Sí", "No"),
+                 n          = c(138, 98, 136, 60)) |>
+  uncount(n)
+
+test <- chisq.test(tiktok$sexe, tiktok$usa_tiktok, correct = FALSE)
+
+chi2 <- unname(test$statistic)   # valor de khi-quadrat
+n    <- nrow(tiktok)             # nombre de casos
+k    <- 2                        # mínim entre files (2) i columnes (2)
+sqrt(chi2 / (n * (k - 1)))       # V de Cramér
+```
+
+L'associació entre el sexe i l'ús de TikTok és **significativa** (p < 0,05), però **feble-moderada** (V ≈ 0,11): hi ha diferència entre nois i noies, però saber el sexe d'una persona no ens diu gaire si fa servir TikTok.
+
+## Amb les dades de la pràctica
+
+Calculem la V de Cramér per al nivell de matemàtiques segons el gènere, la titularitat i l'hàbitat. Per no repetir el càlcul tres vegades, fem una petita funció:
+
+```{r}
+v_cramer <- function(x, y) {
+  chi2 <- unname(chisq.test(x, y, correct = FALSE)$statistic)
+  k    <- min(n_distinct(x), n_distinct(y))
+  sqrt(chi2 / (length(x) * (k - 1)))
+}
+
+tibble(
+  variable = c("genere", "titularitat", "habitat"),
+  p_valor  = c(chisq.test(competencies$genere,      competencies$nivell_mat)$p.value,
+               chisq.test(competencies$titularitat, competencies$nivell_mat)$p.value,
+               chisq.test(competencies$habitat,     competencies$nivell_mat)$p.value),
+  v_cramer = c(v_cramer(competencies$genere,      competencies$nivell_mat),
+               v_cramer(competencies$titularitat, competencies$nivell_mat),
+               v_cramer(competencies$habitat,     competencies$nivell_mat))
+)
+```
+
+- **Gènere**: associació significativa (p < 0,05) i moderada, tot i que a prop del límit de feble.
+- **Titularitat**: V semblant a la del gènere, però **no** significativa (p > 0,05).
+- **Hàbitat**: associació feble i no significativa.
+
+Les tres associacions són de mida semblant (entre feble i moderada). Que una surti significativa i les altres no depèn, en part, de la mida dels grups: amb una mostra més gran, potser la de la titularitat també ho seria.
+
+## En resum
+
+- El **p-valor** respon si l'associació **existeix** a la població.
+- La **V de Cramér** respon si és **forta**.
+- Cal mirar **totes dues** coses (i, sobretot, els **percentatges** de la taula): una associació pot ser significativa però feble, o forta però no significativa en una mostra petita.

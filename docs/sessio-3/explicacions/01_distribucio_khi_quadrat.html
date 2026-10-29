@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ca" xml:lang="ca"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>El test khi-quadrat, pas a pas – Introducció a l’estadística amb R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2e38a2a98391fee9a8937dbccf18c8cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Cap resultat",
+    "search-matching-documents-text": "documents que coincideixen",
+    "search-copy-link-title": "Copia l'enllaç a la cerca",
+    "search-hide-matches-text": "Amaga les coincidències addicionals",
+    "search-more-match-text": "altra coincidència en aquest document",
+    "search-more-matches-text": "altres coincidències en aquest document",
+    "search-clear-button-title": "Neteja",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel·la",
+    "search-submit-button-title": "Envia",
+    "search-label": "Cerca"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../assets/logo_eapc.png" alt="Escola d'Administració Pública de Catalunya" class="navbar-logo light-content">
+    <img src="../../assets/logo_eapc.png" alt="Escola d'Administració Pública de Catalunya" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Introducció a l’estadística amb R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Cerca"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Commuta la navegació" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Inici</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../abans-de-comencar.html"> 
+<span class="menu-text">Abans de començar</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-sessions" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Sessions</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-sessions">    
+        <li>
+    <a class="dropdown-item" href="../../sessio-1/index.html">
+ <span class="dropdown-text">Sessió 1 · Introducció a R i RStudio</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../sessio-2/index.html">
+ <span class="dropdown-text">Sessió 2 · Descriptiva i inferència</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../sessio-3/index.html">
+ <span class="dropdown-text">Sessió 3 · Estadística bivariada</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../sessio-4/index.html">
+ <span class="dropdown-text">Sessió 4 · Correlació i regressió</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../recursos.html"> 
+<span class="menu-text">Recursos</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/joelardiaca/estadistica-r-eapc-2026"> <i class="bi bi-github" role="img" aria-label="Repositori a GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Continguts</h2>
+   
+  <ul>
+  <li><a href="#on-érem-tiktok-i-sexe" id="toc-on-érem-tiktok-i-sexe" class="nav-link active" data-scroll-target="#on-érem-tiktok-i-sexe">1. On érem: TikTok i sexe</a></li>
+  <li><a href="#què-esperaríem-si-no-hi-hagués-associació" id="toc-què-esperaríem-si-no-hi-hagués-associació" class="nav-link" data-scroll-target="#què-esperaríem-si-no-hi-hagués-associació">2. Què esperaríem si no hi hagués associació?</a></li>
+  <li><a href="#calcular-el-chi2-a-mà" id="toc-calcular-el-chi2-a-mà" class="nav-link" data-scroll-target="#calcular-el-chi2-a-mà">3. Calcular el <span class="math inline">\(\chi^2\)</span> a mà</a></li>
+  <li><a href="#és-gran-o-petit-aquest-chi2" id="toc-és-gran-o-petit-aquest-chi2" class="nav-link" data-scroll-target="#és-gran-o-petit-aquest-chi2">4. És gran o petit, aquest <span class="math inline">\(\chi^2\)</span>?</a></li>
+  <li><a href="#aquesta-forma-té-nom-la-distribució-chi2" id="toc-aquesta-forma-té-nom-la-distribució-chi2" class="nav-link" data-scroll-target="#aquesta-forma-té-nom-la-distribució-chi2">5. Aquesta forma té nom: la distribució <span class="math inline">\(\chi^2\)</span></a></li>
+  <li><a href="#els-graus-de-llibertat" id="toc-els-graus-de-llibertat" class="nav-link" data-scroll-target="#els-graus-de-llibertat">6. Els graus de llibertat</a></li>
+  <li><a href="#el-valor-crític" id="toc-el-valor-crític" class="nav-link" data-scroll-target="#el-valor-crític">7. El valor crític</a></li>
+  <li><a href="#en-resum" id="toc-en-resum" class="nav-link" data-scroll-target="#en-resum">En resum</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">El test khi-quadrat, pas a pas</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Codi</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Mostra tot el codi</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Amaga tot el codi</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">Visualitza el codi</a></li></ul></div></div>
+<p class="subtitle lead">Sessió 3 · Explicació complementària</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Què hi trobareu?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A les slides hem vist que el test <span class="math inline">\(\chi^2\)</span> (khi-quadrat) compara la taula <strong>observada</strong> amb la que <strong>esperaríem</strong> si no hi hagués associació, i que R ens dona un <strong>p-valor</strong>. Aquí veurem, pas a pas i amb el mateix exemple, <strong>d’on surt</strong> aquest p-valor. No cal entendre el codi (és plegat): n’hi ha prou de llegir el text i mirar els gràfics.</p>
+</div>
+</div>
+<section id="on-érem-tiktok-i-sexe" class="level2">
+<h2 class="anchored" data-anchor-id="on-érem-tiktok-i-sexe">1. On érem: TikTok i sexe</h2>
+<p>L’exemple de les slides: una enquesta del CEO a joves de menys de 20 anys. Volem saber si l’ús de TikTok (<strong>VD</strong>) té relació amb el sexe (<strong>VI</strong>).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Les dades: una fila per persona</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>tiktok <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sexe       =</span> <span class="fu">c</span>(<span class="st">"Home"</span>, <span class="st">"Home"</span>, <span class="st">"Dona"</span>, <span class="st">"Dona"</span>),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">usa_tiktok =</span> <span class="fu">c</span>(<span class="st">"Sí"</span>, <span class="st">"No"</span>, <span class="st">"Sí"</span>, <span class="st">"No"</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n          =</span> <span class="fu">c</span>(<span class="dv">138</span>, <span class="dv">98</span>, <span class="dv">136</span>, <span class="dv">60</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">uncount</span>(n)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Taula de contingència, amb el percentatge de cada resposta dins de cada sexe</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>tiktok <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(sexe, usa_tiktok) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sexe) <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percentatge =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  sexe  usa_tiktok     n percentatge
+  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt;       &lt;dbl&gt;
+1 Dona  No            60        30.6
+2 Dona  Sí           136        69.4
+3 Home  No            98        41.5
+4 Home  Sí           138        58.5</code></pre>
+</div>
+</div>
+<p>Un 58,5 % dels nois i un 69,4 % de les noies fan servir TikTok: <strong>11 punts</strong> de diferència. La pregunta del test és: <strong>aquesta diferència, podria ser fruit de l’atzar?</strong></p>
+<ul>
+<li><span class="math inline">\(H_0\)</span>: no hi ha associació. Si preguntéssim a <strong>tots</strong> els joves, nois i noies farien servir TikTok <strong>igual</strong>; la diferència de la mostra és casualitat.</li>
+<li><span class="math inline">\(H_1\)</span>: hi ha associació.</li>
+</ul>
+</section>
+<section id="què-esperaríem-si-no-hi-hagués-associació" class="level2">
+<h2 class="anchored" data-anchor-id="què-esperaríem-si-no-hi-hagués-associació">2. Què esperaríem si no hi hagués associació?</h2>
+<p>Si el sexe no tingués res a veure amb TikTok, nois i noies l’usarien en la <strong>mateixa proporció</strong>: la del total, 63,4 % (274 de 432 joves). Per tant, dels 236 nois, n’esperaríem <span class="math inline">\(236 \times 0{,}634 \approx 149{,}7\)</span> usuaris; i de les 196 noies, <span class="math inline">\(196 \times 0{,}634 \approx 124{,}3\)</span>.</p>
+<p>En general, la <strong>freqüència esperada</strong> de cada cel·la és:</p>
+<p><span class="math display">\[E = \frac{\text{total de la fila} \times \text{total de la columna}}{n}\]</span></p>
+<p>Ho calculem per a les quatre cel·les i ho posem al costat de les <strong>observades</strong> (<span class="math inline">\(O\)</span>):</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>taula <span class="ot">&lt;-</span> tiktok <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(sexe, usa_tiktok, <span class="at">name =</span> <span class="st">"O"</span>) <span class="sc">|&gt;</span>        <span class="co"># O: freqüències observades</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sexe) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_sexe =</span> <span class="fu">sum</span>(O)) <span class="sc">|&gt;</span>                <span class="co"># total de cada sexe</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(usa_tiktok) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_tiktok =</span> <span class="fu">sum</span>(O)) <span class="sc">|&gt;</span>              <span class="co"># total de cada resposta</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">E =</span> total_sexe <span class="sc">*</span> total_tiktok <span class="sc">/</span> <span class="fu">sum</span>(O)) <span class="co"># E: freqüències esperades</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>taula <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sexe, usa_tiktok, O, E)</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  sexe  usa_tiktok     O     E
+  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt; &lt;dbl&gt;
+1 Dona  No            60  71.7
+2 Dona  Sí           136 124. 
+3 Home  No            98  86.3
+4 Home  Sí           138 150. </code></pre>
+</div>
+</div>
+<p>Hi ha <strong>menys</strong> nois usuaris (138) dels que esperaríem (149,7), i <strong>més</strong> noies usuàries (136) de les esperades (124,3).</p>
+</section>
+<section id="calcular-el-chi2-a-mà" class="level2">
+<h2 class="anchored" data-anchor-id="calcular-el-chi2-a-mà">3. Calcular el <span class="math inline">\(\chi^2\)</span> a mà</h2>
+<p>El <span class="math inline">\(\chi^2\)</span> resumeix en un sol número com de lluny estan les observades de les esperades. Per a cada cel·la:</p>
+<ol type="1">
+<li>Restem: <span class="math inline">\(O - E\)</span> (quant ens allunyem del que esperaríem)</li>
+<li>Ho elevem al quadrat: <span class="math inline">\((O - E)^2\)</span> (així els valors negatius no anul·len els positius)</li>
+<li>Ho dividim per <span class="math inline">\(E\)</span>: <span class="math inline">\(\frac{(O - E)^2}{E}\)</span> (una diferència de 10 és molt si n’esperàvem 20, però poc si n’esperàvem 2.000)</li>
+</ol>
+<p>I després ho sumem tot:</p>
+<p><span class="math display">\[\chi^2 = \sum \frac{(O - E)^2}{E}\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>taula <span class="ot">&lt;-</span> taula <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diferencia   =</span> O <span class="sc">-</span> E,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">quadrat      =</span> diferencia<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">contribucio  =</span> quadrat <span class="sc">/</span> E)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>taula <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sexe, usa_tiktok, O, E, diferencia, quadrat, contribucio)</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 7
+  sexe  usa_tiktok     O     E diferencia quadrat contribucio
+  &lt;chr&gt; &lt;chr&gt;      &lt;int&gt; &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;
+1 Dona  No            60  71.7      -11.7    137.       1.90 
+2 Dona  Sí           136 124.        11.7    137.       1.10 
+3 Home  No            98  86.3       11.7    137.       1.58 
+4 Home  Sí           138 150.       -11.7    137.       0.912</code></pre>
+</div>
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>chi2_observat <span class="ot">&lt;-</span> <span class="fu">sum</span>(taula<span class="sc">$</span>contribucio)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>chi2_observat</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.497266</code></pre>
+</div>
+</div>
+<p>El nostre <span class="math inline">\(\chi^2\)</span> val <strong>5,50</strong>. És el mateix que dona R (amb <code>correct = FALSE</code>, sense la correcció de Yates que R aplica per defecte a les taules 2 × 2):</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tiktok<span class="sc">$</span>sexe, tiktok<span class="sc">$</span>usa_tiktok, <span class="at">correct =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>statistic</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>X-squared 
+ 5.497266 </code></pre>
+</div>
+</div>
+</section>
+<section id="és-gran-o-petit-aquest-chi2" class="level2">
+<h2 class="anchored" data-anchor-id="és-gran-o-petit-aquest-chi2">4. És gran o petit, aquest <span class="math inline">\(\chi^2\)</span>?</h2>
+<p>Un <span class="math inline">\(\chi^2\)</span> de 5,50, és molt o poc? Per saber-ho, cal saber <strong>quins valors surten per atzar</strong> quan <strong>no</strong> hi ha associació.</p>
+<p>Ho podem simular: agafem les mateixes 432 persones i <strong>barregem a l’atzar</strong> l’etiqueta del sexe, com si repartíssim els sexes amb una baralla de cartes. Així, per construcció, el sexe ja no té <strong>cap relació</strong> amb TikTok (<span class="math inline">\(H_0\)</span> és certa). Calculem el <span class="math inline">\(\chi^2\)</span> d’aquesta taula barrejada… i ho repetim <strong>5.000 vegades</strong>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chi2_simulats <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, <span class="cf">function</span>(i) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  sexe_barrejat <span class="ot">&lt;-</span> <span class="fu">sample</span>(tiktok<span class="sc">$</span>sexe)        <span class="co"># barregem el sexe a l'atzar</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">chisq.test</span>(sexe_barrejat, tiktok<span class="sc">$</span>usa_tiktok, <span class="at">correct =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>statistic</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">chi2 =</span> chi2_simulats) <span class="sc">|&gt;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> chi2)) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">boundary =</span> <span class="dv">0</span>, <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> chi2_observat, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> chi2_observat <span class="sc">+</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="dv">1500</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"El nostre χ² = "</span>, <span class="fu">num</span>(chi2_observat, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Valors de χ² quan NO hi ha associació (5.000 simulacions)"</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"χ²"</span>, <span class="at">y =</span> <span class="st">"Nombre de simulacions"</span>) <span class="sc">+</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_distribucio_khi_quadrat_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Quan no hi ha associació, el <span class="math inline">\(\chi^2\)</span> sol ser <strong>petit</strong>: la majoria de simulacions donen valors entre 0 i 2. Un valor com el nostre surt <strong>molt poques vegades</strong>:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(chi2_simulats <span class="sc">&gt;=</span> chi2_observat)   <span class="co"># proporció de simulacions amb un χ² igual o més gran</span></span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0208</code></pre>
+</div>
+</div>
+<p>Només un 2,1 % de les simulacions dona un <span class="math inline">\(\chi^2\)</span> tan gran com el nostre. <strong>Això és el p-valor</strong>: la probabilitat de trobar una diferència com la nostra (o més gran) <strong>si no hi hagués associació</strong>. Com que és més petit que 0,05, rebutgem <span class="math inline">\(H_0\)</span>.</p>
+</section>
+<section id="aquesta-forma-té-nom-la-distribució-chi2" class="level2">
+<h2 class="anchored" data-anchor-id="aquesta-forma-té-nom-la-distribució-chi2">5. Aquesta forma té nom: la distribució <span class="math inline">\(\chi^2\)</span></h2>
+<p>No cal fer 5.000 simulacions cada vegada: els estadístics ja saben quina forma té aquest histograma. És la <strong>distribució <span class="math inline">\(\chi^2\)</span></strong>. Si la dibuixem a sobre de les simulacions, encaixa:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">chi2 =</span> chi2_simulats) <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> chi2)) <span class="sc">+</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">boundary =</span> <span class="dv">0</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dchisq, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">df =</span> <span class="dv">1</span>), <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.2</span>)) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simulacions (barres) i distribució χ² amb 1 grau de llibertat (línia)"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"χ²"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_distribucio_khi_quadrat_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><code>chisq.test()</code> fa servir aquesta corba per calcular el p-valor, en lloc de simular.</p>
+</section>
+<section id="els-graus-de-llibertat" class="level2">
+<h2 class="anchored" data-anchor-id="els-graus-de-llibertat">6. Els graus de llibertat</h2>
+<p>La forma de la distribució <span class="math inline">\(\chi^2\)</span> depèn dels <strong>graus de llibertat</strong> (gl), que depenen de la <strong>mida de la taula</strong>:</p>
+<p><span class="math display">\[gl = (\text{files} - 1) \times (\text{columnes} - 1)\]</span></p>
+<p>En una taula 2 × 2, <span class="math inline">\(gl = 1 \times 1 = 1\)</span>. Per què? Si sabem els totals de files i columnes, n’hi ha prou de saber <strong>una sola cel·la</strong> per deduir les altres tres: només una cel·la és «lliure».</p>
+<p>Com més gran és la taula, més cel·les sumen al <span class="math inline">\(\chi^2\)</span>, i més grans són els valors que surten <strong>per atzar</strong>. Per això la corba es desplaça cap a la dreta:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gl <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>valors <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="dv">20</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rep</span>(valors, <span class="at">times =</span> <span class="fu">length</span>(gl)),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">gl =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(gl, <span class="at">each =</span> <span class="fu">length</span>(valors))),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">densitat =</span> <span class="fu">dchisq</span>(x, <span class="at">df =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(gl)))) <span class="sc">|&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat, <span class="at">color =</span> gl)) <span class="sc">+</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució χ² per a diferents graus de llibertat"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"gl = 1: taula 2 × 2 · gl = 2: taula 2 × 3 · gl = 4: taula 3 × 3 · gl = 6: taula 3 × 4"</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Valor de χ²"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>, <span class="at">color =</span> <span class="st">"Graus de</span><span class="sc">\n</span><span class="st">llibertat"</span>) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_distribucio_khi_quadrat_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Per exemple, a la pràctica, la taula de l’hàbitat (3 categories) i el nivell de matemàtiques (3 categories) té <span class="math inline">\(gl = 2 \times 2 = 4\)</span>.</p>
+</section>
+<section id="el-valor-crític" class="level2">
+<h2 class="anchored" data-anchor-id="el-valor-crític">7. El valor crític</h2>
+<p>Amb <span class="math inline">\(\alpha = 0{,}05\)</span>, el <strong>valor crític</strong> és el valor de <span class="math inline">\(\chi^2\)</span> que només se supera un 5 % de les vegades per atzar. Si el nostre <span class="math inline">\(\chi^2\)</span> el supera, el p-valor és més petit que 0,05 i rebutgem <span class="math inline">\(H_0\)</span>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Codi</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>crit_val <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="fl">0.95</span>, <span class="at">df =</span> <span class="dv">1</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>corba <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="dv">10</span>, <span class="at">by =</span> <span class="fl">0.01</span>), <span class="at">densitat =</span> <span class="fu">dchisq</span>(x, <span class="at">df =</span> <span class="dv">1</span>))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(corba, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat)) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> <span class="fu">filter</span>(corba, x <span class="sc">&gt;</span> crit_val), <span class="at">fill =</span> bordeus_clar) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"#2B2B2B"</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> crit_val, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> chi2_observat, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_val <span class="sc">+</span> <span class="fl">0.15</span>, <span class="at">y =</span> <span class="fl">0.6</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Valor crític = "</span>, <span class="fu">num</span>(crit_val, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> chi2_observat <span class="sc">+</span> <span class="fl">0.15</span>, <span class="at">y =</span> <span class="fl">0.4</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"El nostre χ² = "</span>, <span class="fu">num</span>(chi2_observat, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.8</span>)) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució χ² amb 1 grau de llibertat"</span>,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Zona ombrejada: el 5 % de valors més grans (zona de rebuig)"</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"χ²"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copia al porta-retalls" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_distribucio_khi_quadrat_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>El nostre valor (5,50) és més gran que el valor crític (3,84): cau a la <strong>zona de rebuig</strong>. Hi ha associació significativa entre el sexe i l’ús de TikTok.</p>
+</section>
+<section id="en-resum" class="level2">
+<h2 class="anchored" data-anchor-id="en-resum">En resum</h2>
+<ol type="1">
+<li>Calculem què <strong>esperaríem</strong> a cada cel·la si no hi hagués associació.</li>
+<li>El <span class="math inline">\(\chi^2\)</span> suma com de lluny estan les <strong>observades</strong> de les <strong>esperades</strong>.</li>
+<li>Si no hi hagués associació, el <span class="math inline">\(\chi^2\)</span> seria petit. La <strong>distribució <span class="math inline">\(\chi^2\)</span></strong> ens diu quins valors surten per atzar.</li>
+<li>El <strong>p-valor</strong> és la probabilitat de trobar un <span class="math inline">\(\chi^2\)</span> com el nostre (o més gran) per atzar. Si p &lt; 0,05, rebutgem <span class="math inline">\(H_0\)</span>.</li>
+</ol>
+<p>Tot això ho fa <code>chisq.test()</code> d’una sola vegada. I si voleu saber si l’associació és <strong>forta</strong> (no només si existeix), vegeu l’explicació <a href="../../sessio-3/explicacions/02_v_cramer.html">«Significativa no vol dir forta: la V de Cramér»</a>.</p>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiat!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiat!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/joelardiaca\.github\.io\/estadistica-r-eapc-2026\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Codi font</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "El test khi-quadrat, pas a pas"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Sessió 3 · Explicació complementària"</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> true</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup, include=FALSE, warning=FALSE, message=FALSE}</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>) <span class="co"># Per reproduir els resultats</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>bordeus      <span class="ot">&lt;-</span> <span class="st">"#6D071A"</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>bordeus_clar <span class="ot">&lt;-</span> <span class="st">"#D8A9B1"</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Números amb coma decimal per al text</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>num <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">d =</span> <span class="dv">1</span>) <span class="fu">format</span>(<span class="fu">round</span>(<span class="fu">unname</span>(x), d), <span class="at">nsmall =</span> d, <span class="at">decimal.mark =</span> <span class="st">","</span>, <span class="at">big.mark =</span> <span class="st">"."</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Què hi trobareu?</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>A les slides hem vist que el test $\chi^2$ (khi-quadrat) compara la taula **observada** amb la que **esperaríem** si no hi hagués associació, i que R ens dona un **p-valor**. Aquí veurem, pas a pas i amb el mateix exemple, **d'on surt** aquest p-valor. No cal entendre el codi (és plegat): n'hi ha prou de llegir el text i mirar els gràfics.</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. On érem: TikTok i sexe</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>L'exemple de les slides: una enquesta del CEO a joves de menys de 20 anys. Volem saber si l'ús de TikTok (**VD**) té relació amb el sexe (**VI**).</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Les dades: una fila per persona</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>tiktok <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sexe       =</span> <span class="fu">c</span>(<span class="st">"Home"</span>, <span class="st">"Home"</span>, <span class="st">"Dona"</span>, <span class="st">"Dona"</span>),</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>                 <span class="at">usa_tiktok =</span> <span class="fu">c</span>(<span class="st">"Sí"</span>, <span class="st">"No"</span>, <span class="st">"Sí"</span>, <span class="st">"No"</span>),</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>                 <span class="at">n          =</span> <span class="fu">c</span>(<span class="dv">138</span>, <span class="dv">98</span>, <span class="dv">136</span>, <span class="dv">60</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">uncount</span>(n)</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Taula de contingència, amb el percentatge de cada resposta dins de cada sexe</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>tiktok <span class="sc">|&gt;</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(sexe, usa_tiktok) <span class="sc">|&gt;</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sexe) <span class="sc">|&gt;</span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">percentatge =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>Un 58,5 % dels nois i un 69,4 % de les noies fan servir TikTok: **11 punts** de diferència. La pregunta del test és: **aquesta diferència, podria ser fruit de l'atzar?**</span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$H_0$: no hi ha associació. Si preguntéssim a **tots** els joves, nois i noies farien servir TikTok **igual**; la diferència de la mostra és casualitat.</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$H_1$: hi ha associació.</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Què esperaríem si no hi hagués associació?</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>Si el sexe no tingués res a veure amb TikTok, nois i noies l'usarien en la **mateixa proporció**: la del total, <span class="in">`r num(274 / 432 * 100, 1)`</span> % (274 de 432 joves). Per tant, dels 236 nois, n'esperaríem $236 \times 0{,}634 \approx 149{,}7$ usuaris; i de les 196 noies, $196 \times 0{,}634 \approx 124{,}3$.</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>En general, la **freqüència esperada** de cada cel·la és:</span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a>$$E = \frac{\text{total de la fila} \times \text{total de la columna}}{n}$$</span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a>Ho calculem per a les quatre cel·les i ho posem al costat de les **observades** ($O$):</span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>taula <span class="ot">&lt;-</span> tiktok <span class="sc">|&gt;</span></span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(sexe, usa_tiktok, <span class="at">name =</span> <span class="st">"O"</span>) <span class="sc">|&gt;</span>        <span class="co"># O: freqüències observades</span></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sexe) <span class="sc">|&gt;</span></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_sexe =</span> <span class="fu">sum</span>(O)) <span class="sc">|&gt;</span>                <span class="co"># total de cada sexe</span></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(usa_tiktok) <span class="sc">|&gt;</span></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_tiktok =</span> <span class="fu">sum</span>(O)) <span class="sc">|&gt;</span>              <span class="co"># total de cada resposta</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">E =</span> total_sexe <span class="sc">*</span> total_tiktok <span class="sc">/</span> <span class="fu">sum</span>(O)) <span class="co"># E: freqüències esperades</span></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>taula <span class="sc">|&gt;</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sexe, usa_tiktok, O, E)</span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a>Hi ha **menys** nois usuaris (138) dels que esperaríem (149,7), i **més** noies usuàries (136) de les esperades (124,3).</span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. Calcular el $\chi^2$ a mà</span></span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>El $\chi^2$ resumeix en un sol número com de lluny estan les observades de les esperades. Per a cada cel·la:</span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Restem: $O - E$ (quant ens allunyem del que esperaríem)</span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Ho elevem al quadrat: $(O - E)^2$ (així els valors negatius no anul·len els positius)</span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Ho dividim per $E$: $\frac{(O - E)^2}{E}$ (una diferència de 10 és molt si n'esperàvem 20, però poc si n'esperàvem 2.000)</span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a>I després ho sumem tot:</span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>$$\chi^2 = \sum \frac{(O - E)^2}{E}$$</span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a>taula <span class="ot">&lt;-</span> taula <span class="sc">|&gt;</span></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">diferencia   =</span> O <span class="sc">-</span> E,</span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>         <span class="at">quadrat      =</span> diferencia<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>         <span class="at">contribucio  =</span> quadrat <span class="sc">/</span> E)</span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a>taula <span class="sc">|&gt;</span></span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sexe, usa_tiktok, O, E, diferencia, quadrat, contribucio)</span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a>chi2_observat <span class="ot">&lt;-</span> <span class="fu">sum</span>(taula<span class="sc">$</span>contribucio)</span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a>chi2_observat</span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a>El nostre $\chi^2$ val **`r num(chi2_observat, 2)`**. És el mateix que dona R (amb <span class="in">`correct = FALSE`</span>, sense la correcció de Yates que R aplica per defecte a les taules 2 × 2):</span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tiktok<span class="sc">$</span>sexe, tiktok<span class="sc">$</span>usa_tiktok, <span class="at">correct =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>statistic</span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. És gran o petit, aquest $\chi^2$?</span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a>Un $\chi^2$ de <span class="in">`r num(chi2_observat, 2)`</span>, és molt o poc? Per saber-ho, cal saber **quins valors surten per atzar** quan **no** hi ha associació.</span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a>Ho podem simular: agafem les mateixes 432 persones i **barregem a l'atzar** l'etiqueta del sexe, com si repartíssim els sexes amb una baralla de cartes. Així, per construcció, el sexe ja no té **cap relació** amb TikTok ($H_0$ és certa). Calculem el $\chi^2$ d'aquesta taula barrejada... i ho repetim **5.000 vegades**.</span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a>chi2_simulats <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, <span class="cf">function</span>(i) {</span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a>  sexe_barrejat <span class="ot">&lt;-</span> <span class="fu">sample</span>(tiktok<span class="sc">$</span>sexe)        <span class="co"># barregem el sexe a l'atzar</span></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">chisq.test</span>(sexe_barrejat, tiktok<span class="sc">$</span>usa_tiktok, <span class="at">correct =</span> <span class="cn">FALSE</span>)<span class="sc">$</span>statistic</span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">chi2 =</span> chi2_simulats) <span class="sc">|&gt;</span></span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> chi2)) <span class="sc">+</span></span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">boundary =</span> <span class="dv">0</span>, <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> chi2_observat, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> chi2_observat <span class="sc">+</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="dv">1500</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"El nostre χ² = "</span>, <span class="fu">num</span>(chi2_observat, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Valors de χ² quan NO hi ha associació (5.000 simulacions)"</span>,</span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"χ²"</span>, <span class="at">y =</span> <span class="st">"Nombre de simulacions"</span>) <span class="sc">+</span></span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a>Quan no hi ha associació, el $\chi^2$ sol ser **petit**: la majoria de simulacions donen valors entre 0 i 2. Un valor com el nostre surt **molt poques vegades**:</span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(chi2_simulats <span class="sc">&gt;=</span> chi2_observat)   <span class="co"># proporció de simulacions amb un χ² igual o més gran</span></span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-146"><a href="#cb17-146" aria-hidden="true" tabindex="-1"></a>Només un <span class="in">`r num(mean(chi2_simulats &gt;= chi2_observat) * 100, 1)`</span> % de les simulacions dona un $\chi^2$ tan gran com el nostre. **Això és el p-valor**: la probabilitat de trobar una diferència com la nostra (o més gran) **si no hi hagués associació**. Com que és més petit que 0,05, rebutgem $H_0$.</span>
+<span id="cb17-147"><a href="#cb17-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-148"><a href="#cb17-148" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. Aquesta forma té nom: la distribució $\chi^2$</span></span>
+<span id="cb17-149"><a href="#cb17-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-150"><a href="#cb17-150" aria-hidden="true" tabindex="-1"></a>No cal fer 5.000 simulacions cada vegada: els estadístics ja saben quina forma té aquest histograma. És la **distribució $\chi^2$**. Si la dibuixem a sobre de les simulacions, encaixa:</span>
+<span id="cb17-151"><a href="#cb17-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-154"><a href="#cb17-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-155"><a href="#cb17-155" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">chi2 =</span> chi2_simulats) <span class="sc">|&gt;</span></span>
+<span id="cb17-156"><a href="#cb17-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> chi2)) <span class="sc">+</span></span>
+<span id="cb17-157"><a href="#cb17-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">boundary =</span> <span class="dv">0</span>,</span>
+<span id="cb17-158"><a href="#cb17-158" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> bordeus_clar, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb17-159"><a href="#cb17-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dchisq, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">df =</span> <span class="dv">1</span>), <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>,</span>
+<span id="cb17-160"><a href="#cb17-160" aria-hidden="true" tabindex="-1"></a>                <span class="at">xlim =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb17-161"><a href="#cb17-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.2</span>)) <span class="sc">+</span></span>
+<span id="cb17-162"><a href="#cb17-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Simulacions (barres) i distribució χ² amb 1 grau de llibertat (línia)"</span>,</span>
+<span id="cb17-163"><a href="#cb17-163" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"χ²"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb17-164"><a href="#cb17-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb17-165"><a href="#cb17-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-166"><a href="#cb17-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-167"><a href="#cb17-167" aria-hidden="true" tabindex="-1"></a><span class="in">`chisq.test()`</span> fa servir aquesta corba per calcular el p-valor, en lloc de simular.</span>
+<span id="cb17-168"><a href="#cb17-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-169"><a href="#cb17-169" aria-hidden="true" tabindex="-1"></a><span class="fu">## 6. Els graus de llibertat</span></span>
+<span id="cb17-170"><a href="#cb17-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-171"><a href="#cb17-171" aria-hidden="true" tabindex="-1"></a>La forma de la distribució $\chi^2$ depèn dels **graus de llibertat** (gl), que depenen de la **mida de la taula**:</span>
+<span id="cb17-172"><a href="#cb17-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-173"><a href="#cb17-173" aria-hidden="true" tabindex="-1"></a>$$gl = (\text{files} - 1) \times (\text{columnes} - 1)$$</span>
+<span id="cb17-174"><a href="#cb17-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-175"><a href="#cb17-175" aria-hidden="true" tabindex="-1"></a>En una taula 2 × 2, $gl = 1 \times 1 = 1$. Per què? Si sabem els totals de files i columnes, n'hi ha prou de saber **una sola cel·la** per deduir les altres tres: només una cel·la és «lliure».</span>
+<span id="cb17-176"><a href="#cb17-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-177"><a href="#cb17-177" aria-hidden="true" tabindex="-1"></a>Com més gran és la taula, més cel·les sumen al $\chi^2$, i més grans són els valors que surten **per atzar**. Per això la corba es desplaça cap a la dreta:</span>
+<span id="cb17-178"><a href="#cb17-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-179"><a href="#cb17-179" aria-hidden="true" tabindex="-1"></a><span class="in">```{r warning=FALSE}</span></span>
+<span id="cb17-180"><a href="#cb17-180" aria-hidden="true" tabindex="-1"></a>gl <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</span>
+<span id="cb17-181"><a href="#cb17-181" aria-hidden="true" tabindex="-1"></a>valors <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="dv">20</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb17-182"><a href="#cb17-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-183"><a href="#cb17-183" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rep</span>(valors, <span class="at">times =</span> <span class="fu">length</span>(gl)),</span>
+<span id="cb17-184"><a href="#cb17-184" aria-hidden="true" tabindex="-1"></a>       <span class="at">gl =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(gl, <span class="at">each =</span> <span class="fu">length</span>(valors))),</span>
+<span id="cb17-185"><a href="#cb17-185" aria-hidden="true" tabindex="-1"></a>       <span class="at">densitat =</span> <span class="fu">dchisq</span>(x, <span class="at">df =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(gl)))) <span class="sc">|&gt;</span></span>
+<span id="cb17-186"><a href="#cb17-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat, <span class="at">color =</span> gl)) <span class="sc">+</span></span>
+<span id="cb17-187"><a href="#cb17-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb17-188"><a href="#cb17-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb17-189"><a href="#cb17-189" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució χ² per a diferents graus de llibertat"</span>,</span>
+<span id="cb17-190"><a href="#cb17-190" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"gl = 1: taula 2 × 2 · gl = 2: taula 2 × 3 · gl = 4: taula 3 × 3 · gl = 6: taula 3 × 4"</span>,</span>
+<span id="cb17-191"><a href="#cb17-191" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Valor de χ²"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>, <span class="at">color =</span> <span class="st">"Graus de</span><span class="sc">\n</span><span class="st">llibertat"</span>) <span class="sc">+</span></span>
+<span id="cb17-192"><a href="#cb17-192" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb17-193"><a href="#cb17-193" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-194"><a href="#cb17-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-195"><a href="#cb17-195" aria-hidden="true" tabindex="-1"></a>Per exemple, a la pràctica, la taula de l'hàbitat (3 categories) i el nivell de matemàtiques (3 categories) té $gl = 2 \times 2 = 4$.</span>
+<span id="cb17-196"><a href="#cb17-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-197"><a href="#cb17-197" aria-hidden="true" tabindex="-1"></a><span class="fu">## 7. El valor crític</span></span>
+<span id="cb17-198"><a href="#cb17-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-199"><a href="#cb17-199" aria-hidden="true" tabindex="-1"></a>Amb $\alpha = 0{,}05$, el **valor crític** és el valor de $\chi^2$ que només se supera un 5 % de les vegades per atzar. Si el nostre $\chi^2$ el supera, el p-valor és més petit que 0,05 i rebutgem $H_0$.</span>
+<span id="cb17-200"><a href="#cb17-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-201"><a href="#cb17-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{r warning=FALSE}</span></span>
+<span id="cb17-202"><a href="#cb17-202" aria-hidden="true" tabindex="-1"></a>crit_val <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="fl">0.95</span>, <span class="at">df =</span> <span class="dv">1</span>)</span>
+<span id="cb17-203"><a href="#cb17-203" aria-hidden="true" tabindex="-1"></a>corba <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="dv">10</span>, <span class="at">by =</span> <span class="fl">0.01</span>), <span class="at">densitat =</span> <span class="fu">dchisq</span>(x, <span class="at">df =</span> <span class="dv">1</span>))</span>
+<span id="cb17-204"><a href="#cb17-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-205"><a href="#cb17-205" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(corba, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> densitat)) <span class="sc">+</span></span>
+<span id="cb17-206"><a href="#cb17-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> <span class="fu">filter</span>(corba, x <span class="sc">&gt;</span> crit_val), <span class="at">fill =</span> bordeus_clar) <span class="sc">+</span></span>
+<span id="cb17-207"><a href="#cb17-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"#2B2B2B"</span>) <span class="sc">+</span></span>
+<span id="cb17-208"><a href="#cb17-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> crit_val, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb17-209"><a href="#cb17-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> chi2_observat, <span class="at">color =</span> bordeus, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb17-210"><a href="#cb17-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_val <span class="sc">+</span> <span class="fl">0.15</span>, <span class="at">y =</span> <span class="fl">0.6</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb17-211"><a href="#cb17-211" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Valor crític = "</span>, <span class="fu">num</span>(crit_val, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb17-212"><a href="#cb17-212" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> chi2_observat <span class="sc">+</span> <span class="fl">0.15</span>, <span class="at">y =</span> <span class="fl">0.4</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> bordeus,</span>
+<span id="cb17-213"><a href="#cb17-213" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"El nostre χ² = "</span>, <span class="fu">num</span>(chi2_observat, <span class="dv">2</span>))) <span class="sc">+</span></span>
+<span id="cb17-214"><a href="#cb17-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.8</span>)) <span class="sc">+</span></span>
+<span id="cb17-215"><a href="#cb17-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribució χ² amb 1 grau de llibertat"</span>,</span>
+<span id="cb17-216"><a href="#cb17-216" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Zona ombrejada: el 5 % de valors més grans (zona de rebuig)"</span>,</span>
+<span id="cb17-217"><a href="#cb17-217" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"χ²"</span>, <span class="at">y =</span> <span class="st">"Densitat"</span>) <span class="sc">+</span></span>
+<span id="cb17-218"><a href="#cb17-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb17-219"><a href="#cb17-219" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-220"><a href="#cb17-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-221"><a href="#cb17-221" aria-hidden="true" tabindex="-1"></a>El nostre valor (<span class="in">`r num(chi2_observat, 2)`</span>) és més gran que el valor crític (<span class="in">`r num(crit_val, 2)`</span>): cau a la **zona de rebuig**. Hi ha associació significativa entre el sexe i l'ús de TikTok.</span>
+<span id="cb17-222"><a href="#cb17-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-223"><a href="#cb17-223" aria-hidden="true" tabindex="-1"></a><span class="fu">## En resum</span></span>
+<span id="cb17-224"><a href="#cb17-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-225"><a href="#cb17-225" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Calculem què **esperaríem** a cada cel·la si no hi hagués associació.</span>
+<span id="cb17-226"><a href="#cb17-226" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>El $\chi^2$ suma com de lluny estan les **observades** de les **esperades**.</span>
+<span id="cb17-227"><a href="#cb17-227" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Si no hi hagués associació, el $\chi^2$ seria petit. La **distribució $\chi^2$** ens diu quins valors surten per atzar.</span>
+<span id="cb17-228"><a href="#cb17-228" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>El **p-valor** és la probabilitat de trobar un $\chi^2$ com el nostre (o més gran) per atzar. Si p &lt; 0,05, rebutgem $H_0$.</span>
+<span id="cb17-229"><a href="#cb17-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-230"><a href="#cb17-230" aria-hidden="true" tabindex="-1"></a>Tot això ho fa <span class="in">`chisq.test()`</span> d'una sola vegada. I si voleu saber si l'associació és **forta** (no només si existeix), vegeu l'explicació <span class="co">[</span><span class="ot">«Significativa no vol dir forta: la V de Cramér»</span><span class="co">](02_v_cramer.qmd)</span>.</span>
+</code></pre></div><button title="Copia al porta-retalls" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Joel Ardiaca · Centre d’Estudis d’Opinió · EAPC 2026</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Materials amb llicència <a href="https://creativecommons.org/licenses/by/4.0/deed.ca">CC BY 4.0</a> · Codi amb llicència MIT</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

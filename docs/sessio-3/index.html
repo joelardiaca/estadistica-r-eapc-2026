@@ -77,7 +77,7 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -151,7 +151,19 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Continguts</h2>
+   
+  <ul>
+  <li><a href="#slides" id="toc-slides" class="nav-link active" data-scroll-target="#slides">Slides</a></li>
+  <li><a href="#materials" id="toc-materials" class="nav-link" data-scroll-target="#materials">Materials</a></li>
+  <li><a href="#pràctica-estadística-bivariada-amb-r" id="toc-pràctica-estadística-bivariada-amb-r" class="nav-link" data-scroll-target="#pràctica-estadística-bivariada-amb-r">Pràctica: estadística bivariada amb R</a></li>
+  <li><a href="#per-aprofundir-opcional" id="toc-per-aprofundir-opcional" class="nav-link" data-scroll-target="#per-aprofundir-opcional">Per aprofundir (opcional)</a></li>
+  <li><a href="#fonts-de-les-dades" id="toc-fonts-de-les-dades" class="nav-link" data-scroll-target="#fonts-de-les-dades">Fonts de les dades</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -175,22 +187,116 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Relacions entre dues variables qualitatives i entre una variable quantitativa i una qualitativa: <strong>taules de contingència</strong>, <strong>prova χ²</strong> i <strong>comparació de mitjanes</strong> amb R.</p>
+<p>Relacions entre dues variables: <strong>taules de contingència</strong> i test χ² (dues variables categòriques), i <strong>comparació de mitjanes</strong> amb t-test i ANOVA (una numèrica i una categòrica). Repàs de tot el que sabem fer amb R i tres novetats: <code>count()</code> amb dues variables, <code>arrange()</code> i <strong><code>group_by()</code></strong>, per fer càlculs per grups.</p>
+<section id="slides" class="level2">
+<h2 class="anchored" data-anchor-id="slides">Slides</h2>
+<ul>
+<li><strong><a href="../sessio-3/slides/sessio_3.html" target="_blank">Slides de la sessió 3</a></strong> · Estadística bivariada, repàs de R i pràctica</li>
+</ul>
+</section>
+<section id="materials" class="level2">
+<h2 class="anchored" data-anchor-id="materials">Materials</h2>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Consell</span><a href="materials-sessio-3.zip">⬇ Descarregar els materials de la sessió 3 (zip)</a>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+<p><strong>Pas a pas</strong>:</p>
+<ol type="1">
+<li>Descarregueu el zip i <strong>descomprimiu-lo</strong> (botó dret → <em>Extreu-ho tot</em>). No treballeu des de dins del zip!</li>
+<li>Entreu a la carpeta descomprimida i feu <strong>doble clic</strong> a <code>sessio_3.Rproj</code>.</li>
+<li>Al panell <em>Files</em> de RStudio, obriu la carpeta <code>codi/</code> i l’script que vulgueu.</li>
+</ol>
+<p>Un cop descomprimit, trobareu:</p>
+<pre><code>sessio-3/
+├── sessio_3.Rproj                  ← obriu aquest fitxer amb RStudio
+├── dades/
+│   ├── competencies.csv            Les dades netes de les sessions 1 i 2 (480 alumnes)
+│   └── paisos_esperanca_vida.csv   Esperança de vida per país i continent (repte)
+└── codi/
+    ├── 01_bivariada.R              El codi de les slides
+    └── exercici_sessio_3.R         Plantilla de la pràctica</code></pre>
+</section>
+<section id="pràctica-estadística-bivariada-amb-r" class="level2">
+<h2 class="anchored" data-anchor-id="pràctica-estadística-bivariada-amb-r">Pràctica: estadística bivariada amb R</h2>
+<p>Amb el projecte de la <strong>sessió 3</strong> (<code>sessio_3.Rproj</code>) i la plantilla <code>codi/exercici_sessio_3.R</code>. El <strong>pas 1</strong> (importar les dades) ja està fet: només cal executar-lo.</p>
+<p><strong>Part A. Dues variables categòriques</strong>: <code>count()</code> i <code>group_by()</code></p>
+<ol start="2" type="1">
+<li><strong>Taula de contingència</strong> de <code>titularitat</code> i <code>nivell_mat</code> amb <code>count()</code>.</li>
+<li><strong>Percentatge</strong> de cada nivell de matemàtiques <strong>dins de cada titularitat</strong> (<code>group_by()</code>, <code>mutate()</code> i <code>ungroup()</code>). On hi ha més alumnes amb nivell alt?</li>
+<li><strong>Ara sols</strong>: el mateix amb <code>habitat</code> i <code>nivell_mat</code>.</li>
+</ol>
+<p><strong>Part B. Variable numèrica i categòrica</strong>: <code>group_by()</code> i <code>summarise()</code></p>
+<ol start="5" type="1">
+<li><strong>Nota de matemàtiques per titularitat</strong>: nombre d’alumnes, mitjana, mediana i desviació típica.</li>
+<li><strong>Les tres assignatures per hàbitat</strong>, ordenades amb <code>arrange()</code>.</li>
+<li><strong>Dues variables de grup</strong>: nota mitjana de matemàtiques per titularitat i gènere.</li>
+</ol>
+<p>Comenteu i interpreteu els resultats de cada pas <strong>en paraules</strong>.</p>
+<p><strong>Què cal lliurar</strong>: l’script <code>exercici_sessio_3.R</code> complet i comentat, per <strong>correu electrònic</strong> a <a href="mailto:joelardiacaarnau@gencat.cat">joelardiacaarnau@gencat.cat</a>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Consell</span>Ja ho teniu tot? Part opcional
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Les diferències, són significatives?</strong> El test χ² (<code>chisq.test()</code>) i el t-test (<code>t.test()</code>) amb les dades de la pràctica.</li>
+<li><strong>Repte</strong>: l’esperança de vida per continent, amb <code>group_by()</code>, <code>summarise()</code>, <code>arrange()</code> i <code>filter()</code>.</li>
+<li><strong><a href="../sessio-3/explicacions/tutorial_ggplot2_bivariada.html">Tutorial: gràfics bivariats amb <code>ggplot2</code></a></strong>: barres per grups, boxplots i un gràfic per grup, pas a pas.</li>
+</ol>
+</div>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Nota
+<span class="screen-reader-only">Nota</span>Solució
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Els materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.</p>
+<p>La solució de la pràctica es publicarà aquí després de la sessió.</p>
 </div>
 </div>
+</section>
+<section id="per-aprofundir-opcional" class="level2">
+<h2 class="anchored" data-anchor-id="per-aprofundir-opcional">Per aprofundir (opcional)</h2>
+<p>Documents per llegir pel vostre compte, amb explicacions i gràfics. El codi R hi és plegat: no cal entendre’l per seguir l’explicació.</p>
+<ol type="1">
+<li><a href="../sessio-3/explicacions/01_distribucio_khi_quadrat.html">El test khi-quadrat, pas a pas</a>: observades i esperades, el càlcul del χ² i d’on surt el p-valor.</li>
+<li><a href="../sessio-3/explicacions/02_v_cramer.html">Significativa no vol dir forta: la V de Cramér</a>: com es mesura la força d’una associació.</li>
+<li><a href="../sessio-3/explicacions/03_distribucio_f_fisher.html">L’ANOVA i la distribució F, pas a pas</a>: variació entre i dins dels grups, el càlcul de la F i d’on surt el p-valor.</li>
+<li><a href="../sessio-3/explicacions/04_proves_normalitat.html">Proves de normalitat</a>: histogrames, QQ-plot i Shapiro-Wilk; i quan cal preocupar-se’n (gairebé mai, amb grups grans).</li>
+</ol>
+<p><strong>Gràfics</strong></p>
+<ul>
+<li><a href="../sessio-3/explicacions/tutorial_ggplot2_bivariada.html">Tutorial: gràfics bivariats amb <code>ggplot2</code></a></li>
+<li><a href="../sessio-2/explicacions/tutorial_ggplot2.html">Tutorial: primers gràfics amb <code>ggplot2</code></a> (sessió 2)</li>
+</ul>
+</section>
+<section id="fonts-de-les-dades" class="level2">
+<h2 class="anchored" data-anchor-id="fonts-de-les-dades">Fonts de les dades</h2>
+<ul>
+<li><strong>Competències bàsiques</strong>: mostra de l’avaluació de competències bàsiques de 6è de primària (2023) del Departament d’Educació, publicada al <a href="https://analisi.transparenciacatalunya.cat">portal de dades obertes de la Generalitat</a>.</li>
+<li><strong>Esperança de vida</strong>: <a href="https://ourworldindata.org">Our World in Data</a>, a partir de dades de Nacions Unides (2023).</li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
