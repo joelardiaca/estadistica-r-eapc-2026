@@ -56,6 +56,8 @@ theme_set(
 
 # Números amb coma decimal per al text de les slides
 num <- function(x, d = 1) format(round(unname(x), d), nsmall = d, decimal.mark = ",", big.mark = ".")
+# El mateix, per a dins de fórmules LaTeX (sense espai després de la coma ni del punt)
+num_m <- function(x, d = 1) gsub(".", "{.}", gsub(",", "{,}", num(x, d), fixed = TRUE), fixed = TRUE)
 
 # Taules per a les slides (sense mostrar el codi)
 taula <- function(x) knitr::kable(x, format.args = list(decimal.mark = ","))
@@ -359,13 +361,29 @@ Als exemples, dades **simulades** d'ingressos mensuals.
 
 ## Dos grups: el t-test
 
+```{r}
+#| include: false
+tt <- t.test(ingressos ~ sexe, data = ingressos_sexe)
+
+resum_sexe <- ingressos_sexe |>
+  group_by(sexe) |>
+  summarise(n = n(),
+            mitjana = mean(ingressos),
+            desv_tipica = sd(ingressos))
+
+diferencia <- unname(diff(tt$estimate))   # Home - Dona (R ordena els grups alfabèticament)
+error_est  <- unname(tt$stderr)
+```
+
+Exemple: ingressos mensuals (simulats) de 150 homes i 150 dones.
+
 :::: {.columns}
 
 ::: {.column width="40%"}
 ```{r}
 #| echo: false
 #| fig-width: 5
-#| fig-height: 4.6
+#| fig-height: 4.4
 ggplot(ingressos_sexe, aes(x = sexe, y = ingressos)) +
   geom_boxplot(fill = bordeus_clar, width = 0.5) +
   stat_summary(fun = mean, geom = "point", color = bordeus, size = 4) +
@@ -378,30 +396,110 @@ El punt és la **mitjana** de cada grup.
 :::
 
 ::: {.column width="60%"}
-- $H_0$: les dues mitjanes són **iguals**
+```{r}
+#| echo: false
+resum_sexe |>
+  mutate(mitjana = num(mitjana, 0), desv_tipica = num(desv_tipica, 0)) |>
+  rename(Sexe = sexe, `Mitjana (€)` = mitjana, `Desv. típica (€)` = desv_tipica) |>
+  taula()
+```
+
+Els homes cobren, de mitjana, **`r num(diferencia, 0)` €** més. Però és una **mostra**: podria ser fruit de l'**atzar**?
+
+- $H_0$: a la població, les dues mitjanes són **iguals**
 - $H_1$: les mitjanes són **diferents**
+
+::: {.caixa .petit}
+**`r num(diferencia, 0)` €, és molt o poc?** Depèn de com variïn els ingressos **dins** de cada grup, i de quantes persones tinguem.
+:::
+:::
+
+::::
+
+## La idea: la diferència, comparada amb l'error
+
+Com a la sessió 2: cada mostra dona una mitjana diferent. L'**error estàndard** diu quant pot variar, per atzar, la diferència entre les dues mitjanes. El t-test compara la diferència amb aquest error:
+
+$$t = \frac{\text{diferència de mitjanes}}{\text{error estàndard de la diferència}} = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}$$
+
+:::: {.columns}
+
+::: {.column width="45%"}
+::: {.petit}
+El $t$ és **gran** (en valor absolut) quan:
+
+- la **diferència** entre mitjanes és gran
+- els grups són **poc dispersos** ($s$ petita)
+- els grups són **grans** ($n$ gran)
+
+**Regla del 95 %** (sessió 2): si $|t| > 1{,}96$ (≈ 2), la diferència és més gran del que sol donar l'atzar → **p < 0,05**.
+:::
+:::
+
+::: {.column width="55%"}
+```{r}
+#| echo: false
+#| fig-width: 6.5
+#| fig-height: 2.6
+corba_t <- tibble(t = seq(-4, 4, by = 0.01), densitat = dt(t, df = tt$parameter))
+
+ggplot(corba_t, aes(x = t, y = densitat)) +
+  geom_area(data = filter(corba_t, t < -1.96), fill = bordeus_clar) +
+  geom_area(data = filter(corba_t, t > 1.96), fill = bordeus_clar) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = unname(tt$statistic), color = bordeus, linewidth = 1.2) +
+  annotate("text", x = unname(tt$statistic) + 0.15, y = 0.42, hjust = 0, color = bordeus, size = 5,
+           label = paste0("El nostre t = ", num(tt$statistic, 2))) +
+  annotate("text", x = 3, y = 0.08, label = "p < 0,05", size = 4.5) +
+  annotate("text", x = -3, y = 0.08, label = "p < 0,05", size = 4.5) +
+  labs(x = "Valors de t si no hi hagués diferència", y = NULL) +
+  theme(axis.text.y = element_blank())
+```
+
+::: {.caixa .petit}
+$t = `r num_m(-diferencia, 0)` / `r num_m(error_est, 0)` = `r num_m(tt$statistic, 2)`$: la diferència no arriba a **mig** error estàndard. És molt habitual per atzar.
+:::
+:::
+
+::::
+
+## El t-test amb R
 
 La fórmula `numerica ~ grup` es llegeix «*ingressos **segons** sexe*»:
 
+:::: {.columns}
+
+::: {.column width="58%"}
+::: {.petit}
 ```{r}
-#| eval: false
 t.test(ingressos ~ sexe, data = ingressos_sexe)
 ```
+:::
+:::
 
-```{r}
-#| include: false
-tt <- t.test(ingressos ~ sexe, data = ingressos_sexe)
-```
+::: {.column width="42%"}
+**Com es llegeix?**
 
-::: {.caixa}
-Diferència de `r round(abs(diff(tt$estimate)))` € al mes, però **p = `r num(tt$p.value, 2)` > 0,05**: **no podem afirmar** que la diferència sigui significativa.
+::: {.petit}
+- **`t`**: l'estadístic (el signe només diu quin grup té la mitjana més alta)
+- **`p-value`**: `r num(tt$p.value, 2)` > 0,05 → **no** rebutgem $H_0$
+- **`95 percent confidence interval`**: l'interval de la **diferència** de mitjanes. Inclou el **0** → coherent amb el p-valor
+- **`sample estimates`**: la mitjana de cada grup
+:::
+
+::: {.caixa .petit}
+Els homes cobren `r num(diferencia, 0)` € més a la mostra, però **no podem afirmar** que la diferència existeixi a la població.
 :::
 :::
 
 ::::
 
 ::: notes
-De la sortida de `t.test()` només cal mirar les dues mitjanes (*sample estimates*) i el p-valor. Supòsits (independència, normalitat o grups grans): a l'explicació «Proves de normalitat».
+R fa per defecte la versió de **Welch**, que no suposa que les dues variàncies siguin iguals. Supòsits (independència, normalitat o grups grans): a l'explicació «Proves de normalitat». Més detall de com es calcula: a l'explicació de la sessió 2 «Què fa per dins `t.test()`?».
+:::
+
+::: {.petit .gris}
+📖 **Per aprofundir**: [què fa per dins `t.test()`?](../../sessio-2/explicacions/04_introduccio_ttest.html){target="_blank"} (sessió 2) i [proves de normalitat](../explicacions/04_proves_normalitat.html){target="_blank"}
 :::
 
 ## Tres o més grups: per què no fem t-tests?
