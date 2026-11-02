@@ -63,7 +63,7 @@ Comenteu i interpreteu els resultats de cada pas **en paraules**.
 
 ::: {.callout-note}
 ## Solució
-La solució de la pràctica es publicarà aquí després de la sessió.
+[⬇ Descarregar la solució de l'exercici](codi/solucio_exercici_sessio_3.R){download="solucio_exercici_sessio_3.R"}.
 :::
 
 ## Per aprofundir (opcional)
