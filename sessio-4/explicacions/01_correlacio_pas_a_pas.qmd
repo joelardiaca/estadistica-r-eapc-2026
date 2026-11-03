@@ -1,0 +1,209 @@
+---
+title: "La correlació, pas a pas"
+subtitle: "Sessió 4 · Explicació complementària"
+code-fold: true
+code-tools: true
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+set.seed(1234)
+library(tidyverse)
+
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+
+# Números amb coma decimal per al text
+num <- function(x, d = 2) format(round(unname(x), d), nsmall = d, decimal.mark = ",", big.mark = ".")
+
+seccions <- read_csv2("../dades/seccions_censals.csv", show_col_types = FALSE)
+bcn <- seccions |> filter(municipi == "Barcelona")
+```
+
+::: {.callout-note}
+## Què hi trobareu?
+A les slides hem vist que el coeficient de correlació **r** resumeix en un número la direcció i la força d'una relació lineal. Aquí veurem, amb el mateix exemple de les slides, **què mesura** realment, **com es calcula**, per què els **valors atípics** i les **terceres variables** el poden enganyar, i **d'on surt** el p-valor de `cor.test()`. No cal entendre el codi (és plegat): n'hi ha prou de llegir el text i mirar els gràfics.
+:::
+
+## 1. On érem: atur i abstenció a Barcelona
+
+Les 1.068 seccions censals de Barcelona a les eleccions al Parlament del 2021. Cada punt és una secció:
+
+```{r}
+ggplot(bcn, aes(x = perc_atur, y = abstencio)) +
+  geom_point(alpha = 0.3, color = bordeus) +
+  labs(x = "% d'atur", y = "% d'abstenció") +
+  theme_minimal()
+
+bcn |>
+  summarise(r = cor(perc_atur, abstencio))
+```
+
+r = `r num(cor(bcn$perc_atur, bcn$abstencio))`: una relació positiva i forta. Però què vol dir, exactament, aquest número?
+
+## 2. La idea: els quatre quadrants
+
+Dibuixem una línia a la **mitjana de l'atur** (vertical) i una altra a la **mitjana de l'abstenció** (horitzontal). El gràfic queda dividit en quatre quadrants:
+
+```{r}
+mitjana_x <- mean(bcn$perc_atur)
+mitjana_y <- mean(bcn$abstencio)
+
+quadrants <- bcn |>
+  mutate(quadrant = case_when(
+    perc_atur >= mitjana_x & abstencio >= mitjana_y ~ "Tots dos per sobre",
+    perc_atur <  mitjana_x & abstencio <  mitjana_y ~ "Tots dos per sota",
+    .default = "Un per sobre i l'altre per sota"
+  ))
+
+ggplot(quadrants, aes(x = perc_atur, y = abstencio, color = quadrant)) +
+  geom_point(alpha = 0.5) +
+  geom_vline(xintercept = mitjana_x, linetype = "dashed") +
+  geom_hline(yintercept = mitjana_y, linetype = "dashed") +
+  scale_color_manual(values = c("Tots dos per sobre" = bordeus,
+                                "Tots dos per sota" = bordeus,
+                                "Un per sobre i l'altre per sota" = "grey70")) +
+  labs(x = "% d'atur", y = "% d'abstenció", color = NULL) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+quadrants |>
+  count(quadrant) |>
+  mutate(percentatge = n / sum(n) * 100)
+```
+
+- Si les dues variables **pugen juntes**, la majoria de punts són als quadrants on **totes dues** són per sobre de la mitjana o **totes dues** per sota (en color). La correlació és **positiva**.
+- Si quan una puja l'altra baixa, la majoria de punts són als quadrants grisos. La correlació és **negativa**.
+- Si els punts es reparteixen per igual pels quatre quadrants, no hi ha relació: $r \approx 0$.
+
+A Barcelona, la gran majoria de seccions són als quadrants de color: per això la correlació és positiva i forta.
+
+## 3. La fórmula, pas a pas
+
+La correlació converteix aquesta idea en un número. Per a cada secció:
+
+1. Calculem com d'allunyada és de la mitjana en **atur** ($x - \bar{x}$) i en **abstenció** ($y - \bar{y}$).
+2. Les multipliquem. El producte és **positiu** si totes dues són per sobre (o totes dues per sota) de la mitjana, i **negatiu** si una és per sobre i l'altra per sota.
+3. Sumem tots els productes i ho dividim per $(n - 1)$ i per les desviacions típiques, perquè el resultat quedi sempre entre $-1$ i $+1$:
+
+$$r = \frac{\sum (x - \bar{x})(y - \bar{y})}{(n - 1) \cdot s_x \cdot s_y}$$
+
+```{r}
+calcul <- bcn |>
+  mutate(dist_x   = perc_atur - mean(perc_atur),   # distància a la mitjana de l'atur
+         dist_y   = abstencio - mean(abstencio),   # distància a la mitjana de l'abstenció
+         producte = dist_x * dist_y)               # positiu o negatiu segons el quadrant
+
+calcul |>
+  select(perc_atur, abstencio, dist_x, dist_y, producte) |>
+  head(5)
+
+calcul |>
+  summarise(n = n(),
+            suma_productes = sum(producte),
+            r = suma_productes / ((n - 1) * sd(perc_atur) * sd(abstencio)))
+```
+
+El mateix valor que `cor()`. Fixeu-vos que la correlació **no depèn de les unitats**: si l'atur estigués en tant per u en lloc de percentatge, r seria exactament igual.
+
+## 4. Els valors atípics
+
+Com que r suma els productes de **tots** els punts, un sol punt molt allunyat pot pesar molt. Vegem-ho amb 10 punts inventats i un d'afegit:
+
+```{r}
+#| fig-height: 3.5
+base <- tibble(x = 1:10) |> mutate(y = 2 + 0.5 * x + rnorm(10, sd = 1))
+casos <- list(
+  "1. Sense atípics"      = base,
+  "2. Atípic en Y"        = bind_rows(base, tibble(x = 5,  y = 20)),
+  "3. Atípic en X"        = bind_rows(base, tibble(x = 20, y = 11)),
+  "4. Atípic en X i en Y" = bind_rows(base, tibble(x = 20, y = 20))
+)
+atipics <- imap_dfr(casos, \(d, nom) d |> mutate(cas = nom))
+etiquetes <- atipics |>
+  group_by(cas) |>
+  summarise(r = paste0("r = ", num(cor(x, y))))
+
+ggplot(atipics, aes(x = x, y = y)) +
+  geom_smooth(method = "lm", se = FALSE, color = bordeus) +
+  geom_point(size = 2) +
+  geom_text(data = etiquetes, aes(x = 0, y = 20, label = r), hjust = 0) +
+  facet_wrap(~ cas, nrow = 1) +
+  theme_minimal()
+```
+
+- Un atípic **només en Y** (2) fa baixar la correlació: el punt queda lluny de la recta.
+- Un atípic **en X**, però que segueix la tendència (3), la pot fer **pujar**.
+- Un atípic **en X i en Y** (4) pot canviar molt la recta i la r.
+
+Què en fem? Primer, **mirar-lo**: és un error (una dada mal escrita)? Un cas real però excepcional? Un cas interessant per si mateix? Si no és un error, es pot calcular la correlació **amb i sense** el cas i explicar la diferència.
+
+## 5. Correlació no és causalitat
+
+L'atur i l'abstenció van molt junts. Però això no vol dir que l'atur **provoqui** l'abstenció. Hi pot haver una **tercera variable** relacionada amb totes dues. A Barcelona, la candidata òbvia és la **renda**:
+
+```{r}
+bcn |>
+  summarise(atur_abstencio  = cor(perc_atur, abstencio),
+            renda_abstencio = cor(renda_persona, abstencio),
+            renda_atur      = cor(renda_persona, perc_atur))
+
+ggplot(bcn, aes(x = perc_atur, y = abstencio, color = renda_persona / 1000)) +
+  geom_point(alpha = 0.7) +
+  scale_color_gradient(low = bordeus, high = "#F2E3E6") +
+  labs(x = "% d'atur", y = "% d'abstenció",
+       color = "Renda per\npersona\n(milers d'€)") +
+  theme_minimal()
+```
+
+Les seccions amb **menys renda** (color fosc) són les que tenen més atur **i** més abstenció. Part de la relació entre l'atur i l'abstenció pot ser deguda a la renda. Per separar els dos efectes, cal la **regressió múltiple** (vegeu l'[explicació 4](04_regressio_multiple.qmd)).
+
+## 6. És significativa?
+
+Una mostra pot donar una correlació diferent de 0 **per pura casualitat**. Per veure-ho, fem el mateix que a la sessió 3: **barregem** a l'atzar l'abstenció entre les seccions (així, per construcció, no té cap relació amb l'atur) i calculem la r. Ho repetim 5.000 vegades, amb totes les seccions i amb només 15 seccions agafades a l'atzar:
+
+```{r}
+r_barrejada <- function(dades) {
+  cor(dades$perc_atur, sample(dades$abstencio))
+}
+
+mostra_15 <- bcn |> slice_sample(n = 15)
+
+simulacions <- bind_rows(
+  tibble(mida = "Mostra de 15 seccions",   r = map_dbl(1:5000, \(i) r_barrejada(mostra_15))),
+  tibble(mida = "Totes les 1.068 seccions", r = map_dbl(1:5000, \(i) r_barrejada(bcn)))
+)
+
+ggplot(simulacions, aes(x = r)) +
+  geom_histogram(binwidth = 0.02, fill = bordeus_clar, color = "white") +
+  geom_vline(xintercept = cor(bcn$perc_atur, bcn$abstencio), color = bordeus, linewidth = 1.2) +
+  facet_wrap(~ mida, ncol = 1) +
+  labs(title = "Valors de r quan NO hi ha relació (5.000 simulacions)",
+       subtitle = "Línia: la r de les nostres dades",
+       x = "r", y = "Nombre de simulacions") +
+  theme_minimal()
+
+percentatges <- simulacions |>
+  group_by(mida) |>
+  summarise(percentatge_r_mes_gran_de_0_5 = mean(abs(r) > 0.5) * 100)
+
+percentatges
+```
+
+- Amb **15 seccions**, les r per atzar s'escampen molt: encara que no hi hagi cap relació, un `r num(percentatges$percentatge_r_mes_gran_de_0_5[1], 1)` % de les vegades surt una correlació més gran de 0,5 (o més petita de −0,5).
+- Amb **1.068 seccions**, les r per atzar són minúscules (quasi sempre entre −0,1 i 0,1). La nostra (0,85) és impossible per atzar.
+
+Això és el que fa `cor.test()`: calcula la probabilitat de trobar una r com la nostra si a la població no hi hagués relació (el **p-valor**).
+
+```{r}
+cor.test(bcn$perc_atur, bcn$abstencio)
+```
+
+Amb mostres grans, gairebé qualsevol correlació és significativa. Per això, més que el p-valor, importa **com de forta** és la relació.
+
+## En resum
+
+1. La correlació mira si els punts tendeixen a estar **alhora** per sobre o per sota de les mitjanes.
+2. r va de $-1$ a $+1$ i **no depèn de les unitats**.
+3. Només mesura relacions **lineals**, i un sol **atípic** la pot canviar molt: **mireu sempre el gràfic**.
+4. Correlació **no és causalitat**: pot haver-hi una tercera variable.
+5. Amb **mostres petites**, correlacions grans poden sortir per atzar; `cor.test()` ens diu si la nostra és significativa.

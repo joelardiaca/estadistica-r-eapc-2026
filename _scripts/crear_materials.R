@@ -12,7 +12,7 @@
 library(zip)
 
 # Sessions que es publiquen (les altres són esborranys i no generen zip)
-sessions_publicades <- c(1, 2, 3)
+sessions_publicades <- c(1, 2, 3, 4)
 
 sessions_amb_solucio <- c(1, 2, 3)   # p. ex. c(1, 2, 3, 4) un cop feta la sessió 4
 

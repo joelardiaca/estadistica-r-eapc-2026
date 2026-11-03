@@ -1,5 +1,208 @@
 [
   {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "",
+    "text": "NotaPer a qui és aquest tutorial?\n\n\n\nPer a qui ja ha acabat la pràctica de la sessió 4 i vol fer gràfics de dispersió més complets que la plantilla de les slides: amb colors per grup, un gràfic per grup, títols i textos.\nCom s’ha de fer: obriu un script nou a RStudio (File → New File → R Script), copieu-hi el codi de cada pas (amb el botó 📋 de la dreta de cada bloc), executeu-lo amb Ctrl + Enter i mireu què surt al panell Plots. Al final de cada apartat hi ha un «Prova-ho» per practicar, amb la solució amagada.\nNo heu fet mai cap gràfic amb ggplot2? Comenceu pel tutorial de primers gràfics de la sessió 2."
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#preparació",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#preparació",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "0. Preparació",
+    "text": "0. Preparació\nAmb el projecte de la sessió 4 (sessio_4.Rproj) obert, carregueu el tidyverse i importeu les dades, igual que al pas 1 de la pràctica:\n\nlibrary(tidyverse)                                       # carrega el tidyverse (inclou ggplot2)\n\ncompetencies &lt;- read_csv2(\"dades/competencies.csv\") |&gt;   # importa les dades netes...\n  mutate(habitat    = factor(habitat,                    # ...i torna a ordenar les categories\n                             levels = c(\"Fins a 10000\", \"De 10001 a 100000\", \"Més de 100000\")),\n         nivell_mat = factor(nivell_mat, levels = c(\"Baix\", \"Mitjà\", \"Alt\")))\n\nRecordeu: entre les capes d’un gràfic va +, no |&gt;."
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#del-gràfic-bàsic-a-un-gràfic-per-presentar",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#del-gràfic-bàsic-a-un-gràfic-per-presentar",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "1. Del gràfic bàsic a un gràfic per presentar",
+    "text": "1. Del gràfic bàsic a un gràfic per presentar\nLa plantilla de les slides:\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang)) +   # dades i variables de cada eix\n  geom_point()                                            # un punt per alumne\n\n\n\n\n\n\n\n\nFunciona, però és millorable. Hi afegim títols amb labs() i un estil net amb theme_minimal():\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang)) +\n  geom_point() +\n  labs(x = \"Nota de català (0-100)\",                      # títol de l'eix X\n       y = \"Nota d'anglès (0-100)\",                       # títol de l'eix Y\n       title = \"Notes de català i d'anglès\",              # títol del gràfic\n       subtitle = \"480 alumnes de 6è\",                    # subtítol\n       caption = \"Font: Departament d'Educació\") +        # nota a sota\n  theme_minimal()                                         # estil net"
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#massa-punts-transparència",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#massa-punts-transparència",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "2. Massa punts? Transparència",
+    "text": "2. Massa punts? Transparència\nQuan hi ha molts punts, se sobreposen i no es veu on n’hi ha més. Amb alpha (de 0, invisible, a 1, opac) els fem transparents: on n’hi ha molts, el color és més fosc.\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang)) +\n  geom_point(alpha = 0.4,                                 # transparència\n             size = 2,                                    # mida dels punts\n             color = \"#6D071A\") +                         # color fix (fora d'aes)\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\") +\n  theme_minimal()"
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#la-recta-de-regressió",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#la-recta-de-regressió",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "3. La recta de regressió",
+    "text": "3. La recta de regressió\ngeom_smooth(method = \"lm\") hi afegeix la recta de regressió (la mateixa que dona lm()). La franja grisa és l’interval de confiança del 95 % de la recta; amb se = FALSE la traiem.\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang)) +\n  geom_point(alpha = 0.4, color = \"grey50\") +\n  geom_smooth(method = \"lm\",                              # la recta de regressió\n              se = FALSE,                                 # sense la franja de l'interval\n              color = \"#6D071A\",                          # color de la recta\n              linewidth = 1.2) +                          # gruix de la recta\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConsell\n\n\n\nSi traieu method = \"lm\", geom_smooth() dibuixa una corba que s’adapta a les dades. És útil per veure si la relació és realment una línia recta (el supòsit L de la regressió).\n\n\n\n\n\n\n\n\nNota✍️ Prova-ho: matemàtiques i anglès (cliqueu per veure la solució)\n\n\n\n\n\nFeu el gràfic de dispersió de la nota de matemàtiques (X) i la d’anglès (Y), amb transparència, la recta i els eixos ben etiquetats. La relació és més forta o més feble que la de català i anglès?\n\nggplot(competencies, aes(x = nota_mat, y = nota_ang)) +\n  geom_point(alpha = 0.4, color = \"steelblue\") +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"black\") +\n  labs(x = \"Nota de matemàtiques\", y = \"Nota d'anglès\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nEls punts estan més escampats al voltant de la recta: la relació és més feble (r = 0,55, davant de 0,73)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#colors-per-grup",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#colors-per-grup",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "4. Colors per grup",
+    "text": "4. Colors per grup\nSi posem una variable categòrica a color dins d’aes(), cada grup té el seu color… i geom_smooth() fa una recta per a cada grup:\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang,\n                         color = genere)) +               # color segons el gènere\n  geom_point(alpha = 0.4) +\n  geom_smooth(method = \"lm\", se = FALSE) +                # una recta per a cada gènere\n  scale_color_manual(values = c(\"Dona\" = \"#6D071A\",       # colors triats a mà\n                                \"Home\" = \"grey40\")) +\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\", color = NULL) +\n  theme_minimal()\n\n\n\n\n\n\n\n\nLes dues rectes són gairebé paral·leles i a prop l’una de l’altra: la relació entre català i anglès és molt semblant per a nois i noies (com vau veure al pas 5 de la pràctica).\n\n\n\n\n\n\nNota✍️ Prova-ho: una recta per titularitat (cliqueu per veure la solució)\n\n\n\n\n\nFeu el mateix gràfic amb un color i una recta per a cada titularitat.\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang, color = titularitat)) +\n  geom_point(alpha = 0.4) +\n  geom_smooth(method = \"lm\", se = FALSE) +\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\", color = \"Titularitat\") +\n  theme_minimal()"
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#un-gràfic-per-grup-facet_wrap",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#un-gràfic-per-grup-facet_wrap",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "5. Un gràfic per grup: facet_wrap()",
+    "text": "5. Un gràfic per grup: facet_wrap()\nQuan hi ha molts grups, els colors es barregen. Millor fer un gràfic petit per a cada grup amb facet_wrap():\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang)) +\n  geom_point(alpha = 0.4, color = \"grey50\") +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"#6D071A\") +\n  facet_wrap(~ habitat) +                                 # un gràfic per hàbitat\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNota✍️ Prova-ho: un gràfic per nivell de matemàtiques (cliqueu per veure la solució)\n\n\n\n\n\nFeu un gràfic de dispersió de català i anglès amb un gràfic per a cada nivell de matemàtiques (nivell_mat).\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang)) +\n  geom_point(alpha = 0.4, color = \"steelblue\") +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"black\") +\n  facet_wrap(~ nivell_mat) +\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\") +\n  theme_minimal()"
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#escriure-hi-la-correlació",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#escriure-hi-la-correlació",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "6. Escriure-hi la correlació",
+    "text": "6. Escriure-hi la correlació\nAmb annotate() podem escriure un text en un punt concret del gràfic. Per exemple, la correlació, calculada abans i guardada en un objecte:\n\nr &lt;- competencies |&gt;                                       # calculem la correlació...\n  filter(!is.na(nota_cat), !is.na(nota_ang)) |&gt;\n  summarise(r = cor(nota_cat, nota_ang)) |&gt;\n  pull(r)                                                  # ...i en traiem el número\n\nggplot(competencies, aes(x = nota_cat, y = nota_ang)) +\n  geom_point(alpha = 0.4, color = \"grey50\") +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"#6D071A\") +\n  annotate(\"text\",                                         # un text...\n           x = 25, y = 95,                                 # ...en aquesta posició...\n           label = paste0(\"r = \", round(r, 2)),            # ...que diu això\n           size = 5, hjust = 0) +\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\npull() treu una columna d’una taula com a número (o vector), per poder-la fer servir fora de la taula."
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#el-model-al-gràfic-prediccions-i-residus",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#el-model-al-gràfic-prediccions-i-residus",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "7. El model al gràfic: prediccions i residus",
+    "text": "7. El model al gràfic: prediccions i residus\ngeom_smooth() dibuixa la recta, però no ens diu res de cada alumne. Si volem veure la predicció i el residu de cada punt (com a les slides), primer els calculem amb el model i després els dibuixem.\nPrimer, ens quedem amb els alumnes que tenen les dues notes, ajustem el model i hi afegim dues columnes: la nota predita i el residu.\n\nnotes &lt;- competencies |&gt;\n  filter(!is.na(nota_cat), !is.na(nota_ang))              # només els alumnes amb les dues notes\n\nmodel &lt;- lm(nota_ang ~ nota_cat, data = notes)             # el model\n\nnotes &lt;- notes |&gt;\n  mutate(predita = predict(model),                         # la nota d'anglès que prediu la recta\n         residu  = nota_ang - predita)                     # real menys predita\n\nnotes |&gt;\n  select(nota_cat, nota_ang, predita, residu) |&gt;\n  head(5)\n\n# A tibble: 5 × 4\n  nota_cat nota_ang predita  residu\n     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;\n1     86.8     88.7    88.5   0.172\n2     33.9     82.6    46.9  35.7  \n3     78.5     95.6    82.0  13.6  \n4     74.8     59      79.1 -20.1  \n5     89.9    100      90.9   9.06 \n\n\nAra dibuixem la recta a partir dels coeficients del model amb geom_abline(), i el residu de cada alumne com un segment vertical amb geom_segment(). Per no omplir el gràfic, ho fem només amb 40 alumnes a l’atzar:\n\nset.seed(4)                                                # perquè surtin sempre els mateixos 40\nmostra &lt;- notes |&gt;\n  slice_sample(n = 40)                                     # 40 alumnes a l'atzar\n\nggplot(mostra, aes(x = nota_cat, y = nota_ang)) +\n  geom_abline(intercept = coef(model)[1],                  # la recta del model:\n              slope = coef(model)[2],                      # intercept i pendent\n              color = \"#6D071A\", linewidth = 1.2) +\n  geom_segment(aes(xend = nota_cat, yend = predita),       # de cada punt fins a la recta:\n               linetype = \"dashed\", color = \"grey50\") +    # el residu\n  geom_point(size = 2) +\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\",\n       caption = \"Línies discontínues: el residu de cada alumne\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nI quin alumne s’allunya més del que prediu el model? El de residu més negatiu (arrange() ordena de menys a més):\n\nextrem &lt;- notes |&gt;\n  arrange(residu) |&gt;                                       # de menys a més residu\n  head(1)                                                  # el primer: el més negatiu\n\nextrem |&gt;\n  select(nota_cat, nota_ang, predita, residu)\n\n# A tibble: 1 × 4\n  nota_cat nota_ang predita residu\n     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;\n1     83.5     44.3    85.9  -41.6\n\nggplot(notes, aes(x = nota_cat, y = nota_ang)) +\n  geom_point(alpha = 0.3, color = \"grey50\") +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"#6D071A\") +\n  geom_point(data = extrem, size = 4, color = \"#6D071A\") + # l'alumne, destacat\n  annotate(\"text\", x = extrem$nota_cat - 2, y = extrem$nota_ang, hjust = 1,\n           label = \"Molta més nota de català que d'anglès\") +\n  labs(x = \"Nota de català\", y = \"Nota d'anglès\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nConsell\n\n\n\nFixeu-vos que, en el segon gràfic, el punt destacat fa servir unes altres dades (data = extrem): cada capa d’un gràfic pot tenir les seves.\n\n\n\n\n\n\n\n\nNota✍️ Prova-ho: el gràfic de residus (cliqueu per veure la solució)\n\n\n\n\n\nPer comprovar els supòsits del model (vegeu l’explicació dels supòsits), es fa un gràfic amb la nota predita a l’eix X i el residu a l’eix Y, i una línia horitzontal al 0 (geom_hline(yintercept = 0)). Feu-lo amb la taula notes. Els punts fan un núvol sense forma, o hi veieu una corba o un embut?\n\nggplot(notes, aes(x = predita, y = residu)) +\n  geom_point(alpha = 0.4, color = \"steelblue\") +\n  geom_hline(yintercept = 0, linetype = \"dashed\") +           # la línia del 0\n  labs(x = \"Nota d'anglès predita\", y = \"Residu\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nUn núvol més o menys sense forma, centrat al 0, amb uns quants residus molt negatius: alumnes que treuen molta menys nota d’anglès de la que tocaria per la seva nota de català."
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#desar-el-gràfic",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#desar-el-gràfic",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "8. Desar el gràfic",
+    "text": "8. Desar el gràfic\nCom a la sessió 2, ggsave() desa l’últim gràfic que heu fet:\n\nggsave(\"dispersio_cat_ang.png\", width = 8, height = 5)"
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#xuleta",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#xuleta",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "Xuleta",
+    "text": "Xuleta\n\n\n\n\n\n\n\nVull…\nCodi\n\n\n\n\nDiagrama de dispersió\nggplot(dades, aes(x = X, y = Y)) + geom_point()\n\n\nPunts transparents\ngeom_point(alpha = 0.4)\n\n\nRecta de regressió\n+ geom_smooth(method = \"lm\")\n\n\n… sense la franja\ngeom_smooth(method = \"lm\", se = FALSE)\n\n\nColor i recta per grup\naes(x = X, y = Y, color = grup)\n\n\nColors a mà\n+ scale_color_manual(values = c(\"A\" = \"red\", \"B\" = \"blue\"))\n\n\nUn gràfic per grup\n+ facet_wrap(~ grup)\n\n\nEscriure un text\n+ annotate(\"text\", x = ..., y = ..., label = \"...\")\n\n\nPredicció i residu de cada cas\nmutate(predita = predict(model), residu = Y - predita)\n\n\nLa recta a partir del model\n+ geom_abline(intercept = coef(model)[1], slope = coef(model)[2])\n\n\nEls residus com a segments\n+ geom_segment(aes(xend = X, yend = predita))\n\n\nUna capa amb altres dades\n+ geom_point(data = altres_dades)\n\n\nTítols\n+ labs(x = \"...\", y = \"...\", title = \"...\")\n\n\nDesar\nggsave(\"fitxer.png\", width = 8, height = 5)"
+  },
+  {
+    "objectID": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#per-anar-més-lluny",
+    "href": "sessio-4/explicacions/tutorial_ggplot2_dispersio.html#per-anar-més-lluny",
+    "title": "Tutorial: gràfics de dispersió amb ggplot2",
+    "section": "Per anar més lluny",
+    "text": "Per anar més lluny\n\nTutorial de primers gràfics (sessió 2) i de gràfics bivariats (sessió 3).\nR for Data Science, capítol «Data visualization» (en anglès).\nXuleta oficial de ggplot2 (PDF, en anglès)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html",
+    "href": "sessio-4/explicacions/03_suposits_model.html",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "",
+    "text": "NotaQuè hi trobareu?\n\n\n\nA les slides hem vist, en una sola slide, quan no ens podem fiar d’un model de regressió: les quatre lletres LINE. Aquí veurem cada supòsit amb un exemple que sí el compleix i un que no, com es comprova amb els gràfics dels residus i què fer si no es compleix. No cal entendre el codi (és plegat): n’hi ha prou de llegir el text i mirar els gràfics."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#per-què-importen-els-supòsits",
+    "href": "sessio-4/explicacions/03_suposits_model.html#per-què-importen-els-supòsits",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "1. Per què importen els supòsits?",
+    "text": "1. Per què importen els supòsits?\nLa recta de mínims quadrats sempre es pot calcular, i el pendent sempre descriu la tendència de les dades. Els supòsits importen quan volem anar més enllà: perquè els p-valors, els intervals de confiança i les prediccions siguin fiables.\nEls supòsits són quatre (en anglès, LINE):\n\n\n\n\n\n\n\n\n\nSupòsit\nEn paraules\n\n\n\n\nL\nLinealitat\nLa relació és una línia recta, no una corba\n\n\nI\nIndependència\nCada cas és independent dels altres\n\n\nN\nNormalitat\nEls errors (residus) tenen forma de campana\n\n\nE\nIgualtat de variàncies\nLa dispersió dels punts al voltant de la recta és igual per a tota la X\n\n\n\nGairebé tots es comproven mirant els residus: la distància de cada punt a la recta (vegeu l’explicació 2)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#els-gràfics-dels-residus-un-model-que-compleix",
+    "href": "sessio-4/explicacions/03_suposits_model.html#els-gràfics-dels-residus-un-model-que-compleix",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "2. Els gràfics dels residus: un model que compleix",
+    "text": "2. Els gràfics dels residus: un model que compleix\nEl model de les slides (abstenció segons atur a Barcelona). Fem tres gràfics dels residus:\n\n\nCodi\nmodel_bcn &lt;- lm(abstencio ~ perc_atur, data = bcn)\ndiagnosi(model_bcn)\n\n\n\n\n\n\n\n\n\nCom es llegeixen?\n\nResidus vs. predits (esquerra): els punts han de fer un núvol sense forma, centrat al 0. Si fan una corba, falla la linealitat (L). Si fan forma d’embut, falla la igualtat de variàncies (E).\nHistograma (centre): ha de tenir forma de campana. Si no, falla la normalitat (N).\nQQ-plot (dreta): els punts han de seguir la línia (com a la sessió 3).\n\nEn el nostre model, tot és raonable: un núvol sense forma clara, una campana i un QQ-plot que segueix la línia (amb les cues una mica allunyades, cosa habitual i sense importància amb 1.068 casos)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#l-quan-la-relació-no-és-una-línia",
+    "href": "sessio-4/explicacions/03_suposits_model.html#l-quan-la-relació-no-és-una-línia",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "3. L: quan la relació no és una línia",
+    "text": "3. L: quan la relació no és una línia\nSimulem una relació en forma de corba i hi ajustem, malament, una recta:\n\n\nCodi\ncorba &lt;- tibble(x = runif(200, 0, 10)) |&gt;\n  mutate(y = 5 + 2 * x - 0.25 * x^2 + rnorm(200, 0, 1))\n\nggplot(corba, aes(x = x, y = y)) +\n  geom_point(alpha = 0.5) +\n  geom_smooth(method = \"lm\", se = FALSE, color = bordeus) +\n  labs(title = \"Les dades i la recta\") +\n  theme_minimal()\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\nCodi\ndiagnosi(lm(y ~ x, data = corba))\n\n\n\n\n\n\n\n\n\nAl gràfic de residus vs. predits, els punts fan una U invertida: la recta s’equivoca sistemàticament (queda per sobre de les dades als extrems i per sota al mig). La recta no és un bon resum d’aquestes dades.\nQuè fer? El primer, mirar el diagrama de dispersió abans de fer el model. Si és una corba, es pot transformar alguna variable o fer servir models més flexibles."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#e-quan-la-dispersió-no-és-igual-lembut",
+    "href": "sessio-4/explicacions/03_suposits_model.html#e-quan-la-dispersió-no-és-igual-lembut",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "4. E: quan la dispersió no és igual (l’embut)",
+    "text": "4. E: quan la dispersió no és igual (l’embut)\nSimulem unes dades on, com més gran és X, més escampats estan els punts (com passa sovint amb ingressos o preus):\n\n\nCodi\nembut &lt;- tibble(x = runif(200, 0, 10)) |&gt;\n  mutate(y = 10 + 2 * x + rnorm(200, 0, 0.5 + 0.6 * x))\n\nggplot(embut, aes(x = x, y = y)) +\n  geom_point(alpha = 0.5) +\n  geom_smooth(method = \"lm\", se = FALSE, color = bordeus) +\n  labs(title = \"Les dades i la recta\") +\n  theme_minimal()\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\nCodi\ndiagnosi(lm(y ~ x, data = embut))\n\n\n\n\n\n\n\n\n\nAl gràfic de residus vs. predits, els punts fan forma d’embut: estrets a l’esquerra i amples a la dreta. La recta continua sent un bon resum de la tendència, però els errors estàndard (i, per tant, els p-valors i els intervals) no són fiables.\nQuè fer? Sovint ho arregla transformar la Y amb el logaritme (apartat següent). També hi ha errors estàndard «robustos», que ja queden fora del curs."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#n-quan-els-residus-no-són-normals",
+    "href": "sessio-4/explicacions/03_suposits_model.html#n-quan-els-residus-no-són-normals",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "5. N: quan els residus no són normals",
+    "text": "5. N: quan els residus no són normals\nSimulem una Y amb una cua llarga a la dreta (com els ingressos: molts valors moderats i uns pocs de molt grans):\n\n\nCodi\nasimetrica &lt;- tibble(x = runif(150, 1, 10)) |&gt;\n  mutate(y = exp(1 + 0.2 * x + rnorm(150, 0, 0.5)))\n\ndiagnosi(lm(y ~ x, data = asimetrica))\n\n\n\n\n\n\n\n\n\nL’histograma dels residus no és una campana (té una cua a la dreta) i el QQ-plot fa una corba. A més, hi ha una mica d’embut.\nQuè fer? Una solució habitual és fer el model amb el logaritme de Y, que «comprimeix» els valors grans:\n\n\nCodi\nasimetrica &lt;- asimetrica |&gt;\n  mutate(log_y = log(y))\n\ndiagnosi(lm(log_y ~ x, data = asimetrica))\n\n\n\n\n\n\n\n\n\nAra els residus tenen forma de campana, el QQ-plot segueix la línia i ja no hi ha embut.\n\n\n\n\n\n\nConsellCom s’interpreta un model amb log(Y)?\n\n\n\nEl pendent ja no és «quant augmenta Y», sinó, aproximadament, en quin percentatge augmenta. Per exemple, un pendent de 0,20 vol dir que per cada unitat més de X, Y augmenta un 20 % (aproximadament: \\((e^{0{,}20} - 1) \\times 100 \\approx 22 \\%\\)).\n\n\nRecordeu també la sessió 3: amb mostres grans, la normalitat dels residus importa poc (pel teorema del límit central)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#i-quan-els-casos-no-són-independents",
+    "href": "sessio-4/explicacions/03_suposits_model.html#i-quan-els-casos-no-són-independents",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "6. I: quan els casos no són independents",
+    "text": "6. I: quan els casos no són independents\nLa independència no es veu en els gràfics de residus: depèn de com s’han recollit les dades. Els casos no són independents quan, per exemple:\n\nHi ha mesures repetides de les mateixes persones (abans i després d’una intervenció).\nLes dades són en el temps (l’atur d’aquest mes s’assembla al del mes passat).\nEls casos són agrupats (alumnes de la mateixa escola, seccions censals del mateix barri).\n\nEn les seccions censals, les seccions veïnes s’assemblen entre si, i això fa que els errors estàndard siguin una mica optimistes. Per a una primera anàlisi descriptiva no és greu, però cal tenir-ho present. Si les dades tenen una estructura així, calen models específics (models multinivell, sèries temporals…)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#què-fer-en-resum",
+    "href": "sessio-4/explicacions/03_suposits_model.html#què-fer-en-resum",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "7. Què fer, en resum",
+    "text": "7. Què fer, en resum\n\n\n\n\n\n\n\n\nSi veieu…\nProblema\nQuè fer\n\n\n\n\nUna corba al diagrama de dispersió o als residus\nL\nNo fer una recta; transformar alguna variable\n\n\nCasos repetits, en el temps o agrupats\nI\nModels específics (fora del curs)\n\n\nResidus asimètrics, amb mostres petites\nN\nTransformar Y amb el logaritme\n\n\nUn embut als residus\nE\nTransformar Y amb el logaritme\n\n\n\n\n\n\n\n\n\nConsellUna drecera de R\n\n\n\nplot(model) dibuixa directament els gràfics de diagnosi d’un model (són de R base, sense ggplot2). Premeu Enter a la consola per passar d’un gràfic al següent."
+  },
+  {
+    "objectID": "sessio-4/explicacions/03_suposits_model.html#en-resum",
+    "href": "sessio-4/explicacions/03_suposits_model.html#en-resum",
+    "title": "Els supòsits del model lineal, pas a pas",
+    "section": "En resum",
+    "text": "En resum\n\nEls supòsits importen per poder fiar-nos dels p-valors, els intervals i les prediccions.\nEs comproven, sobretot, amb els gràfics dels residus: un núvol sense forma, una campana i un QQ-plot que segueix la línia.\nEl més important, i el més fàcil: mirar el diagrama de dispersió abans de fer el model.\nAmb mostres grans, la normalitat importa poc. La linealitat i la independència, sempre."
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html",
+    "title": "La correlació, pas a pas",
+    "section": "",
+    "text": "NotaQuè hi trobareu?\n\n\n\nA les slides hem vist que el coeficient de correlació r resumeix en un número la direcció i la força d’una relació lineal. Aquí veurem, amb el mateix exemple de les slides, què mesura realment, com es calcula, per què els valors atípics i les terceres variables el poden enganyar, i d’on surt el p-valor de cor.test(). No cal entendre el codi (és plegat): n’hi ha prou de llegir el text i mirar els gràfics."
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#on-érem-atur-i-abstenció-a-barcelona",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#on-érem-atur-i-abstenció-a-barcelona",
+    "title": "La correlació, pas a pas",
+    "section": "1. On érem: atur i abstenció a Barcelona",
+    "text": "1. On érem: atur i abstenció a Barcelona\nLes 1.068 seccions censals de Barcelona a les eleccions al Parlament del 2021. Cada punt és una secció:\n\n\nCodi\nggplot(bcn, aes(x = perc_atur, y = abstencio)) +\n  geom_point(alpha = 0.3, color = bordeus) +\n  labs(x = \"% d'atur\", y = \"% d'abstenció\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCodi\nbcn |&gt;\n  summarise(r = cor(perc_atur, abstencio))\n\n\n# A tibble: 1 × 1\n      r\n  &lt;dbl&gt;\n1 0.847\n\n\nr = 0,85: una relació positiva i forta. Però què vol dir, exactament, aquest número?"
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#la-idea-els-quatre-quadrants",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#la-idea-els-quatre-quadrants",
+    "title": "La correlació, pas a pas",
+    "section": "2. La idea: els quatre quadrants",
+    "text": "2. La idea: els quatre quadrants\nDibuixem una línia a la mitjana de l’atur (vertical) i una altra a la mitjana de l’abstenció (horitzontal). El gràfic queda dividit en quatre quadrants:\n\n\nCodi\nmitjana_x &lt;- mean(bcn$perc_atur)\nmitjana_y &lt;- mean(bcn$abstencio)\n\nquadrants &lt;- bcn |&gt;\n  mutate(quadrant = case_when(\n    perc_atur &gt;= mitjana_x & abstencio &gt;= mitjana_y ~ \"Tots dos per sobre\",\n    perc_atur &lt;  mitjana_x & abstencio &lt;  mitjana_y ~ \"Tots dos per sota\",\n    .default = \"Un per sobre i l'altre per sota\"\n  ))\n\nggplot(quadrants, aes(x = perc_atur, y = abstencio, color = quadrant)) +\n  geom_point(alpha = 0.5) +\n  geom_vline(xintercept = mitjana_x, linetype = \"dashed\") +\n  geom_hline(yintercept = mitjana_y, linetype = \"dashed\") +\n  scale_color_manual(values = c(\"Tots dos per sobre\" = bordeus,\n                                \"Tots dos per sota\" = bordeus,\n                                \"Un per sobre i l'altre per sota\" = \"grey70\")) +\n  labs(x = \"% d'atur\", y = \"% d'abstenció\", color = NULL) +\n  theme_minimal() +\n  theme(legend.position = \"bottom\")\n\n\n\n\n\n\n\n\n\nCodi\nquadrants |&gt;\n  count(quadrant) |&gt;\n  mutate(percentatge = n / sum(n) * 100)\n\n\n# A tibble: 3 × 3\n  quadrant                            n percentatge\n  &lt;chr&gt;                           &lt;int&gt;       &lt;dbl&gt;\n1 Tots dos per sobre                359        33.6\n2 Tots dos per sota                 512        47.9\n3 Un per sobre i l'altre per sota   197        18.4\n\n\n\nSi les dues variables pugen juntes, la majoria de punts són als quadrants on totes dues són per sobre de la mitjana o totes dues per sota (en color). La correlació és positiva.\nSi quan una puja l’altra baixa, la majoria de punts són als quadrants grisos. La correlació és negativa.\nSi els punts es reparteixen per igual pels quatre quadrants, no hi ha relació: \\(r \\approx 0\\).\n\nA Barcelona, la gran majoria de seccions són als quadrants de color: per això la correlació és positiva i forta."
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#la-fórmula-pas-a-pas",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#la-fórmula-pas-a-pas",
+    "title": "La correlació, pas a pas",
+    "section": "3. La fórmula, pas a pas",
+    "text": "3. La fórmula, pas a pas\nLa correlació converteix aquesta idea en un número. Per a cada secció:\n\nCalculem com d’allunyada és de la mitjana en atur (\\(x - \\bar{x}\\)) i en abstenció (\\(y - \\bar{y}\\)).\nLes multipliquem. El producte és positiu si totes dues són per sobre (o totes dues per sota) de la mitjana, i negatiu si una és per sobre i l’altra per sota.\nSumem tots els productes i ho dividim per \\((n - 1)\\) i per les desviacions típiques, perquè el resultat quedi sempre entre \\(-1\\) i \\(+1\\):\n\n\\[r = \\frac{\\sum (x - \\bar{x})(y - \\bar{y})}{(n - 1) \\cdot s_x \\cdot s_y}\\]\n\n\nCodi\ncalcul &lt;- bcn |&gt;\n  mutate(dist_x   = perc_atur - mean(perc_atur),   # distància a la mitjana de l'atur\n         dist_y   = abstencio - mean(abstencio),   # distància a la mitjana de l'abstenció\n         producte = dist_x * dist_y)               # positiu o negatiu segons el quadrant\n\ncalcul |&gt;\n  select(perc_atur, abstencio, dist_x, dist_y, producte) |&gt;\n  head(5)\n\n\n# A tibble: 5 × 5\n  perc_atur abstencio dist_x dist_y producte\n      &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;\n1      15.6      58.3   4.65  15.2      70.9\n2      18.0      62.8   7.01  19.8     138. \n3      19.4      61.2   8.41  18.1     152. \n4      16.3      49.9   5.31   6.86     36.4\n5      21.7      64.6  10.7   21.5     230. \n\n\nCodi\ncalcul |&gt;\n  summarise(n = n(),\n            suma_productes = sum(producte),\n            r = suma_productes / ((n - 1) * sd(perc_atur) * sd(abstencio)))\n\n\n# A tibble: 1 × 3\n      n suma_productes     r\n  &lt;int&gt;          &lt;dbl&gt; &lt;dbl&gt;\n1  1068         35943. 0.847\n\n\nEl mateix valor que cor(). Fixeu-vos que la correlació no depèn de les unitats: si l’atur estigués en tant per u en lloc de percentatge, r seria exactament igual."
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#els-valors-atípics",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#els-valors-atípics",
+    "title": "La correlació, pas a pas",
+    "section": "4. Els valors atípics",
+    "text": "4. Els valors atípics\nCom que r suma els productes de tots els punts, un sol punt molt allunyat pot pesar molt. Vegem-ho amb 10 punts inventats i un d’afegit:\n\n\nCodi\nbase &lt;- tibble(x = 1:10) |&gt; mutate(y = 2 + 0.5 * x + rnorm(10, sd = 1))\ncasos &lt;- list(\n  \"1. Sense atípics\"      = base,\n  \"2. Atípic en Y\"        = bind_rows(base, tibble(x = 5,  y = 20)),\n  \"3. Atípic en X\"        = bind_rows(base, tibble(x = 20, y = 11)),\n  \"4. Atípic en X i en Y\" = bind_rows(base, tibble(x = 20, y = 20))\n)\natipics &lt;- imap_dfr(casos, \\(d, nom) d |&gt; mutate(cas = nom))\netiquetes &lt;- atipics |&gt;\n  group_by(cas) |&gt;\n  summarise(r = paste0(\"r = \", num(cor(x, y))))\n\nggplot(atipics, aes(x = x, y = y)) +\n  geom_smooth(method = \"lm\", se = FALSE, color = bordeus) +\n  geom_point(size = 2) +\n  geom_text(data = etiquetes, aes(x = 0, y = 20, label = r), hjust = 0) +\n  facet_wrap(~ cas, nrow = 1) +\n  theme_minimal()\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\n\nUn atípic només en Y (2) fa baixar la correlació: el punt queda lluny de la recta.\nUn atípic en X, però que segueix la tendència (3), la pot fer pujar.\nUn atípic en X i en Y (4) pot canviar molt la recta i la r.\n\nQuè en fem? Primer, mirar-lo: és un error (una dada mal escrita)? Un cas real però excepcional? Un cas interessant per si mateix? Si no és un error, es pot calcular la correlació amb i sense el cas i explicar la diferència."
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#correlació-no-és-causalitat",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#correlació-no-és-causalitat",
+    "title": "La correlació, pas a pas",
+    "section": "5. Correlació no és causalitat",
+    "text": "5. Correlació no és causalitat\nL’atur i l’abstenció van molt junts. Però això no vol dir que l’atur provoqui l’abstenció. Hi pot haver una tercera variable relacionada amb totes dues. A Barcelona, la candidata òbvia és la renda:\n\n\nCodi\nbcn |&gt;\n  summarise(atur_abstencio  = cor(perc_atur, abstencio),\n            renda_abstencio = cor(renda_persona, abstencio),\n            renda_atur      = cor(renda_persona, perc_atur))\n\n\n# A tibble: 1 × 3\n  atur_abstencio renda_abstencio renda_atur\n           &lt;dbl&gt;           &lt;dbl&gt;      &lt;dbl&gt;\n1          0.847          -0.829     -0.785\n\n\nCodi\nggplot(bcn, aes(x = perc_atur, y = abstencio, color = renda_persona / 1000)) +\n  geom_point(alpha = 0.7) +\n  scale_color_gradient(low = bordeus, high = \"#F2E3E6\") +\n  labs(x = \"% d'atur\", y = \"% d'abstenció\",\n       color = \"Renda per\\npersona\\n(milers d'€)\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nLes seccions amb menys renda (color fosc) són les que tenen més atur i més abstenció. Part de la relació entre l’atur i l’abstenció pot ser deguda a la renda. Per separar els dos efectes, cal la regressió múltiple (vegeu l’explicació 4)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#és-significativa",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#és-significativa",
+    "title": "La correlació, pas a pas",
+    "section": "6. És significativa?",
+    "text": "6. És significativa?\nUna mostra pot donar una correlació diferent de 0 per pura casualitat. Per veure-ho, fem el mateix que a la sessió 3: barregem a l’atzar l’abstenció entre les seccions (així, per construcció, no té cap relació amb l’atur) i calculem la r. Ho repetim 5.000 vegades, amb totes les seccions i amb només 15 seccions agafades a l’atzar:\n\n\nCodi\nr_barrejada &lt;- function(dades) {\n  cor(dades$perc_atur, sample(dades$abstencio))\n}\n\nmostra_15 &lt;- bcn |&gt; slice_sample(n = 15)\n\nsimulacions &lt;- bind_rows(\n  tibble(mida = \"Mostra de 15 seccions\",   r = map_dbl(1:5000, \\(i) r_barrejada(mostra_15))),\n  tibble(mida = \"Totes les 1.068 seccions\", r = map_dbl(1:5000, \\(i) r_barrejada(bcn)))\n)\n\nggplot(simulacions, aes(x = r)) +\n  geom_histogram(binwidth = 0.02, fill = bordeus_clar, color = \"white\") +\n  geom_vline(xintercept = cor(bcn$perc_atur, bcn$abstencio), color = bordeus, linewidth = 1.2) +\n  facet_wrap(~ mida, ncol = 1) +\n  labs(title = \"Valors de r quan NO hi ha relació (5.000 simulacions)\",\n       subtitle = \"Línia: la r de les nostres dades\",\n       x = \"r\", y = \"Nombre de simulacions\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCodi\npercentatges &lt;- simulacions |&gt;\n  group_by(mida) |&gt;\n  summarise(percentatge_r_mes_gran_de_0_5 = mean(abs(r) &gt; 0.5) * 100)\n\npercentatges\n\n\n# A tibble: 2 × 2\n  mida                     percentatge_r_mes_gran_de_0_5\n  &lt;chr&gt;                                            &lt;dbl&gt;\n1 Mostra de 15 seccions                             6.08\n2 Totes les 1.068 seccions                          0   \n\n\n\nAmb 15 seccions, les r per atzar s’escampen molt: encara que no hi hagi cap relació, un 6,1 % de les vegades surt una correlació més gran de 0,5 (o més petita de −0,5).\nAmb 1.068 seccions, les r per atzar són minúscules (quasi sempre entre −0,1 i 0,1). La nostra (0,85) és impossible per atzar.\n\nAixò és el que fa cor.test(): calcula la probabilitat de trobar una r com la nostra si a la població no hi hagués relació (el p-valor).\n\n\nCodi\ncor.test(bcn$perc_atur, bcn$abstencio)\n\n\n\n    Pearson's product-moment correlation\n\ndata:  bcn$perc_atur and bcn$abstencio\nt = 51.969, df = 1066, p-value &lt; 2.2e-16\nalternative hypothesis: true correlation is not equal to 0\n95 percent confidence interval:\n 0.8288760 0.8629157\nsample estimates:\n      cor \n0.8467604 \n\n\nAmb mostres grans, gairebé qualsevol correlació és significativa. Per això, més que el p-valor, importa com de forta és la relació."
+  },
+  {
+    "objectID": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#en-resum",
+    "href": "sessio-4/explicacions/01_correlacio_pas_a_pas.html#en-resum",
+    "title": "La correlació, pas a pas",
+    "section": "En resum",
+    "text": "En resum\n\nLa correlació mira si els punts tendeixen a estar alhora per sobre o per sota de les mitjanes.\nr va de \\(-1\\) a \\(+1\\) i no depèn de les unitats.\nNomés mesura relacions lineals, i un sol atípic la pot canviar molt: mireu sempre el gràfic.\nCorrelació no és causalitat: pot haver-hi una tercera variable.\nAmb mostres petites, correlacions grans poden sortir per atzar; cor.test() ens diu si la nostra és significativa."
+  },
+  {
     "objectID": "sessio-3/explicacions/tutorial_ggplot2_bivariada.html",
     "href": "sessio-3/explicacions/tutorial_ggplot2_bivariada.html",
     "title": "Tutorial: gràfics bivariats amb ggplot2",
@@ -410,7 +613,49 @@
     "href": "sessio-4/index.html",
     "title": "Sessió 4 · Correlació i regressió",
     "section": "",
-    "text": "Relacions entre dues variables quantitatives: correlació i regressió lineal simple amb R, i interpretació dels coeficients i dels principals resultats del model.\n\n\n\n\n\n\nNota\n\n\n\nEls materials d’aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió."
+    "text": "Relacions entre dues variables numèriques: el diagrama de dispersió, la correlació de Pearson i la regressió lineal. Amb R: el gràfic de dispersió, cor(), lm() i predict(). I, com que és l’última sessió, un tancament del curs: què hem après i com continuar pel vostre compte."
+  },
+  {
+    "objectID": "sessio-4/index.html#slides",
+    "href": "sessio-4/index.html#slides",
+    "title": "Sessió 4 · Correlació i regressió",
+    "section": "Slides",
+    "text": "Slides\n\nSlides de la sessió 4 · Correlació, regressió lineal, R, pràctica i tancament del curs"
+  },
+  {
+    "objectID": "sessio-4/index.html#materials",
+    "href": "sessio-4/index.html#materials",
+    "title": "Sessió 4 · Correlació i regressió",
+    "section": "Materials",
+    "text": "Materials\n\n\n\n\n\n\nConsell⬇ Descarregar els materials de la sessió 4 (zip)\n\n\n\n\n\n\nPas a pas:\n\nDescarregueu el zip i descomprimiu-lo (botó dret → Extreu-ho tot). No treballeu des de dins del zip!\nEntreu a la carpeta descomprimida i feu doble clic a sessio_4.Rproj.\nAl panell Files de RStudio, obriu la carpeta codi/ i l’script que vulgueu.\n\nUn cop descomprimit, trobareu:\nsessio-4/\n├── sessio_4.Rproj                  ← obriu aquest fitxer amb RStudio\n├── dades/\n│   ├── competencies.csv            Les dades netes de les sessions 2 i 3 (480 alumnes)\n│   └── seccions_censals.csv        Seccions censals: abstenció, atur, renda... (exemples i part opcional)\n└── codi/\n    ├── 01_correlacio_regressio.R   El codi de les slides\n    └── exercici_sessio_4.R         Plantilla de la pràctica"
+  },
+  {
+    "objectID": "sessio-4/index.html#pràctica-correlació-i-regressió-amb-r",
+    "href": "sessio-4/index.html#pràctica-correlació-i-regressió-amb-r",
+    "title": "Sessió 4 · Correlació i regressió",
+    "section": "Pràctica: correlació i regressió amb R",
+    "text": "Pràctica: correlació i regressió amb R\nAmb el projecte de la sessió 4 (sessio_4.Rproj) i la plantilla codi/exercici_sessio_4.R. El pas 1 (importar les dades) ja està fet: només cal executar-lo. El codi nou (gràfics, lm(), summary(), predict(), cor.test()) també hi és: l’heu d’executar i interpretar. El que ja sabeu fer (filter(), summarise(), group_by()…) l’escriviu vosaltres.\nPart A. Correlació: les notes de català i d’anglès, van juntes?\n\nGràfic de dispersió de la nota de català i la d’anglès, amb la recta.\nCorrelació entre català i anglès, amb summarise() i cor().\nLes tres parelles d’assignatures: quina relació és més forta?\nPer grups: la correlació, és igual per a nois i noies? I per titularitat?\n\nPart B. Regressió lineal\n\nModel de la nota d’anglès segons la de català: el pendent, l’intercept, el p-valor i el \\(R^2\\).\nPrediccions amb predict(): quina nota d’anglès esperem amb un 50 i un 90 de català?\nUna X categòrica: la nota de matemàtiques segons la titularitat. Què vol dir el coeficient?\nÉs significativa la correlació? cor.test(): el p-valor i l’interval de confiança.\n\nComenteu i interpreteu els resultats de cada pas en paraules.\nQuè cal lliurar: l’script exercici_sessio_4.R complet i comentat, per correu electrònic a joelardiacaarnau@gencat.cat.\n\n\n\n\n\n\nConsellJa ho teniu tot? Part opcional\n\n\n\n\nAnàlisi de les seccions censals: l’abstenció, l’atur i la renda a 1.469 seccions de quatre municipis, amb menys pistes. Descriure, correlacions, regressió simple, una X categòrica comparada amb el t-test, regressió múltiple i conclusions.\nTutorial: gràfics de dispersió amb ggplot2: colors per grup, un gràfic per grup, el model i els residus al gràfic, pas a pas.\n\n\n\n\n\n\n\n\n\nNotaSolució\n\n\n\nLa solució de la pràctica es publicarà aquí després de la sessió."
+  },
+  {
+    "objectID": "sessio-4/index.html#per-aprofundir-opcional",
+    "href": "sessio-4/index.html#per-aprofundir-opcional",
+    "title": "Sessió 4 · Correlació i regressió",
+    "section": "Per aprofundir (opcional)",
+    "text": "Per aprofundir (opcional)\nDocuments per llegir pel vostre compte, amb explicacions i gràfics. El codi R hi és plegat: no cal entendre’l per seguir l’explicació.\n\nLa correlació, pas a pas: què mesura r, com es calcula, els valors atípics, les terceres variables i d’on surt el p-valor.\nLa regressió lineal, pas a pas: els residus, els mínims quadrats, el \\(R^2\\) i la sortida de summary() número a número.\nEls supòsits del model lineal: com es comproven amb els gràfics dels residus i què fer si no es compleixen.\nRegressió múltiple i interaccions: separar efectes que van junts i efectes que depenen d’una altra variable.\n\nGràfics\n\nTutorial: gràfics de dispersió amb ggplot2\nTutorials anteriors: primers gràfics (sessió 2) i gràfics bivariats (sessió 3)"
+  },
+  {
+    "objectID": "sessio-4/index.html#i-ara-què",
+    "href": "sessio-4/index.html#i-ara-què",
+    "title": "Sessió 4 · Correlació i regressió",
+    "section": "I ara, què?",
+    "text": "I ara, què?\nLa pàgina de Recursos té llibres, xuletes i dades per continuar practicant pel vostre compte."
+  },
+  {
+    "objectID": "sessio-4/index.html#fonts-de-les-dades",
+    "href": "sessio-4/index.html#fonts-de-les-dades",
+    "title": "Sessió 4 · Correlació i regressió",
+    "section": "Fonts de les dades",
+    "text": "Fonts de les dades\n\nCompetències bàsiques: mostra de l’avaluació de competències bàsiques de 6è de primària (2023) del Departament d’Educació, publicada al portal de dades obertes de la Generalitat.\nSeccions censals: resultats de les eleccions al Parlament de Catalunya 2021 i dades sociodemogràfiques per secció censal (INE i Idescat)."
   },
   {
     "objectID": "sessio-2/index.html",
@@ -922,5 +1167,110 @@
     "title": "Proves de normalitat",
     "section": "En resum",
     "text": "En resum\n\n\n\n\n\n\n\n\nGrups\nVariable normal?\nQuè fem\n\n\n\n\nGrans (30 o més per grup)\nTant és\nt-test o ANOVA, sense por\n\n\nPetits\nSí (els gràfics no mostren res estrany)\nt-test o ANOVA\n\n\nPetits\nNo (asimetria clara o valors extrems)\nTest no paramètric: wilcox.test() o kruskal.test()\n\n\n\nSempre, primer: mirar l’histograma."
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html",
+    "title": "La regressió lineal, pas a pas",
+    "section": "",
+    "text": "NotaQuè hi trobareu?\n\n\n\nA les slides hem vist que lm() troba la recta que millor s’ajusta als punts, i que del summary() en mirem els coeficients, el p-valor i el \\(R^2\\). Aquí veurem, amb el mateix exemple, com troba R la recta, què és el \\(R^2\\), què vol dir cada número del summary() i d’on surt el p-valor del pendent. No cal entendre el codi (és plegat): n’hi ha prou de llegir el text i mirar els gràfics."
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html#on-érem-abstenció-segons-atur",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html#on-érem-abstenció-segons-atur",
+    "title": "La regressió lineal, pas a pas",
+    "section": "1. On érem: abstenció segons atur",
+    "text": "1. On érem: abstenció segons atur\n\n\nCodi\nmodel\n\n\n\nCall:\nlm(formula = abstencio ~ perc_atur, data = bcn)\n\nCoefficients:\n(Intercept)    perc_atur  \n      21.33         1.98  \n\n\n\\[\\widehat{\\text{abstenció}} = 21,33 + 1,98 \\cdot \\text{atur}\\]\nPer cada punt més d’atur, l’abstenció és, de mitjana, 1,98 punts més alta. Però per què aquesta recta, i no una altra?"
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html#els-errors-residus",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html#els-errors-residus",
+    "title": "La regressió lineal, pas a pas",
+    "section": "2. Els errors (residus)",
+    "text": "2. Els errors (residus)\nPer a cada secció, la recta fa una predicció (\\(\\hat{y}\\)). La diferència entre l’abstenció real i la predita és l’error o residu:\n\\[\\text{residu} = y - \\hat{y}\\]\n\n\nCodi\nresidus &lt;- bcn |&gt;\n  mutate(predita = predict(model),             # l'abstenció que prediu la recta\n         residu  = abstencio - predita)         # real menys predita\n\nresidus |&gt;\n  select(seccio, perc_atur, abstencio, predita, residu) |&gt;\n  head(5)\n\n\n# A tibble: 5 × 5\n  seccio     perc_atur abstencio predita residu\n  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;\n1 0801901001      15.6      58.3    52.3  6.03 \n2 0801901002      18.0      62.8    56.9  5.88 \n3 0801901003      19.4      61.2    59.7  1.46 \n4 0801901004      16.3      49.9    53.6 -3.65 \n5 0801901005      21.7      64.6    64.2  0.318\n\n\nUn residu positiu vol dir que la secció s’absté més del que prediu la recta; un de negatiu, menys. Al gràfic, el residu és la distància vertical de cada punt a la recta (aquí, només 60 seccions, perquè es vegi):\n\n\nCodi\nresidus |&gt;\n  slice_sample(n = 60) |&gt;\n  ggplot(aes(x = perc_atur, y = abstencio)) +\n  geom_abline(intercept = coef(model)[1], slope = coef(model)[2], color = bordeus, linewidth = 1.2) +\n  geom_segment(aes(xend = perc_atur, yend = predita), linetype = \"dashed\", color = \"grey50\") +\n  geom_point(size = 2) +\n  labs(x = \"% d'atur\", y = \"% d'abstenció\") +\n  theme_minimal()"
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html#per-què-mínims-quadrats",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html#per-què-mínims-quadrats",
+    "title": "La regressió lineal, pas a pas",
+    "section": "3. Per què «mínims quadrats»?",
+    "text": "3. Per què «mínims quadrats»?\nCada recta possible deixa uns residus diferents. Per triar la millor, R eleva cada residu al quadrat (perquè els positius i els negatius no s’anul·lin) i els suma. La millor recta és la que fa aquesta suma mínima: d’aquí el nom de mínims quadrats.\nHo podem veure provant molts pendents diferents (cadascun amb el seu millor intercept) i calculant la suma dels residus al quadrat:\n\n\nCodi\nsuma_quadrats &lt;- function(pendent) {\n  intercept &lt;- mean(bcn$abstencio) - pendent * mean(bcn$perc_atur)\n  sum((bcn$abstencio - (intercept + pendent * bcn$perc_atur))^2)\n}\n\nproves &lt;- tibble(pendent = seq(1, 3, by = 0.02)) |&gt;\n  mutate(suma_quadrats = map_dbl(pendent, suma_quadrats))\n\nggplot(proves, aes(x = pendent, y = suma_quadrats / 1000)) +\n  geom_line(linewidth = 1) +\n  geom_vline(xintercept = coef(model)[2], color = bordeus, linewidth = 1.2) +\n  annotate(\"text\", x = coef(model)[2] + 0.05, y = max(proves$suma_quadrats) / 1000 * 0.9,\n           hjust = 0, color = bordeus,\n           label = paste0(\"Mínim: pendent = \", num(coef(model)[2]))) +\n  labs(x = \"Pendent de la recta\", y = \"Suma dels residus al quadrat (milers)\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nLa suma és mínima just al pendent que dona lm(). No cal provar-los tots: hi ha unes fórmules que el donen directament,\n\\[b = r \\cdot \\frac{s_y}{s_x} \\qquad a = \\bar{y} - b \\cdot \\bar{x}\\]\n\n\nCodi\nbcn |&gt;\n  summarise(r = cor(perc_atur, abstencio),\n            pendent   = r * sd(abstencio) / sd(perc_atur),\n            intercept = mean(abstencio) - pendent * mean(perc_atur))\n\n\n# A tibble: 1 × 3\n      r pendent intercept\n  &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;\n1 0.847    1.98      21.3\n\n\nFixeu-vos que el pendent depèn de la correlació: si \\(r = 0\\), el pendent és 0 (recta plana)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html#el-r2-quina-part-expliquem",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html#el-r2-quina-part-expliquem",
+    "title": "La regressió lineal, pas a pas",
+    "section": "4. El \\(R^2\\): quina part expliquem",
+    "text": "4. El \\(R^2\\): quina part expliquem\nSense saber res de l’atur, la millor predicció de l’abstenció de cada secció seria la mitjana de totes. Els errors d’aquesta predicció mesuren la variació total de l’abstenció. Amb la recta, els errors són més petits: la diferència és el que explica l’atur.\n\\[R^2 = 1 - \\frac{\\text{suma de quadrats dels residus (amb la recta)}}{\\text{suma de quadrats total (amb la mitjana)}}\\]\n\n\nCodi\nresidus |&gt;\n  summarise(sq_total   = sum((abstencio - mean(abstencio))^2),   # errors amb la mitjana\n            sq_residus = sum(residu^2),                          # errors amb la recta\n            r_quadrat  = 1 - sq_residus / sq_total)\n\n\n# A tibble: 1 × 3\n  sq_total sq_residus r_quadrat\n     &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;\n1   99234.     28083.     0.717\n\n\nAmb la recta, els errors (al quadrat) són un 72 % més petits que amb la mitjana: l’atur explica el 72 % de la variació de l’abstenció. I, en una regressió amb una sola X, el \\(R^2\\) és la correlació al quadrat: \\(0,85^2 = 0,72\\)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html#el-summary-número-a-número",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html#el-summary-número-a-número",
+    "title": "La regressió lineal, pas a pas",
+    "section": "5. El summary(), número a número",
+    "text": "5. El summary(), número a número\n\n\nCodi\nsummary(model)\n\n\n\nCall:\nlm(formula = abstencio ~ perc_atur, data = bcn)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-21.0230  -3.3103  -0.1281   3.0342  18.9882 \n\nCoefficients:\n            Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept) 21.33351    0.44662   47.77   &lt;2e-16 ***\nperc_atur    1.97954    0.03809   51.97   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 5.133 on 1066 degrees of freedom\nMultiple R-squared:  0.717, Adjusted R-squared:  0.7167 \nF-statistic:  2701 on 1 and 1066 DF,  p-value: &lt; 2.2e-16\n\n\n\n\n\n\n\n\n\nPart\nQuè és\n\n\n\n\nResiduals\nCom es reparteixen els residus (mínim, quartils, màxim). Si la mediana és a prop de 0 i són més o menys simètrics, bon senyal\n\n\nEstimate\nEls coeficients: l’intercept i el pendent\n\n\nStd. Error\nL’error estàndard de cada coeficient: com podria variar d’una mostra a una altra (sessió 2)\n\n\nt value\nEstimate / Std. Error: a quants errors estàndard del 0 és el coeficient\n\n\nPr(&gt;|t|)\nEl p-valor. \\(H_0\\): el coeficient és 0 (cap relació)\n\n\nResidual standard error\nL’error típic de les prediccions: de mitjana, ens equivoquem uns 5,1 punts d’abstenció\n\n\nMultiple R-squared\nEl \\(R^2\\)\n\n\nAdjusted R-squared\nEl \\(R^2\\) corregit pel nombre de variables (útil en la regressió múltiple)\n\n\nF-statistic\nUn contrast del model sencer (com l’ANOVA de la sessió 3). Amb una sola X, diu el mateix que el p-valor del pendent"
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html#don-surt-el-p-valor-del-pendent",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html#don-surt-el-p-valor-del-pendent",
+    "title": "La regressió lineal, pas a pas",
+    "section": "6. D’on surt el p-valor del pendent?",
+    "text": "6. D’on surt el p-valor del pendent?\nEl mateix raonament de la sessió 3: si l’atur no tingués cap relació amb l’abstenció, quins pendents sortirien per atzar? Barregem l’abstenció entre les seccions 5.000 vegades i calculem el pendent cada vegada:\n\n\nCodi\npendents_atzar &lt;- map_dbl(1:5000, function(i) {\n  coef(lm(sample(abstencio) ~ perc_atur, data = bcn))[2]\n})\n\nggplot(tibble(pendent = pendents_atzar), aes(x = pendent)) +\n  geom_histogram(binwidth = 0.01, fill = bordeus_clar, color = \"white\") +\n  labs(title = \"Pendents quan NO hi ha relació (5.000 simulacions)\",\n       subtitle = paste0(\"El nostre pendent (\", num(coef(model)[2]),\n                         \") quedaria molt fora del gràfic, a la dreta\"),\n       x = \"Pendent\", y = \"Nombre de simulacions\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\nCodi\nrange(pendents_atzar)\n\n\n[1] -0.2520002  0.2399879\n\n\nPer atzar, els pendents queden entre -0,25 i 0,24. El nostre, 1,98, és molt lluny: el p-valor és pràcticament 0. La relació és significativa."
+  },
+  {
+    "objectID": "sessio-4/explicacions/02_regressio_pas_a_pas.html#en-resum",
+    "href": "sessio-4/explicacions/02_regressio_pas_a_pas.html#en-resum",
+    "title": "La regressió lineal, pas a pas",
+    "section": "En resum",
+    "text": "En resum\n\nEls residus són la diferència entre el valor real i el que prediu la recta.\nLa recta de regressió és la que fa mínima la suma dels residus al quadrat.\nEl \\(R^2\\) compara els errors amb la recta i amb la mitjana: és la part de la variació que explica la X.\nDel summary(), el més important: Estimate, Pr(&gt;|t|) i R-squared.\nEl p-valor del pendent diu si un pendent com el nostre podria sortir per atzar si no hi hagués relació."
+  },
+  {
+    "objectID": "sessio-4/explicacions/04_regressio_multiple.html",
+    "href": "sessio-4/explicacions/04_regressio_multiple.html",
+    "title": "Regressió múltiple i interaccions",
+    "section": "",
+    "text": "NotaQuè hi trobareu?\n\n\n\nA les slides hem vist, en una sola slide, que quan afegim la renda al model, l’efecte de l’atur sobre l’abstenció es redueix gairebé a la meitat. Aquí veurem per què, què vol dir «mantenint constants les altres variables», com s’hi poden afegir variables categòriques i què és una interacció. No cal entendre el codi (és plegat): n’hi ha prou de llegir el text i mirar els gràfics."
+  },
+  {
+    "objectID": "sessio-4/explicacions/04_regressio_multiple.html#el-problema-les-terceres-variables",
+    "href": "sessio-4/explicacions/04_regressio_multiple.html#el-problema-les-terceres-variables",
+    "title": "Regressió múltiple i interaccions",
+    "section": "1. El problema: les terceres variables",
+    "text": "1. El problema: les terceres variables\nA Barcelona, l’atur i l’abstenció van molt junts. Però les seccions amb més atur també tenen menys renda, i la renda també està relacionada amb l’abstenció:\n\n\nCodi\nbcn |&gt;\n  summarise(atur_abstencio  = cor(perc_atur, abstencio),\n            renda_abstencio = cor(renda_milers, abstencio),\n            renda_atur      = cor(renda_milers, perc_atur))\n\n\n# A tibble: 1 × 3\n  atur_abstencio renda_abstencio renda_atur\n           &lt;dbl&gt;           &lt;dbl&gt;      &lt;dbl&gt;\n1          0.847          -0.829     -0.785\n\n\nSi fem un model només amb l’atur, el pendent recull l’efecte de l’atur i també una part de l’efecte de la renda, perquè totes dues variables van juntes. Per separar-les, les posem totes dues al model."
+  },
+  {
+    "objectID": "sessio-4/explicacions/04_regressio_multiple.html#la-regressió-múltiple",
+    "href": "sessio-4/explicacions/04_regressio_multiple.html#la-regressió-múltiple",
+    "title": "Regressió múltiple i interaccions",
+    "section": "2. La regressió múltiple",
+    "text": "2. La regressió múltiple\nEn lloc d’una recta, ara el model té diverses X:\n\\[\\widehat{Y} = a + b_1 X_1 + b_2 X_2 + \\ldots\\]\nA R, n’hi ha prou d’afegir les variables amb un +:\n\n\nCodi\nmodel_simple   &lt;- lm(abstencio ~ perc_atur, data = bcn)\nmodel_multiple &lt;- lm(abstencio ~ perc_atur + renda_milers, data = bcn)\n\nsummary(model_multiple)\n\n\n\nCall:\nlm(formula = abstencio ~ perc_atur + renda_milers, data = bcn)\n\nResiduals:\n     Min       1Q   Median       3Q      Max \n-13.6913  -2.9711  -0.2512   2.7978  18.4692 \n\nCoefficients:\n             Estimate Std. Error t value Pr(&gt;|t|)    \n(Intercept)  44.61050    1.29624   34.41   &lt;2e-16 ***\nperc_atur     1.19290    0.05327   22.39   &lt;2e-16 ***\nrenda_milers -0.87047    0.04626  -18.82   &lt;2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 4.449 on 1065 degrees of freedom\nMultiple R-squared:  0.7876,    Adjusted R-squared:  0.7872 \nF-statistic:  1975 on 2 and 1065 DF,  p-value: &lt; 2.2e-16\n\n\nComparem-ho:\n\n\n\n\n\n\n\n\n\n\nPendent de l’atur\nPendent de la renda (per 1.000 €)\n\\(R^2\\)\n\n\n\n\nNomés l’atur\n1,98\n\n0,72\n\n\nAtur i renda\n1,19\n-0,87\n0,79\n\n\n\n\nEl pendent de l’atur baixa de 1,98 a 1,19: una part de la relació entre l’atur i l’abstenció era, en realitat, cosa de la renda.\nPerò l’atur continua sent significatiu: a igual renda, les seccions amb més atur continuen abstenint-se més.\nJunts expliquen més variació que l’atur sol (\\(R^2\\) de 0,72 a 0,79)."
+  },
+  {
+    "objectID": "sessio-4/explicacions/04_regressio_multiple.html#què-vol-dir-mantenint-constant",
+    "href": "sessio-4/explicacions/04_regressio_multiple.html#què-vol-dir-mantenint-constant",
+    "title": "Regressió múltiple i interaccions",
+    "section": "3. Què vol dir «mantenint constant»?",
+    "text": "3. Què vol dir «mantenint constant»?\nCada coeficient d’un model múltiple és l’efecte d’una variable mantenint constants les altres. Ho podem veure separant les seccions en tres grups de renda i mirant la relació entre l’atur i l’abstenció dins de cada grup:\n\n\nCodi\nbcn_grups &lt;- bcn |&gt;\n  mutate(grup_renda = cut(renda_milers,\n                          breaks = quantile(renda_milers, c(0, 1/3, 2/3, 1)),\n                          labels = c(\"Renda baixa\", \"Renda mitjana\", \"Renda alta\"),\n                          include.lowest = TRUE))\n\nggplot(bcn_grups, aes(x = perc_atur, y = abstencio)) +\n  geom_point(aes(color = grup_renda), alpha = 0.4) +\n  geom_smooth(aes(color = grup_renda), method = \"lm\", se = FALSE, linewidth = 1.2) +\n  geom_smooth(method = \"lm\", se = FALSE, color = \"black\", linetype = \"dashed\") +\n  scale_color_manual(values = c(\"Renda baixa\" = bordeus, \"Renda mitjana\" = \"#B5606E\",\n                                \"Renda alta\" = \"#E0B8BF\")) +\n  labs(x = \"% d'atur\", y = \"% d'abstenció\", color = NULL,\n       caption = \"Línia discontínua: la recta amb totes les seccions\") +\n  theme_minimal() +\n  theme(legend.position = \"bottom\")\n\n\n`geom_smooth()` using formula = 'y ~ x'\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\nCodi\nbcn_grups |&gt;\n  group_by(grup_renda) |&gt;\n  summarise(n = n(),\n            pendent_atur = coef(lm(abstencio ~ perc_atur))[2])\n\n\n# A tibble: 3 × 3\n  grup_renda        n pendent_atur\n  &lt;fct&gt;         &lt;int&gt;        &lt;dbl&gt;\n1 Renda baixa     356        1.37 \n2 Renda mitjana   356        0.877\n3 Renda alta      356        1.14 \n\n\nDins de cada grup de renda, les rectes són menys inclinades que la recta general (discontínua). La recta general barreja dues coses: l’efecte de l’atur i el fet que les seccions amb més atur són les de menys renda. La regressió múltiple fa aquesta separació d’una manera més precisa, sense haver de fer grups."
+  },
+  {
+    "objectID": "sessio-4/explicacions/04_regressio_multiple.html#variables-categòriques-en-un-model-múltiple",
+    "href": "sessio-4/explicacions/04_regressio_multiple.html#variables-categòriques-en-un-model-múltiple",
+    "title": "Regressió múltiple i interaccions",
+    "section": "4. Variables categòriques en un model múltiple",
+    "text": "4. Variables categòriques en un model múltiple\nTambé podem afegir variables categòriques. Per exemple, amb les seccions dels quatre municipis, el model de l’abstenció segons l’atur i el municipi:\n\n\nCodi\nmodel_mun &lt;- lm(abstencio ~ perc_atur + municipi, data = seccions)\ncoef(model_mun)\n\n\n         (Intercept)            perc_atur    municipiBarcelona \n          28.6066274            1.7474141           -4.7251882 \n      municipiGirona municipiL'Hospitalet \n          -7.7037196           -0.1257174 \n\n\n\nEl pendent de l’atur és el mateix per a tots els municipis.\nCada coeficient de municipi és la diferència d’abstenció respecte del municipi de referència (Badalona, el primer per ordre alfabètic), a igual atur.\n\nGràficament, són rectes paral·leles, una per municipi:\n\n\nCodi\nseccions |&gt;\n  mutate(predita = predict(model_mun)) |&gt;\n  ggplot(aes(x = perc_atur, y = abstencio, color = municipi)) +\n  geom_point(alpha = 0.2) +\n  geom_line(aes(y = predita), linewidth = 1.2) +\n  labs(x = \"% d'atur\", y = \"% d'abstenció\", color = NULL) +\n  theme_minimal()"
+  },
+  {
+    "objectID": "sessio-4/explicacions/04_regressio_multiple.html#interaccions-quan-lefecte-depèn-duna-altra-variable",
+    "href": "sessio-4/explicacions/04_regressio_multiple.html#interaccions-quan-lefecte-depèn-duna-altra-variable",
+    "title": "Regressió múltiple i interaccions",
+    "section": "5. Interaccions: quan l’efecte depèn d’una altra variable",
+    "text": "5. Interaccions: quan l’efecte depèn d’una altra variable\nI si l’efecte de l’atur no fos igual a tots els municipis? Hi ha una interacció quan l’efecte d’una variable depèn del valor d’una altra. Comparem Barcelona i Girona:\n\n\nCodi\nbcn_girona &lt;- seccions |&gt;\n  filter(municipi %in% c(\"Barcelona\", \"Girona\"))\n\nggplot(bcn_girona, aes(x = perc_atur, y = abstencio, color = municipi)) +\n  geom_point(alpha = 0.3) +\n  geom_smooth(method = \"lm\", se = FALSE, linewidth = 1.2) +\n  scale_color_manual(values = c(\"Barcelona\" = bordeus, \"Girona\" = \"grey40\")) +\n  labs(x = \"% d'atur\", y = \"% d'abstenció\", color = NULL) +\n  theme_minimal()\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\nLes rectes no són paral·leles: tenen pendents diferents. A R, la interacció s’indica amb * en lloc de +:\n\n\nCodi\nmodel_int &lt;- lm(abstencio ~ perc_atur * municipi, data = bcn_girona)\ncoef(model_int)\n\n\n             (Intercept)                perc_atur           municipiGirona \n              21.3335069                1.9795408                7.4540182 \nperc_atur:municipiGirona \n              -0.8819177 \n\n\n\nperc_atur: el pendent de l’atur a Barcelona (la referència): 1,98.\nperc_atur:municipiGirona: quant canvia el pendent a Girona respecte de Barcelona. El pendent de Girona és 1,98 + (-0,88) = 1,10.\n\nSi el p-valor del terme d’interacció és petit (al summary()), la diferència de pendents és significativa."
+  },
+  {
+    "objectID": "sessio-4/explicacions/04_regressio_multiple.html#en-resum",
+    "href": "sessio-4/explicacions/04_regressio_multiple.html#en-resum",
+    "title": "Regressió múltiple i interaccions",
+    "section": "En resum",
+    "text": "En resum\n\nLa regressió múltiple posa diverses X al model: \\(Y \\sim X_1 + X_2\\).\nCada coeficient és l’efecte d’una variable mantenint constants les altres: així separem efectes que van junts.\nLes variables categòriques hi entren com a la regressió simple: diferències respecte d’una categoria de referència.\nHi ha interacció quan l’efecte d’una X depèn d’una altra variable: a R, \\(Y \\sim X_1 * X_2\\).\nFins i tot amb molts controls, la regressió amb dades observacionals no demostra causalitat: sempre pot faltar alguna variable."
   }
 ]

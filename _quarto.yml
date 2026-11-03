@@ -13,6 +13,8 @@ project:
     - sessio-2/explicacions/*.qmd
     - sessio-3/slides/sessio_3.qmd
     - sessio-3/explicacions/*.qmd
+    - sessio-4/slides/sessio_4.qmd
+    - sessio-4/explicacions/*.qmd
 
 lang: ca
 

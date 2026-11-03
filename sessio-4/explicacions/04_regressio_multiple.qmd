@@ -1,0 +1,156 @@
+---
+title: "Regressió múltiple i interaccions"
+subtitle: "Sessió 4 · Explicació complementària"
+code-fold: true
+code-tools: true
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+
+bordeus      <- "#6D071A"
+bordeus_clar <- "#D8A9B1"
+
+# Números amb coma decimal per al text
+num <- function(x, d = 2) format(round(unname(x), d), nsmall = d, decimal.mark = ",", big.mark = ".")
+
+seccions <- read_csv2("../dades/seccions_censals.csv", show_col_types = FALSE) |>
+  mutate(renda_milers = renda_persona / 1000)
+bcn <- seccions |> filter(municipi == "Barcelona")
+```
+
+::: {.callout-note}
+## Què hi trobareu?
+A les slides hem vist, en una sola slide, que quan afegim la **renda** al model, l'efecte de l'atur sobre l'abstenció es redueix gairebé a la meitat. Aquí veurem **per què**, què vol dir «mantenint constants les altres variables», com s'hi poden afegir variables **categòriques** i què és una **interacció**. No cal entendre el codi (és plegat): n'hi ha prou de llegir el text i mirar els gràfics.
+:::
+
+## 1. El problema: les terceres variables
+
+A Barcelona, l'atur i l'abstenció van molt junts. Però les seccions amb més atur també tenen **menys renda**, i la renda també està relacionada amb l'abstenció:
+
+```{r}
+bcn |>
+  summarise(atur_abstencio  = cor(perc_atur, abstencio),
+            renda_abstencio = cor(renda_milers, abstencio),
+            renda_atur      = cor(renda_milers, perc_atur))
+```
+
+Si fem un model només amb l'atur, el pendent recull l'efecte de l'atur **i també** una part de l'efecte de la renda, perquè totes dues variables van juntes. Per separar-les, les posem **totes dues** al model.
+
+## 2. La regressió múltiple
+
+En lloc d'una recta, ara el model té diverses X:
+
+$$\widehat{Y} = a + b_1 X_1 + b_2 X_2 + \ldots$$
+
+A R, n'hi ha prou d'afegir les variables amb un `+`:
+
+```{r}
+model_simple   <- lm(abstencio ~ perc_atur, data = bcn)
+model_multiple <- lm(abstencio ~ perc_atur + renda_milers, data = bcn)
+
+summary(model_multiple)
+```
+
+Comparem-ho:
+
+| | Pendent de l'atur | Pendent de la renda (per 1.000 €) | $R^2$ |
+|---|:---:|:---:|:---:|
+| Només l'atur | `r num(coef(model_simple)[2])` | | `r num(summary(model_simple)$r.squared)` |
+| Atur i renda | `r num(coef(model_multiple)[2])` | `r num(coef(model_multiple)[3])` | `r num(summary(model_multiple)$r.squared)` |
+
+: {tbl-colwidths="[30,25,30,15]"}
+
+- El pendent de l'atur baixa de `r num(coef(model_simple)[2])` a `r num(coef(model_multiple)[2])`: una part de la relació entre l'atur i l'abstenció era, en realitat, cosa de la renda.
+- Però l'atur **continua** sent significatiu: a igual renda, les seccions amb més atur continuen abstenint-se més.
+- Junts expliquen més variació que l'atur sol ($R^2$ de `r num(summary(model_simple)$r.squared)` a `r num(summary(model_multiple)$r.squared)`).
+
+## 3. Què vol dir «mantenint constant»?
+
+Cada coeficient d'un model múltiple és l'efecte d'una variable **mantenint constants les altres**. Ho podem veure separant les seccions en tres grups de renda i mirant la relació entre l'atur i l'abstenció **dins de cada grup**:
+
+```{r}
+bcn_grups <- bcn |>
+  mutate(grup_renda = cut(renda_milers,
+                          breaks = quantile(renda_milers, c(0, 1/3, 2/3, 1)),
+                          labels = c("Renda baixa", "Renda mitjana", "Renda alta"),
+                          include.lowest = TRUE))
+
+ggplot(bcn_grups, aes(x = perc_atur, y = abstencio)) +
+  geom_point(aes(color = grup_renda), alpha = 0.4) +
+  geom_smooth(aes(color = grup_renda), method = "lm", se = FALSE, linewidth = 1.2) +
+  geom_smooth(method = "lm", se = FALSE, color = "black", linetype = "dashed") +
+  scale_color_manual(values = c("Renda baixa" = bordeus, "Renda mitjana" = "#B5606E",
+                                "Renda alta" = "#E0B8BF")) +
+  labs(x = "% d'atur", y = "% d'abstenció", color = NULL,
+       caption = "Línia discontínua: la recta amb totes les seccions") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+bcn_grups |>
+  group_by(grup_renda) |>
+  summarise(n = n(),
+            pendent_atur = coef(lm(abstencio ~ perc_atur))[2])
+```
+
+Dins de cada grup de renda, les rectes són **menys inclinades** que la recta general (discontínua). La recta general barreja dues coses: l'efecte de l'atur i el fet que les seccions amb més atur són les de menys renda. La regressió múltiple fa aquesta separació d'una manera més precisa, sense haver de fer grups.
+
+## 4. Variables categòriques en un model múltiple
+
+També podem afegir variables **categòriques**. Per exemple, amb les seccions dels quatre municipis, el model de l'abstenció segons l'atur **i** el municipi:
+
+```{r}
+model_mun <- lm(abstencio ~ perc_atur + municipi, data = seccions)
+coef(model_mun)
+```
+
+- El pendent de l'atur és el mateix per a tots els municipis.
+- Cada coeficient de municipi és la diferència d'abstenció respecte del municipi de **referència** (Badalona, el primer per ordre alfabètic), **a igual atur**.
+
+Gràficament, són **rectes paral·leles**, una per municipi:
+
+```{r}
+seccions |>
+  mutate(predita = predict(model_mun)) |>
+  ggplot(aes(x = perc_atur, y = abstencio, color = municipi)) +
+  geom_point(alpha = 0.2) +
+  geom_line(aes(y = predita), linewidth = 1.2) +
+  labs(x = "% d'atur", y = "% d'abstenció", color = NULL) +
+  theme_minimal()
+```
+
+## 5. Interaccions: quan l'efecte depèn d'una altra variable
+
+I si l'efecte de l'atur **no** fos igual a tots els municipis? Hi ha una **interacció** quan l'efecte d'una variable depèn del valor d'una altra. Comparem Barcelona i Girona:
+
+```{r}
+bcn_girona <- seccions |>
+  filter(municipi %in% c("Barcelona", "Girona"))
+
+ggplot(bcn_girona, aes(x = perc_atur, y = abstencio, color = municipi)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 1.2) +
+  scale_color_manual(values = c("Barcelona" = bordeus, "Girona" = "grey40")) +
+  labs(x = "% d'atur", y = "% d'abstenció", color = NULL) +
+  theme_minimal()
+```
+
+Les rectes **no són paral·leles**: tenen pendents diferents. A R, la interacció s'indica amb `*` en lloc de `+`:
+
+```{r}
+model_int <- lm(abstencio ~ perc_atur * municipi, data = bcn_girona)
+coef(model_int)
+```
+
+- `perc_atur`: el pendent de l'atur a **Barcelona** (la referència): `r num(coef(model_int)[2])`.
+- `perc_atur:municipiGirona`: **quant canvia** el pendent a Girona respecte de Barcelona. El pendent de Girona és `r num(coef(model_int)[2])` + (`r num(coef(model_int)[4])`) = `r num(coef(model_int)[2] + coef(model_int)[4])`.
+
+Si el p-valor del terme d'interacció és petit (al `summary()`), la diferència de pendents és significativa.
+
+## En resum
+
+1. La regressió **múltiple** posa diverses X al model: $Y \sim X_1 + X_2$.
+2. Cada coeficient és l'efecte d'una variable **mantenint constants les altres**: així separem efectes que van junts.
+3. Les variables **categòriques** hi entren com a la regressió simple: diferències respecte d'una categoria de referència.
+4. Hi ha **interacció** quan l'efecte d'una X depèn d'una altra variable: a R, $Y \sim X_1 * X_2$.
+5. Fins i tot amb molts controls, la regressió amb dades observacionals **no demostra causalitat**: sempre pot faltar alguna variable.

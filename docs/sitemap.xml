@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/explicacions/tutorial_ggplot2_dispersio.html</loc>
+    <lastmod>2026-11-03T08:28:03.101Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/explicacions/03_suposits_model.html</loc>
+    <lastmod>2026-10-29T08:11:38.622Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/explicacions/01_correlacio_pas_a_pas.html</loc>
+    <lastmod>2026-10-29T08:11:37.730Z</lastmod>
+  </url>
+  <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/explicacions/tutorial_ggplot2_bivariada.html</loc>
     <lastmod>2026-10-28T14:21:58.425Z</lastmod>
   </url>
@@ -34,7 +46,7 @@
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/index.html</loc>
-    <lastmod>2026-10-16T10:35:44.259Z</lastmod>
+    <lastmod>2026-11-03T10:20:59.166Z</lastmod>
   </url>
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-2/index.html</loc>
@@ -91,5 +103,17 @@
   <url>
     <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-3/explicacions/04_proves_normalitat.html</loc>
     <lastmod>2026-10-28T14:18:53.052Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/slides/sessio_4.html</loc>
+    <lastmod>2026-11-03T10:09:06.696Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/explicacions/02_regressio_pas_a_pas.html</loc>
+    <lastmod>2026-10-29T08:07:46.591Z</lastmod>
+  </url>
+  <url>
+    <loc>https://joelardiaca.github.io/estadistica-r-eapc-2026/sessio-4/explicacions/04_regressio_multiple.html</loc>
+    <lastmod>2026-10-29T08:09:00.232Z</lastmod>
   </url>
 </urlset>

@@ -47,8 +47,6 @@ Thumbs.db
 
 # ---- Esborranys de sessions encara no publicades ----------------------------
 # Quan es publiqui una sessió, esborreu-ne les dues línies corresponents.
-sessio-4/*
-!sessio-4/index.qmd
+# (Totes les sessions ja estan publicades.)
 # Previsualització d'esborranys (quarto render --profile esborranys)
 _esborranys/
-_freeze/sessio-4/

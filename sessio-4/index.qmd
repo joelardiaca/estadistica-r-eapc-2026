@@ -1,11 +1,91 @@
 ---
 title: "Sessió 4 · Correlació i regressió"
 subtitle: "Dilluns 9 de novembre de 2026 · 9.30 – 13.30 h"
-toc: false
 ---
 
-Relacions entre dues variables quantitatives: **correlació** i **regressió lineal simple** amb R, i interpretació dels coeficients i dels principals resultats del model.
+Relacions entre dues variables numèriques: el **diagrama de dispersió**, la **correlació** de Pearson i la **regressió lineal**. Amb R: el gràfic de dispersió, `cor()`, `lm()` i `predict()`. I, com que és l'última sessió, un **tancament del curs**: què hem après i com continuar pel vostre compte.
+
+## Slides
+
+- **[Slides de la sessió 4](slides/sessio_4.qmd){target="_blank"}** · Correlació, regressió lineal, R, pràctica i tancament del curs
+
+## Materials
+
+::: {.callout-tip}
+## [⬇ Descarregar els materials de la sessió 4 (zip)](materials-sessio-4.zip)
+:::
+
+**Pas a pas**:
+
+1. Descarregueu el zip i **descomprimiu-lo** (botó dret → *Extreu-ho tot*). No treballeu des de dins del zip!
+2. Entreu a la carpeta descomprimida i feu **doble clic** a `sessio_4.Rproj`.
+3. Al panell *Files* de RStudio, obriu la carpeta `codi/` i l'script que vulgueu.
+
+Un cop descomprimit, trobareu:
+
+```
+sessio-4/
+├── sessio_4.Rproj                  ← obriu aquest fitxer amb RStudio
+├── dades/
+│   ├── competencies.csv            Les dades netes de les sessions 2 i 3 (480 alumnes)
+│   └── seccions_censals.csv        Seccions censals: abstenció, atur, renda... (exemples i part opcional)
+└── codi/
+    ├── 01_correlacio_regressio.R   El codi de les slides
+    └── exercici_sessio_4.R         Plantilla de la pràctica
+```
+
+## Pràctica: correlació i regressió amb R
+
+Amb el projecte de la **sessió 4** (`sessio_4.Rproj`) i la plantilla `codi/exercici_sessio_4.R`. El **pas 1** (importar les dades) ja està fet: només cal executar-lo. El codi **nou** (gràfics, `lm()`, `summary()`, `predict()`, `cor.test()`) també hi és: l'heu d'executar i **interpretar**. El que ja sabeu fer (`filter()`, `summarise()`, `group_by()`...) l'escriviu vosaltres.
+
+**Part A. Correlació**: les notes de català i d'anglès, van juntes?
+
+2. **Gràfic de dispersió** de la nota de català i la d'anglès, amb la recta.
+3. **Correlació** entre català i anglès, amb `summarise()` i `cor()`.
+4. **Les tres parelles** d'assignatures: quina relació és més forta?
+5. **Per grups**: la correlació, és igual per a nois i noies? I per titularitat?
+
+**Part B. Regressió lineal**
+
+6. **Model** de la nota d'anglès segons la de català: el pendent, l'intercept, el p-valor i el $R^2$.
+7. **Prediccions** amb `predict()`: quina nota d'anglès esperem amb un 50 i un 90 de català?
+8. **Una X categòrica**: la nota de matemàtiques segons la titularitat. Què vol dir el coeficient?
+9. **És significativa la correlació?** `cor.test()`: el p-valor i l'interval de confiança.
+
+Comenteu i interpreteu els resultats de cada pas **en paraules**.
+
+**Què cal lliurar**: l'script `exercici_sessio_4.R` complet i comentat, per **correu electrònic** a [joelardiacaarnau@gencat.cat](mailto:joelardiacaarnau@gencat.cat).
+
+::: {.callout-tip}
+## Ja ho teniu tot? Part opcional
+1. **Anàlisi de les seccions censals**: l'abstenció, l'atur i la renda a 1.469 seccions de quatre municipis, amb menys pistes. Descriure, correlacions, regressió simple, una X categòrica comparada amb el t-test, regressió múltiple i conclusions.
+2. **[Tutorial: gràfics de dispersió amb `ggplot2`](explicacions/tutorial_ggplot2_dispersio.qmd)**: colors per grup, un gràfic per grup, el model i els residus al gràfic, pas a pas.
+:::
 
 ::: {.callout-note}
-Els materials d'aquesta sessió (slides, dades, codi i exercici) es publicaran aquí abans de la sessió.
+## Solució
+La solució de la pràctica es publicarà aquí després de la sessió.
 :::
+
+## Per aprofundir (opcional)
+
+Documents per llegir pel vostre compte, amb explicacions i gràfics. El codi R hi és plegat: no cal entendre'l per seguir l'explicació.
+
+1. [La correlació, pas a pas](explicacions/01_correlacio_pas_a_pas.qmd): què mesura r, com es calcula, els valors atípics, les terceres variables i d'on surt el p-valor.
+2. [La regressió lineal, pas a pas](explicacions/02_regressio_pas_a_pas.qmd): els residus, els mínims quadrats, el $R^2$ i la sortida de `summary()` número a número.
+3. [Els supòsits del model lineal](explicacions/03_suposits_model.qmd): com es comproven amb els gràfics dels residus i què fer si no es compleixen.
+4. [Regressió múltiple i interaccions](explicacions/04_regressio_multiple.qmd): separar efectes que van junts i efectes que depenen d'una altra variable.
+
+**Gràfics**
+
+- [Tutorial: gràfics de dispersió amb `ggplot2`](explicacions/tutorial_ggplot2_dispersio.qmd)
+- Tutorials anteriors: [primers gràfics](../sessio-2/explicacions/tutorial_ggplot2.qmd) (sessió 2) i [gràfics bivariats](../sessio-3/explicacions/tutorial_ggplot2_bivariada.qmd) (sessió 3)
+
+## I ara, què?
+
+La pàgina de **[Recursos](../recursos.qmd)** té llibres, xuletes i dades per continuar practicant pel vostre compte.
+
+## Fonts de les dades
+
+- **Competències bàsiques**: mostra de l'avaluació de competències bàsiques de 6è de primària (2023) del Departament d'Educació, publicada al [portal de dades obertes de la Generalitat](https://analisi.transparenciacatalunya.cat).
+- **Seccions censals**: resultats de les eleccions al Parlament de Catalunya 2021 i dades sociodemogràfiques per secció censal (INE i Idescat).
