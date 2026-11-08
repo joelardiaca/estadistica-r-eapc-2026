@@ -695,7 +695,7 @@ ggplot(dos_municipis, aes(x = municipi, y = abstencio)) +
 ::::
 
 ::: {.petit .gris}
-És la diferència de mitjanes de la sessió 3 (`group_by()` + `summarise()` i [t-test](../../sessio-3/slides/sessio_3.html#/16){target="_blank"}), però el model ens la dona **directament**, sense haver-la de calcular a mà. I el p-valor del coeficient diu si és significativa, com el t-test.
+És la diferència de mitjanes de la sessió 3 (`group_by()` + `summarise()` i [t-test](../../sessio-3/slides/sessio_3.html#/15){target="_blank"}), però el model ens la dona **directament**, sense haver-la de calcular a mà. I el p-valor del coeficient diu si és significativa, com el t-test.
 :::
 
 ## Quan no em puc fiar del model?
